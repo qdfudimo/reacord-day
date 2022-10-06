@@ -1,6 +1,6 @@
 {
   "navigationStyle": "custom",
   "usingComponents": {
-    "reacord-list": "../../component/reacordList/reacordList"
+    "reacord-list": "../../components/reacordList/reacordList"
   }
 }

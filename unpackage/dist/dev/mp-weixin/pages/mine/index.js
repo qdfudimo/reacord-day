@@ -1,7 +1,7 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
 var utils_upload = require("../../utils/upload.js");
-const reacordList = () => "../../component/reacordList/reacordList.js";
+const reacordList = () => "../../components/reacordList/reacordList.js";
 const app = getApp();
 const _sfc_main = {
   components: {

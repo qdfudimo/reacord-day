@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import reacordList from '@/component/reacordList/reacordList';
+import reacordList from '@/components/reacordList/reacordList';
 // pages/home/index.js
 // const util = require('../../utils/util.js')
 // util.formatTime(new Date(log))

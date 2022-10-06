@@ -21,13 +21,14 @@
             <view class="textCon">
                 <view class="text">
                     <view class="sayCont">
-                        .要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度
+                        {{homeShort.short}}
                     </view>
-                    <view class="whoSay">--恩格尔</view>
+                    <view class="whoSay"> {{homeShort.author}}</view>
                 </view>
-                <view class="shoucang iconfont icon-shoucang2"></view>
+                <view :style="`color:${homeShort.ifCollect?'#FBBD08':'#fff'}`" class="shoucang iconfont icon-shoucang2"
+                    @tap="collectShort"></view>
             </view>
-            <view class="iconfont icon-shezhi1 setIcon"></view>
+            <view class="iconfont icon-shezhi1 setIcon" @tap="changeImg"></view>
         </view>
         <view class="category_list">
             <view class="typeFunction">
@@ -39,6 +40,11 @@
             </view>
             <button class="write iconfont icon-xie" @tap="goRecord"> 写日记</button>
         </view>
+        <dia-log v-model:show="showDialog" title="设置背景格言" @confirm="confirm" @cancle="cancle">
+            <view class="modal_content">
+                <view></view>
+            </view>
+        </dia-log>
     </view>
 </template>
 
@@ -48,9 +54,10 @@
 //     onLoad,
 //     onShow,
 // } from "@dcloudio/uni-app";
-import { ref } from 'vue';
-import { useGetTabBar } from "@/hooks/useGetTabBar"
-import util from "@/utils/util"
+import { ref, reactive } from 'vue';
+import diaLog from "@/components/diaLog/diaLog";
+import { useGetTabBar } from "@/hooks/useGetTabBar";
+import util from "@/utils/util";
 const app = getApp();
 const category = [
     {
@@ -83,10 +90,37 @@ const currentDate = util.getCurrentDate()
 // console.log(util.getChineseDate());
 const defaultImg = '/static/image/background/rainbow.jpg';
 const currentBackground = ref("/static/image/background/rainbow.jpg")
+const showDialog = ref(false)
+const homeShort = reactive({
+    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
+    author: "--恩格尔",
+    ifCollect: false
+})
 useGetTabBar(0)
 const goRecord = () => {
     uni.navigateTo({
         url: `../create-record/create-record`
+    });
+}
+const changeImg = () => {
+    showDialog.value = true
+}
+const confirm = () => {
+    showDialog.value = false
+}
+const cancle = () => {
+    showDialog.value = false
+}
+const collectShort = (e) => {
+    uni.showModal({
+        title: '提示',
+        content: !homeShort.ifCollect ? '是否添加到我的收藏' : '是否取消收藏',
+        success: function (res) {
+            if (res.confirm) {
+                homeShort.ifCollect = !homeShort.ifCollect
+            } else if (res.cancel) {
+            }
+        }
     });
 }
 const handelCheck = (e) => {
@@ -314,5 +348,8 @@ page {
     right: 0;
     height: calc(100vh - 48px - constant(safe-area-inset-bottom));
     height: calc(100vh - 48px - env(safe-area-inset-bottom));
+}
+.modal_content {
+    height: 200px;
 }
 </style>

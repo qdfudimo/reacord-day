@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import reacordList from '@/component/reacordList/reacordList';
+import reacordList from '@/components/reacordList/reacordList';
 // pages/mine/index.js
 const app = getApp();
 import { chooseFile } from '@/utils/upload';

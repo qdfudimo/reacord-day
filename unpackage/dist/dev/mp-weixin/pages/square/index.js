@@ -1,6 +1,6 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
-const reacordList = () => "../../component/reacordList/reacordList.js";
+const reacordList = () => "../../components/reacordList/reacordList.js";
 const _sfc_main = {
   components: {
     reacordList
