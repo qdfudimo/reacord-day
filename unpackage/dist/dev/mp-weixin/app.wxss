@@ -3,9 +3,9 @@
 /* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
   font-family: 'iconfont';  /* Project id 3109504 */
-  src: url('//at.alicdn.com/t/c/font_3109504_vr2s3zwtlfs.woff2?t=1665022413856') format('woff2'),
-       url('//at.alicdn.com/t/c/font_3109504_vr2s3zwtlfs.woff?t=1665022413856') format('woff'),
-       url('//at.alicdn.com/t/c/font_3109504_vr2s3zwtlfs.ttf?t=1665022413856') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_3109504_qsgzd2uxkpp.woff2?t=1665042199660') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3109504_qsgzd2uxkpp.woff?t=1665042199660') format('woff'),
+       url('//at.alicdn.com/t/c/font_3109504_qsgzd2uxkpp.ttf?t=1665042199660') format('truetype');
 }
 .iconfont {
     font-family: "iconfont" !important;
@@ -13,6 +13,30 @@
     font-style: normal;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+.icon-shoucang2:before {
+    content: "\e8c6";
+}
+.icon-gerenzhongxin:before {
+    content: "\e603";
+}
+.icon-tubiaolunkuo-:before {
+    content: "\e619";
+}
+.icon-shezhi1:before {
+    content: "\e610";
+}
+.icon-tiaochariji:before {
+    content: "\e678";
+}
+.icon-icon_xinyong_xianxing_jijin-107:before {
+    content: "\e643";
+}
+.icon-qiandaodaka:before {
+    content: "\e683";
+}
+.icon-xie:before {
+    content: "\e62a";
 }
 .icon-shuzi0:before {
     content: "\e625";

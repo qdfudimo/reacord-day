@@ -25,11 +25,20 @@
                     </view>
                     <view class="whoSay">--恩格尔</view>
                 </view>
-                <view class="shoucang">收藏</view>
+                <view class="shoucang iconfont icon-shoucang2"></view>
             </view>
-            <view class="setIcon">设置</view>
+            <view class="iconfont icon-shezhi1 setIcon"></view>
         </view>
-        <view class="category_list">222</view>
+        <view class="category_list">
+            <view class="typeFunction">
+                <view class="cartgrouy" v-for="item in category" :key="item.icon" :data-name="item.name"
+                    @tap="handelCheck">
+                    <view :class="`iconfont ${item.icon}`" :style="`background-color:${item.color}`"></view>
+                    <view class="type_name">{{item.name}}</view>
+                </view>
+            </view>
+            <button class="write iconfont icon-xie" @tap="goRecord"> 写日记</button>
+        </view>
     </view>
 </template>
 
@@ -43,11 +52,81 @@ import { ref } from 'vue';
 import { useGetTabBar } from "@/hooks/useGetTabBar"
 import util from "@/utils/util"
 const app = getApp();
+const category = [
+    {
+        icon: "icon-tiaochariji",
+        name: "日记本",
+        color: "#1CBBB4"
+    },
+    {
+        icon: "icon-tubiaolunkuo-",
+        name: "日历",
+        color: "#9C26B0"
+    },
+    {
+        icon: "icon-icon_xinyong_xianxing_jijin-107",
+        name: "名句鉴赏",
+        color: "#32c312"
+    },
+    {
+        icon: "icon-qiandaodaka",
+        name: "打卡",
+        color: "#72c2f4"
+    },
+    {
+        icon: "icon-gerenzhongxin",
+        name: "个人中心",
+        color: "#ed4e41"
+    },
+];
 const currentDate = util.getCurrentDate()
 // console.log(util.getChineseDate());
 const defaultImg = '/static/image/background/rainbow.jpg';
 const currentBackground = ref("/static/image/background/rainbow.jpg")
 useGetTabBar(0)
+const goRecord = () => {
+    uni.navigateTo({
+        url: `../create-record/create-record`
+    });
+}
+const handelCheck = (e) => {
+    switch (e.currentTarget.dataset.name) {
+        case "日记本":
+            uni.navigateTo({
+                url: `../create-record/create-record`
+            });
+            break;
+        case "日历":
+            uni.showToast({
+                title: '暂未开发',
+                icon: 'error',
+                duration: 2000
+            });
+            break;
+        case "名句鉴赏":
+            uni.showToast({
+                title: '暂未开发',
+                icon: 'error',
+                duration: 2000
+            });
+            break;
+        case "打卡":
+            uni.showToast({
+                title: '暂未开发',
+                icon: 'error',
+                duration: 2000
+            });
+            break;
+        case "个人中心":
+            uni.switchTab({
+                url: '/pages/mine/index'
+            });
+            break;
+
+        default:
+            break;
+    }
+}
 </script>
 <style lang="scss" scoped>
 page {
@@ -127,6 +206,7 @@ page {
             display: flex;
             flex-direction: column;
             color: #fff;
+
             .text {
                 overflow: hidden;
                 display: flex;
@@ -147,8 +227,9 @@ page {
             }
 
             .shoucang {
-                height: 18px;
+                height: 20px;
                 padding-bottom: 8px;
+                font-size: 20px;
             }
         }
 
@@ -156,6 +237,10 @@ page {
             position: absolute;
             bottom: 16px;
             right: 10px;
+            font-size: 18px;
+            background-color: #ccc;
+            padding: 4px;
+            border-radius: 50%;
         }
     }
 
@@ -164,7 +249,58 @@ page {
         z-index: 1;
         height: 50%;
         background: rgba(255, 255, 255, .8);
-        box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(85, 85, 85, 0.1);
+        overflow: hidden;
+
+        // box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(85, 85, 85, 0.1);
+        .typeFunction {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px;
+
+            .cartgrouy {
+                width: 33.33%;
+                height: 100px;
+                // background-color: aqua;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: #515151;
+
+                .iconfont {
+                    font-size: 30px;
+                    // background-color: aquamarine;
+                    padding: 10px;
+                    border-radius: 50%;
+                    color: #fff;
+                }
+
+                .type_name {
+                    margin-top: 8px;
+                    font-weight: 800;
+                    font-size: 16px;
+                }
+            }
+        }
+
+        .write {
+            height: 40px;
+            width: 160px;
+            line-height: 40px;
+            text-align: center;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            border-radius: 18px;
+            font-weight: 800;
+            background-image: linear-gradient(to right, rgb(220, 194, 11), rgb(10, 185, 156), rgb(4, 151, 99));
+
+            &::after {
+                border: none;
+            }
+        }
     }
 }
 
