@@ -1,0 +1,153 @@
+/* pages/home/index.wxss */
+page {
+    min-height: 100%;
+}
+
+.main {
+    position: relative;
+    background-color: rgba(233, 241, 248, 0.7);
+    min-height: 100%;
+}
+
+.fixedTop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* height: 100%; */
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+    /* padding-top: env(safe-area-inset-top); */
+}
+
+.tab {
+    position: relative;
+    height: 30px;
+    width: 110px;
+    padding: 3px;
+    background-color: rgba(170, 205, 236, 0.3);
+    border-radius: 8px;
+    line-height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.tab_actvie-bar {
+    position: absolute;
+    height: 30px;
+    width: 55px;
+    border-radius: 6px;
+    background-color: #fff;
+    top: 3px;
+    left: 3px;
+    /* transform: translateX(0px); */
+    transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.tabItem {
+    position: relative;
+    z-index: 3;
+    flex: 1;
+    text-align: center;
+    color: #3688cf;
+    height: 100%;
+    border-radius: 6px;
+}
+
+.active_tab {
+    /* background-color: #fff; */
+    color: #333;
+    /* transition: all .4s; */
+}
+
+.serch {
+    position: relative;
+    height: 32px;
+    width: 100%;
+    margin: 16px 0;
+}
+
+.serch_icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 17px;
+    /* left: 20px; */
+}
+
+.close_icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 17px;
+}
+
+.serch-input {
+    border-radius: 4px;
+    height: 100%;
+    margin: 0 12px;
+    padding: 0 30px;
+    background-color: rgba(230, 230, 230, 0.4);
+}
+
+.empty {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+}
+
+.scrool_square {
+    width: 100%;
+    height: calc(100% - 54px - constant(safe-area-inset-bottom));
+    height: calc(100% - 54px - env(safe-area-inset-bottom));
+    padding-bottom: calc( 54px + constant(safe-area-inset-bottom));
+    padding-bottom: calc( 54px  + env(safe-area-inset-bottom));
+}
+
+.viewIcon {
+    position: fixed;
+    z-index: 6;
+    bottom: 100px;
+    right: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+}
+.showTop {
+    transform: translateX(-20px);
+    opacity: 1;
+    transition: all 0.4s;
+}
+.hideTop {
+    transform: translateX(40px);
+    opacity: 0;
+    transition: all 0.4s;
+}
+.addRecord {
+    width: 28px;
+    font-size: 28px;
+    border-radius: 50%;
+    box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(85, 85, 85, 0.1);
+    color: #000;
+    margin: 3px auto;
+}
+
+.talkList {
+    background-color: #fff;
+    margin: 0 8px 12px 8px;
+    padding: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    /* box-sizing: border-box; */
+}
+
+.talkList:last-child {
+    margin-bottom: 26px;
+}

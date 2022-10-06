@@ -1,0 +1,118 @@
+.schedule_view {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.schedule_top {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.schedule_avatr {
+    margin-right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.schedule_userName {
+    display: block;
+    font-size: 14px;
+    color: #000;
+    /* color: transparent;
+    background: linear-gradient(45deg, #ffeb3b, #009688, yellowgreen, pink, #03a9f4, #9c27b0, #8bc34a);
+    background-size: cover;
+    background-position: center center;
+    background-clip: text; */
+}
+
+.issue_time {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.schedule_left {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.user_time {
+    margin-top: 8px;
+    color: #666;
+}
+
+.schedule_content {
+    flex: 1;
+    font-size: 14px;
+    color: #111;
+}
+
+/* .schedule_list::before {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #60b007;
+    margin-right: 6px;
+} */
+.schedule_bottom {
+    display: flex;
+    margin-top: 10px;
+}
+
+.share {
+    flex: 1;
+    color: #666;
+}
+
+.comment {
+    flex: 1;
+    color: #666;
+    text-align: center;
+}
+
+.likeCount {
+    flex: 1;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(85, 85, 85, 0.10); */
+.pictures {
+    margin-top: 14px;
+    padding: 0 0 10rpx;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.picture {
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: yellowgreen;
+    width: calc(33.33% - 8rpx);
+    margin-right: 12rpx;
+}
+
+.picture:nth-child(3n) {
+    margin-right: 0px;
+}
+
+.picture image {
+    width: 100%;
+    height: 100%;
+    /* border: 1px solid #efefef; */
+}

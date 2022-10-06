@@ -1,0 +1,138 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+page.data-v-71e217db {
+  width: auto;
+  height: auto;
+  /* background-color: rgba(230, 230, 230,.6); */
+}
+.container.data-v-71e217db {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  padding-bottom: calc(48px + constant(safe-area-inset-bottom));
+  padding-bottom: calc(48px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+.container .top_content.data-v-71e217db {
+  position: relative;
+  z-index: 1;
+  height: 50%;
+  overflow: hidden;
+}
+.container .top_content .time.data-v-71e217db {
+  height: 40px;
+  margin: 48rpx 24rpx 0;
+  background: rgba(240, 232, 232, 0.87);
+  border-radius: 8px;
+  box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(85, 85, 85, 0.1);
+  display: flex;
+}
+.container .top_content .month_day.data-v-71e217db {
+  width: 50px;
+  border-right: 1px solid #cdcdcd;
+  display: flex;
+  line-height: 40px;
+  justify-content: center;
+}
+.container .top_content .month_day .iconfont.data-v-71e217db {
+  font-size: 22px;
+}
+.container .top_content .month_date.data-v-71e217db {
+  padding-left: 12px;
+  flex: 1;
+  font-size: 14px;
+  color: #8a8a8a;
+  position: relative;
+}
+.container .top_content .month_date view.data-v-71e217db {
+  height: 50%;
+}
+.container .top_content .month_date.data-v-71e217db::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 90px;
+  top: 16px;
+  border: 8px solid transparent;
+  border-top-color: #cdcdcd;
+}
+.container .top_content .textCon.data-v-71e217db {
+  min-height: 160rpx;
+  max-height: 320rpx;
+  overflow: hidden;
+  margin: 44rpx 32rpx 0;
+  background-color: rgba(85, 85, 85, 0.4);
+  box-shadow: 0rpx 0rpx 50rpx 10rpx rgba(85, 85, 85, 0.8);
+  border-radius: 10px;
+  padding: 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+.container .top_content .textCon .text.data-v-71e217db {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.container .top_content .textCon .text .sayCont.data-v-71e217db {
+  overflow: auto;
+  font-weight: 800;
+}
+.container .top_content .textCon .text .whoSay.data-v-71e217db {
+  height: 18px;
+  line-height: 18px;
+  text-align: right;
+  padding: 8px 16px 0;
+  font-size: 14px;
+}
+.container .top_content .textCon .shoucang.data-v-71e217db {
+  height: 18px;
+  padding-bottom: 8px;
+}
+.container .top_content .setIcon.data-v-71e217db {
+  position: absolute;
+  bottom: 16px;
+  right: 10px;
+}
+.container .category_list.data-v-71e217db {
+  position: relative;
+  z-index: 1;
+  height: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(85, 85, 85, 0.1);
+}
+.background_image.data-v-71e217db {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: calc(100vh - 48px - constant(safe-area-inset-bottom));
+  height: calc(100vh - 48px - env(safe-area-inset-bottom));
+}

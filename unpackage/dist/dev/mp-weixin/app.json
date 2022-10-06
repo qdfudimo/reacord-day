@@ -1,0 +1,57 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/square/index",
+    "pages/mine/index",
+    "pages/create-record/create-record",
+    "pages/logs/logs"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "首页",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#2c2c2c",
+    "selectedColor": "#1296db",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "iconPath": "static/image/home.png",
+        "selectedIconPath": "static/image/active_home.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/square/index",
+        "iconPath": "static/image/note.png",
+        "selectedIconPath": "static/image/active_note.png",
+        "text": "记录圈"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "iconPath": "static/image/mine.png",
+        "selectedIconPath": "static/image/active_mine.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation",
+    "getLocation"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "plugins": {
+    "WechatSI": {
+      "version": "0.3.5",
+      "provider": "wx069ba97219f66d99"
+    }
+  },
+  "usingComponents": {}
+}
