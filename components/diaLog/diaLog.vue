@@ -7,7 +7,7 @@
             </view>
             <view class="dialog__footer">
                 <button class="btn cancle" @tap="cancle">取消</button>
-                <button class="btn confirm" :disabled="true" @tap="confirm">确认</button>
+                <button class="btn confirm" :disabled="props.confirmDisabled" @tap="confirm">确认</button>
             </view>
         </view>
     </view>
@@ -21,6 +21,12 @@ const props = defineProps({
             return false
         }
     },
+    confirmDisabled: {
+        type: Boolean,
+        default() {
+            return false
+        }
+    },
     title: {
         type: [String, Number],
         default() {
@@ -29,7 +35,7 @@ const props = defineProps({
     },
 })
 const visible = ref(false)
-const emit = defineEmits(["cancle","confirm"]);
+const emit = defineEmits(["cancle", "confirm"]);
 onMounted(() => {
     if (props.show) {
         visible.value = true
@@ -83,7 +89,7 @@ const confirm = () => {
         }
 
         .dialog__content {
-            padding: 16px;
+            padding: 12px;
             min-height: 104px;
             // border-bottom: 1px solid #ccc;
         }

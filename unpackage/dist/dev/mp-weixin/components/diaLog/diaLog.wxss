@@ -50,7 +50,7 @@
   color: #323233;
 }
 .popups .dialog .dialog__content.data-v-314db344 {
-  padding: 16px;
+  padding: 12px;
   min-height: 104px;
 }
 .popups .dialog .dialog__footer.data-v-314db344 {

@@ -9,6 +9,12 @@ const _sfc_main = {
         return false;
       }
     },
+    confirmDisabled: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
     title: {
       type: [String, Number],
       default() {
@@ -49,7 +55,8 @@ const _sfc_main = {
         c: common_vendor.t(__props.title)
       } : {}, {
         d: common_vendor.o(cancle),
-        e: common_vendor.o(confirm)
+        e: props.confirmDisabled,
+        f: common_vendor.o(confirm)
       }) : {});
     };
   }

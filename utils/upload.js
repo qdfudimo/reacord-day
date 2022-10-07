@@ -43,6 +43,7 @@ function pickExclude(obj, keys) {
 }
 
 function formatImage(res) {
+    console.log(res);
     return res.tempFiles.map((item) => ({
         ...pickExclude(item, ['path']),
         type: 'image',
@@ -57,10 +58,15 @@ function formatFile(res) {
         url: item.path
     }));
 }
-
+/**
+ * 选择照片
+ * @param {*sourceType} album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项
+ * @param {*sizeType} original 原图，compressed 压缩图，默认二者都有
+ * @returns 
+ */
 export function chooseFile({
     accept,
-    maxCount,
+    maxCount = 9,
     multiple = true,
     sourceType = ['album', 'camera'],
     sizeType = ['original', 'compressed']
@@ -69,7 +75,7 @@ export function chooseFile({
         switch (accept) {
             case 'img':
                 uni.chooseImage({
-                    count: multiple ? maxCount : 1,
+                    count: multiple ? Math.min(maxCount, 9) : 1,
                     sourceType,
                     sizeType,
                     success: (res) => resolve(formatImage(res)),

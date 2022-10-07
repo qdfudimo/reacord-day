@@ -50,6 +50,7 @@ function pickExclude(obj, keys) {
   }, {});
 }
 function formatImage(res) {
+  console.log(res);
   return res.tempFiles.map((item) => __spreadProps(__spreadValues({}, pickExclude(item, ["path"])), {
     type: "image",
     url: item.path,
@@ -63,7 +64,7 @@ function formatFile(res) {
 }
 function chooseFile({
   accept,
-  maxCount,
+  maxCount = 9,
   multiple = true,
   sourceType = ["album", "camera"],
   sizeType = ["original", "compressed"]
@@ -72,7 +73,7 @@ function chooseFile({
     switch (accept) {
       case "img":
         common_vendor.index.chooseImage({
-          count: multiple ? maxCount : 1,
+          count: multiple ? Math.min(maxCount, 9) : 1,
           sourceType,
           sizeType,
           success: (res) => resolve(formatImage(res)),

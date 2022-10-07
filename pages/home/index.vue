@@ -1,7 +1,8 @@
 <template>
     <!-- pages/mine/index.wxml -->
     <view class='container '>
-        <image class="background_image" :src="currentBackground || defaultImg" mode="aspectFill">
+        <image class="background_image"
+            :src="backgroundImg.currentBackground ||backgroundImg.defaultBackground|| defaultImg" mode="aspectFill">
         </image>
         <view class="top_content">
             <view class="time">
@@ -42,7 +43,30 @@
         </view>
         <dia-log v-model:show="showDialog" title="设置背景格言" @confirm="confirm" @cancle="cancle">
             <view class="modal_content">
-                <view></view>
+                <view class="picture" @tap="selectImg">
+                    <view style="margin-right: 8px;" class="select_img" data-img="default">
+                        <img data-img="default" class="default_image"
+                            :src="backgroundImg.defaultBackground || defaultImg" mode="aspectFill" />
+                    </view>
+                    <view style="margin-left: 8px;" :class="['select_img',backgroundImg.currentBackground?'':'border']"
+                        data-img="optional">
+                        <img data-img="optional" class="default_image"
+                            :src="backgroundImg.temporaryImg || '/static/image/error.png'" mode="aspectFit" />
+                    </view>
+                </view>
+                <radio-group class="radio_group" @change="radioChange">
+                    <label class="radio">
+                        <radio value="default" :checked="checkImgType == 'default'" /> 系统默认
+                    </label>
+                    <label class="radio">
+                        <radio value="optional" :checked="checkImgType == 'optional'" /> 自选图片
+                    </label>
+                </radio-group>
+                <view class="textArea">
+                    <textarea v-model="textareaValue" placeholder-style="color:#707070" :maxlength="100"
+                        placeholder="请输入自定义格言" />
+                    <view class="clear"><button :disabled="!textareaValue" @tap="clearText">清楚自选格言</button></view>
+                </view>
             </view>
         </dia-log>
     </view>
@@ -58,6 +82,8 @@ import { ref, reactive } from 'vue';
 import diaLog from "@/components/diaLog/diaLog";
 import { useGetTabBar } from "@/hooks/useGetTabBar";
 import util from "@/utils/util";
+import { chooseFile } from '@/utils/upload';
+useGetTabBar(0)
 const app = getApp();
 const category = [
     {
@@ -87,29 +113,70 @@ const category = [
     },
 ];
 const currentDate = util.getCurrentDate()
-// console.log(util.getChineseDate());
+//防止图片失败兜底照片
 const defaultImg = '/static/image/background/rainbow.jpg';
-const currentBackground = ref("/static/image/background/rainbow.jpg")
+//系统默认图片
+const backgroundImg = reactive({
+    //背景图片地址
+    currentBackground: "",
+    //系统默认图片
+    defaultBackground: "/static/image/background/anime.jpg",
+    //图片临时选择的图片
+    temporaryImg: ""
+});
 const showDialog = ref(false)
+//按钮图片选择类型 默认 还是自选
+const checkImgType = ref("default")
+const textareaValue = ref("")
+//短句
 const homeShort = reactive({
     short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
     author: "--恩格尔",
     ifCollect: false
 })
-useGetTabBar(0)
 const goRecord = () => {
     uni.navigateTo({
         url: `../create-record/create-record`
     });
 }
 const changeImg = () => {
-    showDialog.value = true
+    showDialog.value = true;
+    backgroundImg.temporaryImg = "";
+    checkImgType.value = 'default';
+}
+const radioChange = (e) => {
+    changeBackIMG(e.detail.value)
+}
+const selectImg = (e) => {
+    changeBackIMG(e.target.dataset.img)
+}
+const changeBackIMG = (value) => {
+    checkImgType.value = value
+    if (value == "default") {
+    } else if (value == "optional") {
+        chooseFile({
+            accept: 'img',
+            maxCount: 1,
+            multiple: false
+        })
+            .then((res) => {
+                backgroundImg.temporaryImg = res[0].url
+            })
+            .catch((error) => {
+                if (backgroundImg.temporaryImg) return
+                checkImgType.value = "default"
+            });
+    }
 }
 const confirm = () => {
-    showDialog.value = false
+    showDialog.value = false;
+    backgroundImg.currentBackground = checkImgType.value == 'default' ? backgroundImg.defaultBackground : backgroundImg.temporaryImg;
 }
 const cancle = () => {
     showDialog.value = false
+}
+const clearText = () => {
+    textareaValue.value = ""
 }
 const collectShort = (e) => {
     uni.showModal({
@@ -349,7 +416,92 @@ page {
     height: calc(100vh - 48px - constant(safe-area-inset-bottom));
     height: calc(100vh - 48px - env(safe-area-inset-bottom));
 }
+
 .modal_content {
-    height: 200px;
+    // height: 200px;
+
+    .picture {
+        display: flex;
+
+        .select_img {
+            height: 150px;
+            flex: 1;
+            // background-color: antiquewhite;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .border {
+            border: 1px solid #ccc;
+        }
+
+        .default_image {
+            width: 100%;
+            flex: 1;
+        }
+    }
+
+    .radio_group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 8px;
+        font-weight: 700;
+        font-size: 14px;
+
+        .radio {
+            flex: 1;
+            text-align: center;
+        }
+    }
+
+    .textArea {
+        padding-top: 12px;
+
+        textarea {
+            position: relative;
+            height: 100px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                border: 1px solid #dbdbdb;
+                width: 200%;
+                height: 200%;
+                box-sizing: border-box;
+                transform: scale(0.5);
+                transform-origin: left top;
+            }
+        }
+
+        .clear {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 10px;
+
+            button {
+                height: 28px;
+                width: 90px;
+                margin: 0;
+                font-size: 12px;
+                padding: 0 4px;
+
+                &::after {
+                    border: none;
+                }
+            }
+
+            button[disabled] {
+                // color: hsla(0, 0%, 100%, .6);
+                cursor: not-allowed;
+            }
+        }
+    }
 }
 </style>
