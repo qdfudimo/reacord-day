@@ -1,11 +1,11 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
 var utils_upload = require("../../utils/upload.js");
-const reacordList = () => "../../components/reacordList/reacordList.js";
+const famous = () => "../../components/famous/famous.js";
 const app = getApp();
 const _sfc_main = {
   components: {
-    reacordList
+    famous
   },
   data() {
     return {
@@ -21,15 +21,16 @@ const _sfc_main = {
       loadMore: false,
       scheduleLsits: [
         {
-          scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-          scheduleTime: "2022-01-12 03:30",
-          likeCount: 1,
-          ifMyLike: 1,
-          commentCount: 0,
-          scheduleContent: "\u65B0\u5E74\u5F00\u59CB\u4E86\u554A\u4F60\u5728\u5565\u90FDhi\u6253\u54C8\u4EE3\u53D1\u7528\u4E8E\u5217\u8868\u7684\u7D22\u5F15\u5206\u7C7B\u663E\u793A\u548C\u5FEB\u901F\u5B9A\u4F4D\u3002\u8D27",
-          userAvatrImage: "",
-          userName: "\u65FA\u4ED4\u679C\u51BB",
-          userId: "11321313"
+          short: "\u8981\u4F7F\u6574\u4E2A\u4EBA\u751F\u90FD\u8FC7\u5F97\u8212\u9002\u3001\u6109\u5FEB\uFF0C\u8FD9\u662F\u4E0D\u53EF\u80FD\u7684\uFF0C\u56E0\u4E3A\u4EBA\u7C7B\u5FC5\u987B\u5177\u5907\u4E00\u79CD\u80FD\u5E94\u4ED8\u9006\u5883\u7684\u6001\u5EA6",
+          author: "\u6069\u683C\u5C14",
+          ifCollect: true,
+          id: 1
+        },
+        {
+          short: "\u8981\u4F7F\u6574\u4E2A\u4EBA\u751F\u90FD\u8FC7\u5F97\u8212\u9002\u3001\u6109\u5FEB\uFF0C\u8FD9\u662F\u4E0D\u53EF\u80FD\u7684\uFF0C\u56E0\u4E3A\u4EBA\u7C7B\u5FC5\u987B\u5177\u5907\u4E00\u79CD\u80FD\u5E94\u4ED8\u9006\u5883\u7684\u6001\u5EA6",
+          author: "\u6069\u683C\u5C14",
+          ifCollect: false,
+          id: 2
         }
       ],
       userInfo: {
@@ -98,19 +99,9 @@ const _sfc_main = {
   onReachBottom: function() {
     if (this.loadMore)
       return;
+    this.loadMore = true;
     setTimeout(() => {
-      this.scheduleLsits.push({
-        scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-        scheduleTime: "2022-01-14 07:30",
-        likeCount: 4,
-        ifMyLike: 1,
-        commentCount: 1,
-        scheduleContent: "\u65B0\u5E74\u5F00xx\u5B50\u554A\u8FD9\u8DEFi\u59CB\u4E86\u554A\u4F60\u5728\u5565\u90FDhi\u6253\u54C8\u4EE3\u53D1\u7528\u4E8E\u5217\u8868\u7684\u7D22\u5F15\u5206\u7C7B\u663E\u793A\u548C\u5FEB\u901F\u5B9A\u4F4D\u3002\u8D27",
-        userAvatrImage: "",
-        userName: "\u65FA\u4ED4\u5C0F\u9992\u5934",
-        userId: "888"
-      });
-      this.loadMore = true;
+      this.loadMore = false;
     }, 300);
   },
   methods: {
@@ -166,18 +157,17 @@ const _sfc_main = {
     },
     shareApplet() {
     },
-    changeLike(e) {
-      let ifMyLike = this.scheduleLsits[e.detail].ifMyLike;
-      let likeCount = this.scheduleLsits[e.detail].likeCount;
-      let Count = !ifMyLike ? likeCount + 1 : ifMyLike == 0 ? 0 : likeCount - 1;
-      this.scheduleLsits[e.detail].likeCount = Count;
-      this.scheduleLsits[e.detail].ifMyLike = !this.scheduleLsits[e.detail].ifMyLike;
+    collectShort(e) {
     }
   }
 };
 if (!Array) {
-  const _component_reacord_list = common_vendor.resolveComponent("reacord-list");
-  _component_reacord_list();
+  const _easycom_famous2 = common_vendor.resolveComponent("famous");
+  _easycom_famous2();
+}
+const _easycom_famous = () => "../../components/famous/famous.js";
+if (!Math) {
+  _easycom_famous();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
@@ -207,24 +197,22 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       return {
         a: "0529b6ec-0-" + i0,
         b: common_vendor.p({
-          reacordList: item,
-          onlyIndex: index
+          homeShort: item
         }),
         c: index
       };
     }),
-    q: common_vendor.o($options.changeLike),
+    q: common_vendor.o($options.collectShort),
     r: common_vendor.f($data.scheduleLsits, (item, index, i0) => {
       return {
         a: "0529b6ec-1-" + i0,
         b: common_vendor.p({
-          reacordList: item,
-          onlyIndex: index
+          homeShort: item
         }),
         c: index
       };
     }),
-    s: common_vendor.o($options.changeLike),
+    s: common_vendor.o($options.collectShort),
     t: $data.showBackground
   }, $data.showBackground ? {
     v: common_vendor.o((...args) => $options.showIfBackground && $options.showIfBackground(...args)),

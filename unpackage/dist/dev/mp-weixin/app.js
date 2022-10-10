@@ -6,6 +6,7 @@ if (!Math) {
   "./pages/home/index.js";
   "./pages/square/index.js";
   "./pages/mine/index.js";
+  "./pages/famousSaying/index.js";
   "./pages/create-record/create-record.js";
   "./pages/clander/index.js";
 }

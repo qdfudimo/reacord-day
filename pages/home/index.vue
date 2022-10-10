@@ -218,10 +218,8 @@ const handelCheck = (e) => {
             });
             break;
         case "名句鉴赏":
-            uni.showToast({
-                title: '暂未开发',
-                icon: 'error',
-                duration: 2000
+            uni.navigateTo({
+                url: `../famousSaying/index`
             });
             break;
         case "打卡":

@@ -1,9 +1,10 @@
 /* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
-  font-family: 'iconfont';  /* Project id 3109504 */
-  src: url('//at.alicdn.com/t/c/font_3109504_mykfc8o2ux.woff2?t=1665376402022') format('woff2'),
-       url('//at.alicdn.com/t/c/font_3109504_mykfc8o2ux.woff?t=1665376402022') format('woff'),
-       url('//at.alicdn.com/t/c/font_3109504_mykfc8o2ux.ttf?t=1665376402022') format('truetype');
+  font-family: 'iconfont';
+  /* Project id 3109504 */
+  src: url('//at.alicdn.com/t/c/font_3109504_rnnczjh4vlk.woff2?t=1665391282330') format('woff2'),
+    url('//at.alicdn.com/t/c/font_3109504_rnnczjh4vlk.woff?t=1665391282330') format('woff'),
+    url('//at.alicdn.com/t/c/font_3109504_rnnczjh4vlk.ttf?t=1665391282330') format('truetype');
 }
 
 .iconfont {
@@ -13,6 +14,15 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.icon-a-weixiaokaixingaoxing-03:before {
+  content: "\e7f1";
+}
+
+.icon-zanwushuju:before {
+  content: "\e61a";
+}
+
 .icon-label:before {
   content: "\e61b";
 }

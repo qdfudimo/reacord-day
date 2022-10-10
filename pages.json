@@ -17,6 +17,12 @@
 			}
 		},
 		{
+			"path": "pages/famousSaying/index",
+			"style": {
+				"navigationBarTitleText": "名句鉴赏"
+			}
+		},
+		{
 			"path": "pages/create-record/create-record",
 			"style": {}
 		},

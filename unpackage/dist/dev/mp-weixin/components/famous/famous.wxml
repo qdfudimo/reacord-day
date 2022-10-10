@@ -1,0 +1,1 @@
+<view class="content data-v-3c71bfe4"><text class="text data-v-3c71bfe4" user-select="{{true}}">{{a}}</text><view class="name data-v-3c71bfe4"><view style="{{b}}" class="shoucang iconfont icon-shoucang2 data-v-3c71bfe4" bindtap="{{c}}"></view><view class="whoSay data-v-3c71bfe4">{{d}}</view></view><view class="shuqian iconfont icon-label data-v-3c71bfe4"></view></view>

@@ -51,7 +51,6 @@
         <!-- 开始语音 弹出语音图标表示正在录音 -->
         <cover-view class="startYuyinImage" v-if="recordState">
             <cover-image src="../../static/image/yuyin.png"></cover-image>
-            <!-- <cover-view class="iconfont icon-yuyin"></cover-view> -->
             <cover-view>开始语音</cover-view>
         </cover-view>
     </view>

@@ -40,7 +40,9 @@
                         </view>
                         <view class="common">
                             <text class="iconfont icon-shezhi" style="font-size: 22px" @tap="setApplet"></text>
-                            <text style="font-size: 12px; margin-top: 6px">设置</text>
+                            <text style="font-size: 12px; margin-top: 6px">意见反馈</text>
+                            <button style="border: 0; padding: 0; width: 100%" :plain="true" class="shareBtn"
+                                open-type="feedback"></button>
                         </view>
                     </view>
                     <view class="empty" v-if="!scheduleLsits.length || !hasUserInfo">暂无记录</view>
@@ -48,12 +50,12 @@
                 </view>
                 <block v-for="(item, index) in scheduleLsits" :key="index">
                     <view class="talkList">
-                        <reacord-list @changeLike="changeLike" :reacordList="item" :onlyIndex="index"></reacord-list>
+                        <famous :homeShort="item" @collectShort="collectShort"></famous>
                     </view>
                 </block>
                 <block v-for="(item, index) in scheduleLsits" :key="index">
                     <view class="talkList">
-                        <reacord-list @changeLike="changeLike" :reacordList="item" :onlyIndex="index"></reacord-list>
+                        <famous :homeShort="item" @collectShort="collectShort"></famous>
                     </view>
                 </block>
             </view>
@@ -83,13 +85,13 @@
 </template>
 
 <script>
-import reacordList from '@/components/reacordList/reacordList';
+import famous from '@/components/famous/famous';
 // pages/mine/index.js
 const app = getApp();
 import { chooseFile } from '@/utils/upload';
 export default {
     components: {
-        reacordList
+        famous
     },
     data() {
         return {
@@ -105,17 +107,17 @@ export default {
             loadMore: false,
             scheduleLsits: [
                 {
-                    scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
-                    // scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-                    scheduleTime: '2022-01-12 03:30',
-                    likeCount: 1,
-                    ifMyLike: 1,
-                    commentCount: 0,
-                    scheduleContent: '新年开始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
-                    userAvatrImage: '',
-                    userName: '旺仔果冻',
-                    userId: '11321313'
-                }
+                    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
+                    author: "恩格尔",
+                    ifCollect: true,
+                    id: 1
+                },
+                {
+                    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
+                    author: "恩格尔",
+                    ifCollect: false,
+                    id: 2
+                },
             ],
 
             userInfo: {
@@ -215,20 +217,9 @@ export default {
      */
     onReachBottom: function () {
         if (this.loadMore) return
+        this.loadMore = true
         setTimeout(() => {
-            this.scheduleLsits.push({
-                // scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg', 'https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
-                scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-                scheduleTime: '2022-01-14 07:30',
-                likeCount: 4,
-                ifMyLike: 1,
-                commentCount: 1,
-                scheduleContent: '新年开xx子啊这路i始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
-                userAvatrImage: '',
-                userName: '旺仔小馒头',
-                userId: '888'
-            })
-            this.loadMore =true
+            this.loadMore = false
         }, 300)
     },
     methods: {
@@ -258,7 +249,7 @@ export default {
         },
 
         getUserProfile(e) {
-            if(this.hasUserInfo) return
+            if (this.hasUserInfo) return
             // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
             uni.getUserProfile({
                 desc: '展示用户信息',
@@ -299,13 +290,8 @@ export default {
             // })
         },
 
-        /**点赞 */
-        changeLike(e) {
-            let ifMyLike = this.scheduleLsits[e.detail].ifMyLike;
-            let likeCount = this.scheduleLsits[e.detail].likeCount;
-            let Count = !ifMyLike ? likeCount + 1 : ifMyLike == 0 ? 0 : likeCount - 1;
-            this.scheduleLsits[e.detail].likeCount = Count;
-            this.scheduleLsits[e.detail].ifMyLike = !this.scheduleLsits[e.detail].ifMyLike;
+        /**取消收藏 */
+        collectShort(e) {
         }
     }
 };
