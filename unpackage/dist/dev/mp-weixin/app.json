@@ -3,7 +3,8 @@
     "pages/home/index",
     "pages/square/index",
     "pages/mine/index",
-    "pages/create-record/create-record"
+    "pages/create-record/create-record",
+    "pages/clander/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

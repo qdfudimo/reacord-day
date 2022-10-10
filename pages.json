@@ -5,7 +5,7 @@
 			"style": {}
 		},
 		{
-			"path": "pages/square/index",
+			"path": "pages/square/index"
 			// "style": {
 			// 	"navigationBarTitleText": "广场"
 			// }
@@ -26,18 +26,25 @@
 		// 		"navigationBarTitleText": "查看启动日志"
 		// 	}
 		// }
+		{
+			"path": "pages/clander/index",
+			"style": {
+				"navigationBarTitleText": "日历"
+			}
+		}
 	],
 	"tabBar": {
 		"custom": true,
 		"color": "#2c2c2c",
 		"selectedColor": "#1296db",
 		"backgroundColor": "#fff",
-		"list": [{
+		"list": [
+			{
 				"pagePath": "pages/home/index",
 				"iconPath": "static/image/home.png",
 				"selectedIconPath": "static/image/active_home.png",
 				"text": "首页"
-			}, 
+			},
 			// {
 			// 	"pagePath": "pages/square/index",
 			// 	"iconPath": "static/image/note.png",

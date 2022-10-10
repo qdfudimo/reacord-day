@@ -1,1 +1,0 @@
-<view class="container log-list"><block wx:for="{{a}}" wx:for-item="log" wx:key="c"><text class="log-item">{{log.a}}. {{log.b}}</text></block></view>

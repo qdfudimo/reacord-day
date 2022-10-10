@@ -213,10 +213,8 @@ const handelCheck = (e) => {
             });
             break;
         case "日历":
-            uni.showToast({
-                title: '暂未开发',
-                icon: 'error',
-                duration: 2000
+            uni.navigateTo({
+                url: `../clander/index`
             });
             break;
         case "名句鉴赏":
@@ -366,6 +364,27 @@ page {
         height: 50%;
         background: rgba(255, 255, 255, .8);
         overflow: hidden;
+
+        &::after {
+            content: "";
+            width: 100%;
+            height: 1px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(to right,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(0, 0, 0, 0) 10%,
+                    rgba(21, 124, 89, 0.3) 20%,
+                    rgba(21, 124, 89, 0.4) 30%,
+                    rgba(21, 124, 89, 0.5) 40%,
+                    rgba(21, 124, 89, 0.8) 50%,
+                    rgba(21, 124, 89, 0.5) 60%,
+                    rgba(21, 124, 89, 0.4) 70%,
+                    rgba(21, 124, 89, 0.3) 80%,
+                    rgba(0, 0, 0, 0) 90%,
+                    rgba(0, 0, 0, 0) 100%);
+        }
 
         // box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(85, 85, 85, 0.1);
         .typeFunction {

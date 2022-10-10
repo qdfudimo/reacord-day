@@ -43,6 +43,11 @@ const _sfc_main = {
       this.$emit("changeLike", {
         detail: this.onlyIndex
       });
+    },
+    remove(e) {
+      this.$emit("remove", {
+        detail: this.onlyIndex
+      });
     }
   }
 };
@@ -51,10 +56,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     a: $props.reacordList.userAvatrImage || "/static/image/avtar.png",
     b: common_vendor.t($props.reacordList.userName),
     c: common_vendor.t($props.reacordList.scheduleTime),
-    d: common_vendor.t($props.reacordList.scheduleContent),
-    e: $props.reacordList.scheduleImg && $props.reacordList.scheduleImg.length
+    d: $props.reacordList.mood
+  }, $props.reacordList.mood ? {
+    e: common_vendor.t($props.reacordList.mood)
+  } : {}, {
+    f: common_vendor.t($props.reacordList.scheduleContent),
+    g: $props.reacordList.scheduleImg && $props.reacordList.scheduleImg.length
   }, $props.reacordList.scheduleImg && $props.reacordList.scheduleImg.length ? {
-    f: common_vendor.f($props.reacordList.scheduleImg, (i, index, i0) => {
+    h: common_vendor.f($props.reacordList.scheduleImg, (i, index, i0) => {
       return {
         a: i,
         b: index,
@@ -62,13 +71,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: index
       };
     }),
-    g: $props.reacordList.scheduleImg
+    i: $props.reacordList.scheduleImg
   } : {}, {
-    h: common_vendor.t($props.reacordList.commentCount || "\u8BC4\u8BBA"),
-    i: common_vendor.s("font-size:" + ($props.reacordList.commentCount ? "16px" : "12px") + ";"),
-    j: common_vendor.o((...args) => $options.changeLike && $options.changeLike(...args)),
-    k: common_vendor.s("color:" + ($props.reacordList.ifMyLike ? "#eb3349" : "#ccc") + ";font-size:22px;margin-right:6px;"),
-    l: common_vendor.t($props.reacordList.likeCount)
+    j: common_vendor.o((...args) => $options.remove && $options.remove(...args))
   });
 }
 var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "F:/wx-uni/reacrd-day/components/reacordList/reacordList.vue"]]);

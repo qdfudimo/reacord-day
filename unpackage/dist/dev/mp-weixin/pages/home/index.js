@@ -120,10 +120,8 @@ const _sfc_main = {
           });
           break;
         case "\u65E5\u5386":
-          common_vendor.index.showToast({
-            title: "\u6682\u672A\u5F00\u53D1",
-            icon: "error",
-            duration: 2e3
+          common_vendor.index.navigateTo({
+            url: `../clander/index`
           });
           break;
         case "\u540D\u53E5\u9274\u8D4F":

@@ -7,6 +7,7 @@ if (!Math) {
   "./pages/square/index.js";
   "./pages/mine/index.js";
   "./pages/create-record/create-record.js";
+  "./pages/clander/index.js";
 }
 const _sfc_main = {
   data() {

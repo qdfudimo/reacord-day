@@ -1,22 +1,5 @@
 <template>
-    <!-- pages/home/index.wxml -->
     <view class="main">
-        <!-- <view class="fixedTop">
-            <view class="tab" @tap="switchTab">
-                <view class="tab_actvie-bar" :style="'transform:translateX(' + movePx + ')'"></view>
-                <view :class="'tabItem ' + (activeTab == item.id ? 'active_tab' : '')" :data-name="item.id"
-                    v-for="item in tabData" :key="item.id">
-                    {{ item.name }}
-                </view>
-            </view>
-            <view class="serch">
-                <icon class="serch_icon" color="#000" type="search" size="20"></icon>
-                <input class="serch-input" v-model="inputValue" @blur="focusInput" confirm-type="search"
-                    @focus="focusInput" placeholder-style="color:#999" placeholder="请输入搜索关键词" />
-                <icon class="close_icon" @tap="clearInput" v-if="inputValue" type="cancel" size="20"
-                    color="#666"></icon>
-            </view>
-        </view> -->
         <scroll-view v-if="scheduleLsits.length" scroll-y class="scrool_square" :refresher-enabled="true"
             :refresher-threshold="100" :lower-threshold="30" refresher-default-style="white"
             refresher-background="lightgreen" :refresher-triggered="triggered" @refresherrefresh="onRefresh"
@@ -24,11 +7,22 @@
             <view style="height: 20px; width: 100%"></view>
             <block v-for="(item, index) in scheduleLsits" :key="item.scheduleTime">
                 <view class="talkList">
-                    <reacord-list @changeLike="changeLike" :reacordList="item" :onlyIndex="index"></reacord-list>
+                    <reacord-list @remove="remove" :reacordList="item" :onlyIndex="index"></reacord-list>
                 </view>
             </block>
+            <view class="more" v-if="_loadmoreIng||ifMoreData">
+                <text v-if="_loadmoreIng">
+                    正在加载...
+                </text>
+                <text v-else-if="ifMoreData">
+                    😊没有更多了
+                </text>
+            </view>
         </scroll-view>
-        <image v-else class="empty" src="/static/image/empty.png" />
+        <view v-else class="empty">
+            <image class="image" src="/static/image/empty.png" />
+            <button class="write" @tap="goRecord"> 去写篇日记</button>
+        </view>
         <view @tap="scrollToop" :class="'viewIcon ' + (ifTop ? 'showTop' : 'hideTop')">
             <view :class="'iconfont icon-huidaodingbu addRecord '"></view>
         </view>
@@ -42,92 +36,91 @@ import reacordList from '@/components/reacordList/reacordList';
 // util.formatTime(new Date(log))
 export default {
     components: {
+        reacordList,
         reacordList
     },
     data() {
         return {
-            tabData: [
-                {
-                    name: '我的',
-                    id: 'mine'
-                },
-                {
-                    name: '广场',
-                    id: 'other'
-                }
-            ],
-
-            activeTab: 'mine',
-            movePx: '0px',
-            inputValue: '',
-            showClose: false,
+            //是否正在刷新
             _refreshing: false,
+            //是否正在加载更多
             _loadmoreIng: false,
+            //是否还有更多数据
+            ifMoreData: false,
             ifTop: false,
             scheduleLsits: [
-                {
-                    scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
-                    // scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-                    scheduleTime: '2022-01-12 03:30',
-                    likeCount: 1,
-                    ifMyLike: 1,
-                    commentCount: 0,
-                    scheduleContent: '新年开始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
-                    userAvatrImage: '',
-                    userName: '旺仔果冻',
-                    userId: '11321313'
-                },
-                {
-                    scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
-                    // scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-                    scheduleTime: '2022-01-122 03:30',
-                    likeCount: 1,
-                    ifMyLike: 1,
-                    commentCount: 0,
-                    scheduleContent: '新年开始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
-                    userAvatrImage: '',
-                    userName: '旺仔果冻',
-                    userId: '11321313'
-                },
-                {
-                    scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
-                    // scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-                    scheduleTime: '2022-01-142 03:30',
-                    likeCount: 1,
-                    ifMyLike: 1,
-                    commentCount: 0,
-                    scheduleContent: '新年开始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
-                    userAvatrImage: '',
-                    userName: '旺仔果冻',
-                    userId: '11321313'
-                },
-                {
-                    scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
-                    // scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-                    scheduleTime: '2022-01-182 03:30',
-                    likeCount: 1,
-                    ifMyLike: 1,
-                    commentCount: 0,
-                    scheduleContent: '新年开始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
-                    userAvatrImage: '',
-                    userName: '旺仔果冻',
-                    userId: '11321313'
-                },
             ],
-
+            // scheduleLsits: [
+            //     {
+            //         scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
+            //         // scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
+            //         scheduleTime: '2022-01-12 03:30',
+            //         likeCount: 1,
+            //         ifMyLike: 1,
+            //         commentCount: 0,
+            //         scheduleContent: '新年开始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
+            //         userAvatrImage: '',
+            //         mood: "开心",
+            //         userName: '旺仔果冻',
+            //         userId: '11321313'
+            //     },
+            //     {
+            //         scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
+            //         // scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
+            //         scheduleTime: '2022-01-122 03:30',
+            //         likeCount: 1,
+            //         ifMyLike: 1,
+            //         commentCount: 0,
+            //         scheduleContent: '新年开始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
+            //         userAvatrImage: '',
+            //         userName: '旺仔果冻',
+            //         userId: '11321313'
+            //     },
+            //     {
+            //         scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
+            //         // scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
+            //         scheduleTime: '2022-01-142 03:30',
+            //         likeCount: 1,
+            //         ifMyLike: 1,
+            //         commentCount: 0,
+            //         scheduleContent: '新年开始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
+            //         userAvatrImage: '',
+            //         userName: '旺仔果冻',
+            //         userId: '11321313'
+            //     },
+            //     {
+            //         scheduleImg: ['https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg'],
+            //         // scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FtkZ0hcG3IZ6Fux7HyKEdxvzOsvJ.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FvNHV-2F2vQyg1ns38VrX3sRq2Sb.jpg", "https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
+            //         scheduleTime: '2022-01-182 03:30',
+            //         likeCount: 1,
+            //         ifMyLike: 1,
+            //         commentCount: 0,
+            //         scheduleContent: '新年开始了啊你在啥都hi打哈代发用于列表的索引分类显示和快速定位。货',
+            //         userAvatrImage: '',
+            //         userName: '旺仔果冻',
+            //         userId: '11321313'
+            //     },
+            // ],
             triggered: false,
-            arr: [1, 2, 3],
-            selected: 0
         };
     },
     /**
      * 生命周期函数--监听页面加载
      */
-    onLoad: function (options) { },
+    onLoad: function (options) {
+        uni.showNavigationBarLoading();
+        uni.setNavigationBarTitle({
+            title: '日记本'
+        });
+    },
     /**
      * 生命周期函数--监听页面初次渲染完成
      */
-    onReady: function () { },
+    onReady: function () {
+        setTimeout(() => {
+            this.triggered = true
+        }, 1000)
+    },
     /**
      * 生命周期函数--监听页面显示
      */
@@ -139,6 +132,9 @@ export default {
                 selected: 1
             })
         }
+        setTimeout(() => {
+            uni.hideNavigationBarLoading();
+        }, 1000);
         // const curPages = getCurrentPages()[0];  // 获取当前页面实例  
         // if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
         //     curPages.getTabBar().setData({
@@ -150,8 +146,6 @@ export default {
      * 监听页面滚动
      */
     onPageScroll(e) {
-        // console.log(e);
-        // this.scrollTop = e.scrollTop;
         this.ifTop = e.scrollTop >= 400
     },
     /**
@@ -175,59 +169,55 @@ export default {
      */
     onShareAppMessage: function () { },
     methods: {
-        switchTab(e) {
-            let { dataset, offsetLeft } = e.target;
-            this.activeTab = dataset.name
-            this.movePx = `${offsetLeft - 3}px`
-        },
-
-        focusInput(e) {
-            this.showClose = e.type == 'focus'
-        },
-
-        clearInput() {
-            this.inputValue = ""
-        },
-
-        onRefresh(e) {
-            if (this._refreshing) {
-                return;
-            }
-
+        //自定义下拉刷新被触发
+        onRefresh() {
+            if (this._refreshing) return
             this._refreshing = true;
+            this.triggered = true;
             setTimeout(() => {
                 this.triggered = false;
-                this.arr = [1, 2]
                 this._refreshing = false;
-            }, 3000);
-            console.log('onRefresh 自定义下拉刷新被触发', e);
-        },
-
-        onPulling(e) {
-            // bindrefresherpulling="onPulling"
-            console.log('onPulling 自定义下拉刷新控件被下拉', e);
-        },
-
-        loadMore(e) {
-            console.log('loadMore loadMore', e);
-
-            if (this._loadmoreIng) {
-                return;
-            }
-
-            this._loadmoreIng = true;
-            setTimeout(() => {
-                this.arr = [1, 2, 3, 4, 5, 6]
-                this._loadmoreIng = false;
+                console.log('onRefresh 自定义下拉刷新被触发');
             }, 2000);
         },
 
+        //滚动到底部/右边，会触发 scrolltolower 事件
+        loadMore(e) {
+            if (this._loadmoreIng || this.ifMoreData) {
+                return;
+            }
+            this._loadmoreIng = true;
+            setTimeout(() => {
+                this._loadmoreIng = false;
+                this.ifMoreData = true;
+                console.log('loadMore loadMore', e);
+            }, 2000);
+        },
+        //自定义下拉刷新被复位
         onRestore(e) {
             console.log('onRestore 自定义下拉刷新被复位', e);
+        },
+        goRecord(e) {
+            uni.navigateTo({
+                url: `../create-record/create-record`
+            });
         },
 
         scrollView(e) {
             // console.log(e);
+        },
+        remove(e) {
+            uni.showModal({
+                title: '提示',
+                content: '是否删除这篇日记',
+                success: function (res) {
+                    if (res.confirm) {
+                        console.log('用户点击确定');
+                    } else if (res.cancel) {
+                        console.log('用户点击取消');
+                    }
+                }
+            });
         },
 
         scrollToop() {
@@ -235,9 +225,6 @@ export default {
                 scrollTop: 0,
                 duration: 300
             });
-            // uni.navigateTo({
-            //     url: `../create-record/create-record`
-            // });
         },
 
         changeLike(e) {

@@ -94,20 +94,40 @@ page {
 }
 
 .empty {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.image {
     width: 300px;
     height: 300px;
 }
 
+.write {
+    margin-top: 6px;
+    height: 40px;
+    width: 160px;
+    line-height: 40px;
+    border-radius: 18px;
+    font-weight: 800;
+    background-image: linear-gradient(to right, rgb(220, 194, 11), rgb(10, 185, 156), rgb(4, 151, 99));
+    color: #fff;
+}
+
+.write::after {
+    border: none;
+}
+
 .scrool_square {
     width: 100%;
-    height: calc(100% - 54px - constant(safe-area-inset-bottom));
-    height: calc(100% - 54px - env(safe-area-inset-bottom));
-    padding-bottom: calc( 54px + constant(safe-area-inset-bottom));
-    padding-bottom: calc( 54px  + env(safe-area-inset-bottom));
+    height: calc(100vh - 10px - constant(safe-area-inset-bottom));
+    height: calc(100vh - 10px - env(safe-area-inset-bottom));
+    padding-bottom: calc(10px + constant(safe-area-inset-bottom));
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
 }
 
 .viewIcon {
@@ -120,16 +140,19 @@ page {
     border-radius: 50%;
     border: 3px solid transparent;
 }
+
 .showTop {
     transform: translateX(-20px);
     opacity: 1;
     transition: all 0.4s;
 }
+
 .hideTop {
     transform: translateX(40px);
     opacity: 0;
     transition: all 0.4s;
 }
+
 .addRecord {
     width: 28px;
     font-size: 28px;
@@ -146,8 +169,15 @@ page {
     border-radius: 10px;
     overflow: hidden;
     /* box-sizing: border-box; */
+    box-shadow: 0rpx 0rpx 10rpx 10rpx rgba(85, 85, 85, 0.03);
 }
 
 .talkList:last-child {
     margin-bottom: 26px;
+}
+
+.more {
+    text-align: center;
+    padding-bottom: 6px;
+    color: #8a8a8a;
 }

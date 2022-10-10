@@ -1,4 +1,5 @@
 "use strict";
+require("../common/vendor.js");
 var utils_index = require("./index.js");
 const formatTime = (date = new Date()) => {
   const year = date.getFullYear();

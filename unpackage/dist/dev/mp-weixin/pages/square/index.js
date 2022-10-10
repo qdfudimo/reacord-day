@@ -3,81 +3,29 @@ var common_vendor = require("../../common/vendor.js");
 const reacordList = () => "../../components/reacordList/reacordList.js";
 const _sfc_main = {
   components: {
+    reacordList,
     reacordList
   },
   data() {
     return {
-      tabData: [
-        {
-          name: "\u6211\u7684",
-          id: "mine"
-        },
-        {
-          name: "\u5E7F\u573A",
-          id: "other"
-        }
-      ],
-      activeTab: "mine",
-      movePx: "0px",
-      inputValue: "",
-      showClose: false,
       _refreshing: false,
       _loadmoreIng: false,
+      ifMoreData: false,
       ifTop: false,
-      scheduleLsits: [
-        {
-          scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-          scheduleTime: "2022-01-12 03:30",
-          likeCount: 1,
-          ifMyLike: 1,
-          commentCount: 0,
-          scheduleContent: "\u65B0\u5E74\u5F00\u59CB\u4E86\u554A\u4F60\u5728\u5565\u90FDhi\u6253\u54C8\u4EE3\u53D1\u7528\u4E8E\u5217\u8868\u7684\u7D22\u5F15\u5206\u7C7B\u663E\u793A\u548C\u5FEB\u901F\u5B9A\u4F4D\u3002\u8D27",
-          userAvatrImage: "",
-          userName: "\u65FA\u4ED4\u679C\u51BB",
-          userId: "11321313"
-        },
-        {
-          scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-          scheduleTime: "2022-01-122 03:30",
-          likeCount: 1,
-          ifMyLike: 1,
-          commentCount: 0,
-          scheduleContent: "\u65B0\u5E74\u5F00\u59CB\u4E86\u554A\u4F60\u5728\u5565\u90FDhi\u6253\u54C8\u4EE3\u53D1\u7528\u4E8E\u5217\u8868\u7684\u7D22\u5F15\u5206\u7C7B\u663E\u793A\u548C\u5FEB\u901F\u5B9A\u4F4D\u3002\u8D27",
-          userAvatrImage: "",
-          userName: "\u65FA\u4ED4\u679C\u51BB",
-          userId: "11321313"
-        },
-        {
-          scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-          scheduleTime: "2022-01-142 03:30",
-          likeCount: 1,
-          ifMyLike: 1,
-          commentCount: 0,
-          scheduleContent: "\u65B0\u5E74\u5F00\u59CB\u4E86\u554A\u4F60\u5728\u5565\u90FDhi\u6253\u54C8\u4EE3\u53D1\u7528\u4E8E\u5217\u8868\u7684\u7D22\u5F15\u5206\u7C7B\u663E\u793A\u548C\u5FEB\u901F\u5B9A\u4F4D\u3002\u8D27",
-          userAvatrImage: "",
-          userName: "\u65FA\u4ED4\u679C\u51BB",
-          userId: "11321313"
-        },
-        {
-          scheduleImg: ["https://sg.gxcqapp.cn//uploads/20211115/FrCyL8P9uC-aIVKLlKAWLlgkCaoX.jpg"],
-          scheduleTime: "2022-01-182 03:30",
-          likeCount: 1,
-          ifMyLike: 1,
-          commentCount: 0,
-          scheduleContent: "\u65B0\u5E74\u5F00\u59CB\u4E86\u554A\u4F60\u5728\u5565\u90FDhi\u6253\u54C8\u4EE3\u53D1\u7528\u4E8E\u5217\u8868\u7684\u7D22\u5F15\u5206\u7C7B\u663E\u793A\u548C\u5FEB\u901F\u5B9A\u4F4D\u3002\u8D27",
-          userAvatrImage: "",
-          userName: "\u65FA\u4ED4\u679C\u51BB",
-          userId: "11321313"
-        }
-      ],
-      triggered: false,
-      arr: [1, 2, 3],
-      selected: 0
+      scheduleLsits: [],
+      triggered: false
     };
   },
   onLoad: function(options) {
+    common_vendor.index.showNavigationBarLoading();
+    common_vendor.index.setNavigationBarTitle({
+      title: "\u65E5\u8BB0\u672C"
+    });
   },
   onReady: function() {
+    setTimeout(() => {
+      this.triggered = true;
+    }, 1e3);
   },
   onShow: function() {
     if (typeof this.$scope.getTabBar === "function" && this.$scope.getTabBar()) {
@@ -85,6 +33,9 @@ const _sfc_main = {
         selected: 1
       });
     }
+    setTimeout(() => {
+      common_vendor.index.hideNavigationBarLoading();
+    }, 1e3);
   },
   onPageScroll(e) {
     this.ifTop = e.scrollTop >= 400;
@@ -100,47 +51,50 @@ const _sfc_main = {
   onShareAppMessage: function() {
   },
   methods: {
-    switchTab(e) {
-      let { dataset, offsetLeft } = e.target;
-      this.activeTab = dataset.name;
-      this.movePx = `${offsetLeft - 3}px`;
-    },
-    focusInput(e) {
-      this.showClose = e.type == "focus";
-    },
-    clearInput() {
-      this.inputValue = "";
-    },
-    onRefresh(e) {
-      if (this._refreshing) {
+    onRefresh() {
+      if (this._refreshing)
         return;
-      }
       this._refreshing = true;
+      this.triggered = true;
       setTimeout(() => {
         this.triggered = false;
-        this.arr = [1, 2];
         this._refreshing = false;
-      }, 3e3);
-      console.log("onRefresh \u81EA\u5B9A\u4E49\u4E0B\u62C9\u5237\u65B0\u88AB\u89E6\u53D1", e);
-    },
-    onPulling(e) {
-      console.log("onPulling \u81EA\u5B9A\u4E49\u4E0B\u62C9\u5237\u65B0\u63A7\u4EF6\u88AB\u4E0B\u62C9", e);
+        console.log("onRefresh \u81EA\u5B9A\u4E49\u4E0B\u62C9\u5237\u65B0\u88AB\u89E6\u53D1");
+      }, 2e3);
     },
     loadMore(e) {
-      console.log("loadMore loadMore", e);
-      if (this._loadmoreIng) {
+      if (this._loadmoreIng || this.ifMoreData) {
         return;
       }
       this._loadmoreIng = true;
       setTimeout(() => {
-        this.arr = [1, 2, 3, 4, 5, 6];
         this._loadmoreIng = false;
+        this.ifMoreData = true;
+        console.log("loadMore loadMore", e);
       }, 2e3);
     },
     onRestore(e) {
       console.log("onRestore \u81EA\u5B9A\u4E49\u4E0B\u62C9\u5237\u65B0\u88AB\u590D\u4F4D", e);
     },
+    goRecord(e) {
+      common_vendor.index.navigateTo({
+        url: `../create-record/create-record`
+      });
+    },
     scrollView(e) {
+    },
+    remove(e) {
+      common_vendor.index.showModal({
+        title: "\u63D0\u793A",
+        content: "\u662F\u5426\u5220\u9664\u8FD9\u7BC7\u65E5\u8BB0",
+        success: function(res) {
+          if (res.confirm) {
+            console.log("\u7528\u6237\u70B9\u51FB\u786E\u5B9A");
+          } else if (res.cancel) {
+            console.log("\u7528\u6237\u70B9\u51FB\u53D6\u6D88");
+          }
+        }
+      });
     },
     scrollToop() {
       common_vendor.index.pageScrollTo({
@@ -164,7 +118,7 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: $data.scheduleLsits.length
-  }, $data.scheduleLsits.length ? {
+  }, $data.scheduleLsits.length ? common_vendor.e({
     b: common_vendor.f($data.scheduleLsits, (item, index, i0) => {
       return {
         a: "46d61fb6-0-" + i0,
@@ -175,16 +129,24 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: item.scheduleTime
       };
     }),
-    c: common_vendor.o($options.changeLike),
-    d: $data.triggered,
-    e: common_vendor.o((...args) => $options.onRefresh && $options.onRefresh(...args)),
-    f: common_vendor.o((...args) => $options.scrollView && $options.scrollView(...args)),
-    g: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args)),
-    h: common_vendor.o((...args) => $options.onRestore && $options.onRestore(...args))
-  } : {}, {
-    i: common_vendor.n("iconfont icon-huidaodingbu addRecord "),
-    j: common_vendor.o((...args) => $options.scrollToop && $options.scrollToop(...args)),
-    k: common_vendor.n("viewIcon " + ($data.ifTop ? "showTop" : "hideTop"))
+    c: common_vendor.o($options.remove),
+    d: $data._loadmoreIng || $data.ifMoreData
+  }, $data._loadmoreIng || $data.ifMoreData ? common_vendor.e({
+    e: $data._loadmoreIng
+  }, $data._loadmoreIng ? {} : $data.ifMoreData ? {} : {}, {
+    f: $data.ifMoreData
+  }) : {}, {
+    g: $data.triggered,
+    h: common_vendor.o((...args) => $options.onRefresh && $options.onRefresh(...args)),
+    i: common_vendor.o((...args) => $options.scrollView && $options.scrollView(...args)),
+    j: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args)),
+    k: common_vendor.o((...args) => $options.onRestore && $options.onRestore(...args))
+  }) : {
+    l: common_vendor.o((...args) => $options.goRecord && $options.goRecord(...args))
+  }, {
+    m: common_vendor.n("iconfont icon-huidaodingbu addRecord "),
+    n: common_vendor.o((...args) => $options.scrollToop && $options.scrollToop(...args)),
+    o: common_vendor.n("viewIcon " + ($data.ifTop ? "showTop" : "hideTop"))
   });
 }
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "F:/wx-uni/reacrd-day/pages/square/index.vue"]]);

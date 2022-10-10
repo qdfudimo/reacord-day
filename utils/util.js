@@ -126,7 +126,15 @@ const getCurrentDate = (time) => {
         week
     }
 }
-
+//弹窗提示统一设置
+export const tip = (title, icon, duration) => {
+    uni.showToast({
+        title: title || '操作成功',
+        icon: icon || 'none',
+        duration: duration || 1500,
+        mask: true
+    })
+}
 export default {
     formatTime,
     handelTime,

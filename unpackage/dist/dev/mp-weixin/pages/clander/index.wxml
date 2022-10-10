@@ -1,0 +1,1 @@
+<view class="clander data-v-ee5ce5d6"><uni-calendar wx:if="{{b}}" class="data-v-ee5ce5d6" bindchange="{{a}}" u-i="ee5ce5d6-0" bind:__l="__l" u-p="{{b}}"/></view>
