@@ -5,7 +5,7 @@
             :src="backgroundImg.currentBackground ||backgroundImg.defaultBackground|| defaultImg" mode="aspectFill">
         </image>
         <view class="top_content">
-            <view class="time">
+            <view class="time" @tap="showClander">
                 <view class="month_day">
                     <view :class="`iconfont icon-shuzi${currentDate.currentDay[0]}`"></view>
                     <view :class="`iconfont icon-shuzi${currentDate.currentDay[1]}`"></view>
@@ -24,7 +24,8 @@
                     <view class="sayCont">
                         {{homeShort.short}}
                     </view>
-                    <view class="whoSay"> {{homeShort.author}}</view>
+                    <view class="whoSay"> {{homeShort.author.indexOf("-")!=-1?homeShort.author:"-- "+homeShort.author}}
+                    </view>
                 </view>
                 <view :style="`color:${homeShort.ifCollect?'#FBBD08':'#fff'}`" class="shoucang iconfont icon-shoucang2"
                     @tap="collectShort"></view>
@@ -55,18 +56,29 @@
                     </view>
                 </view>
                 <radio-group class="radio_group" @change="radioChange">
-                    <label class="radio">
-                        <radio value="default" :checked="checkImgType == 'default'" /> 系统默认
-                    </label>
-                    <label class="radio">
-                        <radio value="optional" :checked="checkImgType == 'optional'" /> 自选图片
+                    <label class="radio" v-for="item in radioData" :key="item.value">
+                        <radio :value="item.value" :checked="checkImgType == item.value" />{{item.name}}
                     </label>
                 </radio-group>
                 <view class="textArea">
-                    <textarea v-model="textareaValue" placeholder-style="color:#707070" :maxlength="100"
+                    <textarea v-model="textareaValue" placeholder-style="color:#cdcdcd" :maxlength="100"
                         placeholder="请输入自定义格言" />
                     <view class="clear"><button :disabled="!textareaValue" @tap="clearText">清楚自选格言</button></view>
+                    <input class="input" :disabled="!textareaValue" v-model="inputVal" placeholder-style="color:#cdcdcd"
+                        maxlength="10" placeholder="创作人" />
                 </view>
+            </view>
+        </dia-log>
+        <dia-log v-model:show="showClanderDialog" :showButton="false" width="70%" @clickDialog="clickDialog">
+            <view class="clander_content">
+                <view class="iconfont icon-tubiaolunkuo-" style="color:#4dbb14;font-size:32px;font-weight: 800;">
+                </view>
+                <view> {{new Date().toLocaleDateString()}}</view>
+                <!-- <view> {{new Date().toLocaleString('zh', { hour12: true })}}</view> -->
+                <view> {{currentDate.week}}</view>
+                <view> 农历{{CDate.m}}{{CDate.d}}</view>
+                <view> {{CDate.g}} {{CDate.a.animal}}年</view>
+                <view :class="['iconfont',`icon-${CDate.a.icon}`]" style="font-size:46px;color: #8a8a8a;"></view>
             </view>
         </dia-log>
     </view>
@@ -78,43 +90,16 @@
 //     onLoad,
 //     onShow,
 // } from "@dcloudio/uni-app";
-import { ref, reactive } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import diaLog from "@/components/diaLog/diaLog";
 import { useGetTabBar } from "@/hooks/useGetTabBar";
 import util from "@/utils/util";
 import { chooseFile } from '@/utils/upload';
+import { radioData, category, defaultImg } from '@/utils/index';
 useGetTabBar(0)
 const app = getApp();
-const category = [
-    {
-        icon: "icon-tiaochariji",
-        name: "日记本",
-        color: "#1CBBB4"
-    },
-    {
-        icon: "icon-tubiaolunkuo-",
-        name: "日历",
-        color: "#9C26B0"
-    },
-    {
-        icon: "icon-icon_xinyong_xianxing_jijin-107",
-        name: "名句鉴赏",
-        color: "#32c312"
-    },
-    {
-        icon: "icon-qiandaodaka",
-        name: "打卡",
-        color: "#72c2f4"
-    },
-    {
-        icon: "icon-gerenzhongxin",
-        name: "个人中心",
-        color: "#ed4e41"
-    },
-];
 const currentDate = util.getCurrentDate()
-//防止图片失败兜底照片
-const defaultImg = '/static/image/background/rainbow.jpg';
+const CDate = util.getChineseDate()
 //系统默认图片
 const backgroundImg = reactive({
     //背景图片地址
@@ -125,14 +110,22 @@ const backgroundImg = reactive({
     temporaryImg: ""
 });
 const showDialog = ref(false)
+const showClanderDialog = ref(false)
 //按钮图片选择类型 默认 还是自选
 const checkImgType = ref("default")
 const textareaValue = ref("")
+const inputVal = ref("")
+watch(() => textareaValue.value, (val, oldVal) => {
+    // console.log(val, oldVal);
+    if (!val && val == 0) inputVal.value = ""
+})
 //短句
 const homeShort = reactive({
     short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
-    author: "--恩格尔",
-    ifCollect: false
+    author: "恩格尔",
+    ifCollect: false,
+    //是否更改过自选图片 false 否 
+    isChangeImg: false
 })
 const goRecord = () => {
     uni.navigateTo({
@@ -141,11 +134,24 @@ const goRecord = () => {
 }
 const changeImg = () => {
     showDialog.value = true;
-    backgroundImg.temporaryImg = "";
-    checkImgType.value = 'default';
+    textareaValue.value = homeShort.short
+    inputVal.value = homeShort.author
+    if (homeShort.isChangeImg) {
+        checkImgType.value = "optional"
+        backgroundImg.temporaryImg = backgroundImg.currentBackground
+    } else {
+        checkImgType.value = 'default';
+        backgroundImg.temporaryImg = "";
+    }
 }
 const radioChange = (e) => {
     changeBackIMG(e.detail.value)
+}
+const clickDialog = () => {
+    showClanderDialog.value = false
+}
+const showClander = () => {
+    showClanderDialog.value = true
 }
 const selectImg = (e) => {
     changeBackIMG(e.target.dataset.img)
@@ -169,14 +175,23 @@ const changeBackIMG = (value) => {
     }
 }
 const confirm = () => {
-    showDialog.value = false;
     backgroundImg.currentBackground = checkImgType.value == 'default' ? backgroundImg.defaultBackground : backgroundImg.temporaryImg;
+    if (checkImgType.value == 'optional') {
+        //上传图片
+        homeShort.isChangeImg = true;
+    }
+    if (textareaValue.value) {
+        homeShort.short = textareaValue.value
+        homeShort.author = inputVal.value
+        homeShort.homeShort = false
+    }
+    showDialog.value = false;
 }
 const cancle = () => {
-    showDialog.value = false
+    showDialog.value = false;
 }
 const clearText = () => {
-    textareaValue.value = ""
+    inputVal.value = textareaValue.value = ""
 }
 const collectShort = (e) => {
     uni.showModal({
@@ -194,7 +209,7 @@ const handelCheck = (e) => {
     switch (e.currentTarget.dataset.name) {
         case "日记本":
             uni.navigateTo({
-                url: `../create-record/create-record`
+                url: `../square/index`
             });
             break;
         case "日历":
@@ -502,6 +517,33 @@ page {
                 cursor: not-allowed;
             }
         }
+
+        .input {
+            margin-top: 12px;
+            height: 32px;
+            position: relative;
+            padding: 6px;
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                border: 1px solid #dbdbdb;
+                width: 200%;
+                height: 200%;
+                box-sizing: border-box;
+                transform: scale(0.5);
+                transform-origin: left top;
+            }
+        }
+    }
+}
+
+.clander_content {
+    view {
+        text-align: center;
+        padding: 4px 0;
     }
 }
 </style>

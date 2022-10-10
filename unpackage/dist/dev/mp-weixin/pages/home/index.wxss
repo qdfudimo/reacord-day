@@ -252,3 +252,25 @@ page.data-v-71e217db {
 .modal_content .textArea .clear button[disabled].data-v-71e217db {
   cursor: not-allowed;
 }
+.modal_content .textArea .input.data-v-71e217db {
+  margin-top: 12px;
+  height: 32px;
+  position: relative;
+  padding: 6px;
+}
+.modal_content .textArea .input.data-v-71e217db::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid #dbdbdb;
+  width: 200%;
+  height: 200%;
+  box-sizing: border-box;
+  transform: scale(0.5);
+  transform-origin: left top;
+}
+.clander_content view.data-v-71e217db {
+  text-align: center;
+  padding: 4px 0;
+}

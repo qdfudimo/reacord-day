@@ -1,4 +1,5 @@
 "use strict";
+var utils_index = require("./index.js");
 const formatTime = (date = new Date()) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -72,11 +73,9 @@ const getChineseDate = (time) => {
   let g = dateString.substr(0, 2) + "\u5E74";
   let m = dateString.substring(2, dateString.match("\u6708").index) + "\u6708";
   let d = dateString.match(/\d+/)[0];
-  console.log(d);
   d = d < 11 ? "\u521D" + numberToString(d) : numberToString(d);
-  let animals = ["\u7334", "\u9E21", "\u72D7", "\u732A", "\u9F20", "\u725B", "\u864E", "\u5154", "\u9F99", "\u86C7", "\u9A6C", "\u7F8A"];
   let index = date.toLocaleString("zh-CN-u-ca-chinese").substr(0, 4) % 12;
-  let a = animals[index];
+  let a = utils_index.ChineseZodiac[index];
   return {
     g,
     m,
@@ -88,7 +87,7 @@ const getCurrentDate = (time) => {
   let date = time ? new Date(time) : new Date();
   let month = date.getMonth() + 1;
   let day = date.getDate();
-  let currentDay = day < 10 ? `0${day}` : day;
+  let currentDay = day < 10 ? `0${day}` : "" + day;
   month = delZoo(numberToString(month + ""));
   day = delZoo(numberToString(day + ""));
   function delZoo(date2) {

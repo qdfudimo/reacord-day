@@ -1,6 +1,6 @@
 <template>
     <view class="section">
-        <textarea class="textarea" :maxlength="400" placeholder="今天,我想说....." name="textarea" />
+        <textarea class="textarea" v-model="textareaValue" :maxlength="400" placeholder="今天,我想说....." name="textarea" />
         <view class="container">
             <view class="uploadNum">
                 <text style="font-size: 14px">图片上传</text>
@@ -34,34 +34,57 @@
             </view>
             <view class="picker">
                 <view class="iconfont icon-yonghuguanli1 placeIcon"></view>
-                <text style="padding-left: 24rpx">谁可以看</text>
-                <picker class="picker_colmuns" @change="bindPickerChange" :value="canSee" :range="array">
-                    <view>{{ array[canSee] }}</view>
+                <text style="padding-left: 24rpx">心情</text>
+                <picker class="picker_colmuns" @change="bindPickerChange" range-key="mood" :value="canSee"
+                    :range="array">
+                    <view>{{ array[canSee].mood }}</view>
                 </picker>
                 <text class="iconfont icon-youjiantou" style="color: #333; font-size: 18px"></text>
             </view>
-            <button style="width: 320rpx; height: 64rpx; padding: 0; line-height: 64rpx; background-color: #25bdce"
+            <button :class="['yuyin',recordState?'yuyinBtnBg':'']" @touchstart="touchStart" @touchend="touchEnd">
+                <view :animation="animationData" class="iconfont icon-saying" style=" margin-right: 4rpx;"></view> {{!recordState?" 按住语音识别":" 松开结束"}}
+            </button>
+            <button :disabled="!files.length&&!textareaValue"
+                style="width: 320rpx; height: 64rpx; padding: 0; line-height: 64rpx; background-color: #25bdce"
                 class="report" type="primary">发表</button>
         </view>
+        <!-- 开始语音 弹出语音图标表示正在录音 -->
+        <cover-view class="startYuyinImage" v-if="recordState">
+            <cover-image src="../../static/image/yuyin.png"></cover-image>
+            <!-- <cover-view class="iconfont icon-yuyin"></cover-view> -->
+            <cover-view>开始语音</cover-view>
+        </cover-view>
     </view>
 </template>
 
 <script>
 // pages/mine/index.js
 //   "navigationStyle": "custom"
-import { chooseFile, isImageFile } from '../../utils/upload';
+import { chooseFile, isImageFile } from '@/utils/upload';
+import { authorize, getSetting, openSetting } from '@/utils/authorPre';
+
+//引入插件：微信同声传译
+const plugin = requirePlugin('WechatSI');
+//获取全局唯一的语音识别管理器recordRecoManager
+const manager = plugin.getRecordRecognitionManager();
 export default {
     data() {
         return {
             height: 20,
             focus: false,
+            timer: null,
             maxCount: 9,
+            textareaValue: "",
             files: [],
             maxSize: 10 * 1024 * 1024,
             address: '请选择位置信息',
             location: {
                 name: false
             },
+            //语音
+            recordState: false, //录音状态
+            animation: {},//内容
+            animationData: {},//内容
             place: {
                 address: '江苏省宿迁市沭阳县智慧树幼儿园东北(小街路东)',
                 errMsg: 'chooseLocation:ok',
@@ -69,14 +92,47 @@ export default {
                 longitude: 118.81498,
                 name: '黄金物流'
             },
-            array: ['公开', '私密'],
+            array: [
+                {
+                    mood: "开心"
+                },
+                {
+                    mood: "难过"
+                },
+                {
+                    mood: "伤心"
+                },
+                {
+                    mood: "犯困"
+                },
+                {
+                    mood: "幸福"
+                },
+                {
+                    mood: "迷茫"
+                },
+                {
+                    mood: "emo"
+                },
+                {
+                    mood: "累"
+                },
+            ],
             canSee: 0
         };
-    }
+    },
     /**
      * 生命周期函数--监听页面加载
-     */,
+     */
     onLoad: function (options) {
+        // 初始化一个动画
+        var animation = uni.createAnimation({
+            timingFunction: "ease-in",
+            duration: 500, //动画持续1秒
+            // timingFunction: 'linear',  //linear 全程匀速运动
+            // delay:300  //延迟两秒执行动画
+        })
+        this.animation = animation
         uni.showNavigationBarLoading();
         uni.setNavigationBarTitle({
             title: '写说说'
@@ -92,6 +148,8 @@ export default {
                 timingFunc: 'easeIn'
             }
         });
+        //识别语音
+        this.initRecord();
     },
     /**
      * 生命周期函数--监听页面初次渲染完成
@@ -103,7 +161,7 @@ export default {
     onShow: function () {
         setTimeout(() => {
             uni.hideNavigationBarLoading();
-        }, 2000);
+        }, 1000);
     },
     /**
      * 生命周期函数--监听页面隐藏
@@ -112,7 +170,12 @@ export default {
     /**
      * 生命周期函数--监听页面卸载
      */
-    onUnload: function () { },
+    onUnload: function () {
+        // 5 页面卸载的时候，清除动画数据
+        this.animationData = null;
+        this.timer && clearInterval(this.timer)
+        this.timer = null;
+    },
     /**
      * 页面相关事件处理函数--监听用户下拉动作
      */
@@ -126,6 +189,141 @@ export default {
      */
     onShareAppMessage: function () { },
     methods: {
+        // 实现动画效果
+        praiseMe() {
+            // this.animation.scale(0.8).step();
+            // // 定义动画内容 偏移
+            // this.animation.scale(0.9).step()
+            // this.animation.scale(1).step()
+            // this.animation.scale(1.1).step()
+            // this.animation.scale(1).step()
+            // // 导出动画数据传递给data层
+            // this.animationData = this.animation.export();
+            this.timer = setInterval(() => {
+                //  调用 step() 来表示一组动画完成
+                this.animation.scale(0.8).step();
+                // 定义动画内容 偏移
+                this.animation.scale(1).step()
+                this.animation.scale(1.2).step()
+                this.animation.scale(1).step()
+                this.animation.scale(0.9).step()
+                // 导出动画数据传递给data层
+                this.animationData = this.animation.export(); //每次执行导出动画时 会覆盖之前的动画
+                // this.animationData=null
+                setTimeout(() => {
+                    this.animation.scale(1).step()
+                    this.animationData = this.animation.export();
+                }, 600)
+            }, 800)
+        },
+        //识别语音 -- 初始化
+        initRecord: function () {
+            const that = this;
+            // 有新的识别内容返回，则会调用此事件
+            manager.onRecognize = function (res) {
+                console.log(res)
+            }
+            // 正常开始录音识别时会调用此事件
+            manager.onStart = function (res) {
+                console.log("成功开始录音识别", res)
+            }
+            // 识别错误事件
+            manager.onError = function (res) {
+                that.recordState = false;
+                console.error("error msg", res)
+                uni.showToast({
+                    title: res.msg,
+                    // icon: res.msg,
+                    duration: 2000
+                });
+            }
+            //识别结束事件
+            manager.onStop = function (res) {
+                console.log('..............结束录音')
+                console.log('录音临时文件地址 -->' + res.tempFilePath);
+                console.log('录音总时长 -->' + res.duration + 'ms');
+                console.log('文件大小 --> ' + res.fileSize + 'B');
+                console.log('语音内容 --> ' + res.result);
+                if (res.result == '') {
+                    wx.showModal({
+                        title: '提示',
+                        content: '听不清楚，请重新说一遍！',
+                        showCancel: false,
+                        success: function (res) { }
+                    })
+                    return;
+                }
+                var text = that.textareaValue + res.result;
+                that.textareaValue = text
+            }
+        },
+        //语音  --按住说话
+        touchStart: async function (e) {
+            this.praiseMe()
+            let status = await this.handleRecord()
+            if (!status) return
+            //录音状态
+            this.recordState = true
+            // 语音开始识别
+            manager.start({
+                lang: 'zh_CN',// 识别的语言，目前支持zh_CN en_US zh_HK sichuanhua
+            })
+        },
+        //语音  --松开结束
+        touchEnd: function (e) {
+            this.timer && clearInterval(this.timer)
+            this.animationData=null
+            if (this.recordState) {
+                manager.stop();
+                this.recordState = false;
+            }
+            // 语音结束识别
+        },
+        // 用户是否授权录音
+        async handleRecord() {
+            let scoped = false;
+            let scopedRecord = await getSetting("scope.record");
+            if (scopedRecord === undefined) {
+                scoped = await authorize("scope.record", '语音授权失败')
+            }
+            if (scopedRecord === false) {
+                scoped = await this.openShowSetting("scope.record");
+            }
+            if (scopedRecord === true) {
+                scoped = true
+            }
+            return scoped
+        },
+        openShowSetting(name) {
+            return new Promise((resolve, reject) => {
+                uni.showModal({
+                    title: '提示', //提示的标题,
+                    content: '请打开录音权限', //提示的内容,
+                    showCancel: true, //是否显示取消按钮,
+                    cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
+                    cancelColor: '#000000', //取消按钮的文字颜色,
+                    confirmText: '确定', //确定按钮的文字，默认为取消，最多 4 个字符,
+                    confirmColor: '#3CC51F', //确定按钮的文字颜色,
+                    success: res => {
+                        if (res.confirm) {
+                            // openSetting 是需要事件驱动的，保证它的同步性。
+                            openSetting(name).then(res => {
+                                resolve(res)
+                            }).catch(error => {
+                                reject(error)
+                            })
+                        } else if (res.cancel) {
+                            reject(false)
+                            uni.showToast({
+                                title: '需要语音权限',
+                                icon: 'none',
+                                duration: 2000,
+                            })
+                        }
+                    }
+                });
+            })
+        },
         chooseImage(event) {
             const { type } = event.currentTarget.dataset;
             let files = this.files;

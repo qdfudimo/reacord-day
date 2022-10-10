@@ -1,11 +1,11 @@
 <template>
-    <view class="popups" v-if="visible">
-        <view class="dialog">
+    <view class="popups" v-if="visible" @tap="handelClick">
+        <view class="dialog" :style="`width: ${width};`">
             <view class="title" v-if="title">{{title}}</view>
             <view class="dialog__content">
                 <slot></slot>
             </view>
-            <view class="dialog__footer">
+            <view class="dialog__footer" v-if="showButton">
                 <button class="btn cancle" @tap="cancle">取消</button>
                 <button class="btn confirm" :disabled="props.confirmDisabled" @tap="confirm">确认</button>
             </view>
@@ -21,6 +21,24 @@ const props = defineProps({
             return false
         }
     },
+    showButton: {
+        type: Boolean,
+        default() {
+            return true
+        }
+    },
+    width: {
+        type: String,
+        default() {
+            return "90%"
+        }
+    },
+    // height: {
+    //     type: String,
+    //     default() {
+    //         return "90%"
+    //     }
+    // },
     confirmDisabled: {
         type: Boolean,
         default() {
@@ -35,22 +53,16 @@ const props = defineProps({
     },
 })
 const visible = ref(false)
-const emit = defineEmits(["cancle", "confirm"]);
+const emit = defineEmits(["cancle", "confirm", "clickDialog"]);
 onMounted(() => {
     if (props.show) {
-        visible.value = true
+        visible.value = true;
     }
 })
 watch(
     () => props.show,
     (val) => {
-        if (val) {
-            visible.value = true
-        } else {
-            if (visible.value) {
-                visible.value = false
-            }
-        }
+        visible.value = !!val
     }
 )
 const cancle = () => {
@@ -58,6 +70,9 @@ const cancle = () => {
 }
 const confirm = () => {
     emit("confirm")
+}
+const handelClick = () => {
+    emit("clickDialog")
 }
 </script>
 <style lang="scss" scoped>

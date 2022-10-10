@@ -188,7 +188,7 @@ export default {
         if (typeof this.$scope.getTabBar === 'function' &&
             this.$scope.getTabBar()) {
             this.$scope.getTabBar().setData({
-                selected: 2
+                selected: 1
             })
         }
         // const curPages = getCurrentPages()[0];  // 获取当前页面实例  

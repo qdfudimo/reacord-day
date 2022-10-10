@@ -85,7 +85,7 @@ const _sfc_main = {
   onShow: function() {
     if (typeof this.$scope.getTabBar === "function" && this.$scope.getTabBar()) {
       this.$scope.getTabBar().setData({
-        selected: 2
+        selected: 1
       });
     }
   },

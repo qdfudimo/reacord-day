@@ -3,8 +3,7 @@
     "pages/home/index",
     "pages/square/index",
     "pages/mine/index",
-    "pages/create-record/create-record",
-    "pages/logs/logs"
+    "pages/create-record/create-record"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -23,12 +22,6 @@
         "iconPath": "static/image/home.png",
         "selectedIconPath": "static/image/active_home.png",
         "text": "首页"
-      },
-      {
-        "pagePath": "pages/square/index",
-        "iconPath": "static/image/note.png",
-        "selectedIconPath": "static/image/active_note.png",
-        "text": "记录圈"
       },
       {
         "pagePath": "pages/mine/index",

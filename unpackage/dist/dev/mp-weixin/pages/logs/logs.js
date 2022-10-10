@@ -1,6 +1,7 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
 var utils_util = require("../../utils/util.js");
+require("../../utils/index.js");
 const _sfc_main = {
   data() {
     return {

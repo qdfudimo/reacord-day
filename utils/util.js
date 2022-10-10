@@ -1,3 +1,6 @@
+import {
+    ChineseZodiac
+} from './index'
 const formatTime = (date = new Date()) => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
@@ -88,11 +91,10 @@ const getChineseDate = (time) => {
     let g = dateString.substr(0, 2) + '年';
     let m = dateString.substring(2, dateString.match('月').index) + '月';
     let d = dateString.match(/\d+/)[0];
-    console.log(d);
     d = d < 11 ? '初' + numberToString(d) : numberToString(d);
-    let animals = ["猴", "鸡", "狗", "猪", "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊"];
+    // let animals = ["猴", "鸡", "狗", "猪", "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊"];
     let index = date.toLocaleString('zh-CN-u-ca-chinese').substr(0, 4) % 12;
-    let a = animals[index];
+    let a = ChineseZodiac[index];
     return {
         g, // 干支
         m, // 月
@@ -109,7 +111,7 @@ const getCurrentDate = (time) => {
     let date = time ? new Date(time) : new Date();
     let month = date.getMonth() + 1;
     let day = date.getDate();
-    let currentDay = day < 10 ? `0${day}` : day
+    let currentDay = day < 10 ? `0${day}` : "" + day
     month = delZoo(numberToString(month + ""));
     day = delZoo(numberToString(day + ""));
 

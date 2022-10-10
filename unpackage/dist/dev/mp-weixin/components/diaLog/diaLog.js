@@ -9,6 +9,18 @@ const _sfc_main = {
         return false;
       }
     },
+    showButton: {
+      type: Boolean,
+      default() {
+        return true;
+      }
+    },
+    width: {
+      type: String,
+      default() {
+        return "90%";
+      }
+    },
     confirmDisabled: {
       type: Boolean,
       default() {
@@ -22,7 +34,7 @@ const _sfc_main = {
       }
     }
   },
-  emits: ["cancle", "confirm"],
+  emits: ["cancle", "confirm", "clickDialog"],
   setup(__props, { emit }) {
     const props = __props;
     const visible = common_vendor.ref(false);
@@ -32,19 +44,16 @@ const _sfc_main = {
       }
     });
     common_vendor.watch(() => props.show, (val) => {
-      if (val) {
-        visible.value = true;
-      } else {
-        if (visible.value) {
-          visible.value = false;
-        }
-      }
+      visible.value = !!val;
     });
     const cancle = () => {
       emit("cancle");
     };
     const confirm = () => {
       emit("confirm");
+    };
+    const handelClick = () => {
+      emit("clickDialog");
     };
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -54,9 +63,14 @@ const _sfc_main = {
       }, __props.title ? {
         c: common_vendor.t(__props.title)
       } : {}, {
-        d: common_vendor.o(cancle),
-        e: props.confirmDisabled,
-        f: common_vendor.o(confirm)
+        d: __props.showButton
+      }, __props.showButton ? {
+        e: common_vendor.o(cancle),
+        f: props.confirmDisabled,
+        g: common_vendor.o(confirm)
+      } : {}, {
+        h: common_vendor.s(`width: ${__props.width};`),
+        i: common_vendor.o(handelClick)
       }) : {});
     };
   }
