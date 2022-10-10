@@ -19,8 +19,7 @@ const _sfc_main = {
         name: false
       },
       recordState: false,
-      animation: {},
-      animationData: {},
+      recordAuthorStatus: false,
       place: {
         address: "\u6C5F\u82CF\u7701\u5BBF\u8FC1\u5E02\u6CAD\u9633\u53BF\u667A\u6167\u6811\u5E7C\u513F\u56ED\u4E1C\u5317(\u5C0F\u8857\u8DEF\u4E1C)",
         errMsg: "chooseLocation:ok",
@@ -58,11 +57,6 @@ const _sfc_main = {
     };
   },
   onLoad: function(options) {
-    var animation = common_vendor.index.createAnimation({
-      timingFunction: "ease-in",
-      duration: 500
-    });
-    this.animation = animation;
     common_vendor.index.showNavigationBarLoading();
     common_vendor.index.setNavigationBarTitle({
       title: "\u5199\u8BF4\u8BF4"
@@ -76,6 +70,9 @@ const _sfc_main = {
       }
     });
     this.initRecord();
+    this.handleRecord().then((res) => {
+      this.recordAuthorStatus = res;
+    });
   },
   onReady: function() {
   },
@@ -87,9 +84,6 @@ const _sfc_main = {
   onHide: function() {
   },
   onUnload: function() {
-    this.animationData = null;
-    this.timer && clearInterval(this.timer);
-    this.timer = null;
   },
   onPullDownRefresh: function() {
   },
@@ -98,20 +92,6 @@ const _sfc_main = {
   onShareAppMessage: function() {
   },
   methods: {
-    praiseMe() {
-      this.timer = setInterval(() => {
-        this.animation.scale(0.8).step();
-        this.animation.scale(1).step();
-        this.animation.scale(1.2).step();
-        this.animation.scale(1).step();
-        this.animation.scale(0.9).step();
-        this.animationData = this.animation.export();
-        setTimeout(() => {
-          this.animation.scale(1).step();
-          this.animationData = this.animation.export();
-        }, 600);
-      }, 800);
-    },
     initRecord: function() {
       const that = this;
       manager.onRecognize = function(res) {
@@ -122,11 +102,12 @@ const _sfc_main = {
       };
       manager.onError = function(res) {
         that.recordState = false;
-        console.error("error msg", res);
         common_vendor.index.showToast({
-          title: res.msg,
-          duration: 2e3
+          title: "\u8BED\u97F3\u8BC6\u522B\u5931\u8D25",
+          icon: "error",
+          duration: 1e3
         });
+        console.error("error msg", res);
       };
       manager.onStop = function(res) {
         console.log("..............\u7ED3\u675F\u5F55\u97F3");
@@ -135,7 +116,7 @@ const _sfc_main = {
         console.log("\u6587\u4EF6\u5927\u5C0F --> " + res.fileSize + "B");
         console.log("\u8BED\u97F3\u5185\u5BB9 --> " + res.result);
         if (res.result == "") {
-          wx.showModal({
+          common_vendor.index.showModal({
             title: "\u63D0\u793A",
             content: "\u542C\u4E0D\u6E05\u695A\uFF0C\u8BF7\u91CD\u65B0\u8BF4\u4E00\u904D\uFF01",
             showCancel: false,
@@ -148,20 +129,17 @@ const _sfc_main = {
         that.textareaValue = text;
       };
     },
-    touchStart: async function(e) {
-      this.praiseMe();
-      let status = await this.handleRecord();
-      if (!status)
+    touchStart(e) {
+      if (!this.recordAuthorStatus)
         return;
       this.recordState = true;
       manager.start({
         lang: "zh_CN"
       });
     },
-    touchEnd: function(e) {
-      this.timer && clearInterval(this.timer);
-      this.animationData = null;
-      if (this.recordState) {
+    touchEnd(e) {
+      console.log("\u7ED3\u675F\u4E86");
+      if (this.recordAuthorStatus) {
         manager.stop();
         this.recordState = false;
       }
@@ -336,13 +314,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     q: common_vendor.o((...args) => $options.bindPickerChange && $options.bindPickerChange(...args)),
     r: $data.canSee,
     s: $data.array,
-    t: $data.animationData,
-    v: common_vendor.t(!$data.recordState ? " \u6309\u4F4F\u8BED\u97F3\u8BC6\u522B" : " \u677E\u5F00\u7ED3\u675F"),
-    w: common_vendor.n($data.recordState ? "yuyinBtnBg" : ""),
-    x: common_vendor.o((...args) => $options.touchStart && $options.touchStart(...args)),
-    y: common_vendor.o((...args) => $options.touchEnd && $options.touchEnd(...args)),
-    z: !$data.files.length && !$data.textareaValue,
-    A: $data.recordState
+    t: common_vendor.t(!$data.recordState ? " \u6309\u4F4F\u8BED\u97F3\u8BC6\u522B" : "\u677E\u5F00\u7ED3\u675F"),
+    v: common_vendor.n($data.recordState ? "yuyinBtnBg" : ""),
+    w: common_vendor.o((...args) => $options.touchStart && $options.touchStart(...args)),
+    x: common_vendor.o((...args) => $options.touchEnd && $options.touchEnd(...args)),
+    y: !$data.files.length && !$data.textareaValue,
+    z: $data.recordState
   }, $data.recordState ? {} : {});
 }
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "F:/wx-uni/reacrd-day/pages/create-record/create-record.vue"]]);

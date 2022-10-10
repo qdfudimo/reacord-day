@@ -42,7 +42,8 @@
                 <text class="iconfont icon-youjiantou" style="color: #333; font-size: 18px"></text>
             </view>
             <button :class="['yuyin',recordState?'yuyinBtnBg':'']" @touchstart="touchStart" @touchend="touchEnd">
-                <view :animation="animationData" class="iconfont icon-saying" style=" margin-right: 4rpx;"></view> {{!recordState?" 按住语音识别":" 松开结束"}}
+                <view class="iconfont icon-saying" style=" margin-right: 4rpx;"></view> {{!recordState?" 按住语音识别":
+                "松开结束"}}
             </button>
             <button :disabled="!files.length&&!textareaValue"
                 style="width: 320rpx; height: 64rpx; padding: 0; line-height: 64rpx; background-color: #25bdce"
@@ -82,8 +83,8 @@ export default {
             },
             //语音
             recordState: false, //录音状态
-            animation: {},//内容
-            animationData: {},//内容
+            //是否授权
+            recordAuthorStatus: false,
             place: {
                 address: '江苏省宿迁市沭阳县智慧树幼儿园东北(小街路东)',
                 errMsg: 'chooseLocation:ok',
@@ -124,14 +125,6 @@ export default {
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-        // 初始化一个动画
-        var animation = uni.createAnimation({
-            timingFunction: "ease-in",
-            duration: 500, //动画持续1秒
-            // timingFunction: 'linear',  //linear 全程匀速运动
-            // delay:300  //延迟两秒执行动画
-        })
-        this.animation = animation
         uni.showNavigationBarLoading();
         uni.setNavigationBarTitle({
             title: '写说说'
@@ -149,6 +142,9 @@ export default {
         });
         //识别语音
         this.initRecord();
+        this.handleRecord().then(res => {
+            this.recordAuthorStatus = res
+        })
     },
     /**
      * 生命周期函数--监听页面初次渲染完成
@@ -170,10 +166,6 @@ export default {
      * 生命周期函数--监听页面卸载
      */
     onUnload: function () {
-        // 5 页面卸载的时候，清除动画数据
-        this.animationData = null;
-        this.timer && clearInterval(this.timer)
-        this.timer = null;
     },
     /**
      * 页面相关事件处理函数--监听用户下拉动作
@@ -188,33 +180,6 @@ export default {
      */
     onShareAppMessage: function () { },
     methods: {
-        // 实现动画效果
-        praiseMe() {
-            // this.animation.scale(0.8).step();
-            // // 定义动画内容 偏移
-            // this.animation.scale(0.9).step()
-            // this.animation.scale(1).step()
-            // this.animation.scale(1.1).step()
-            // this.animation.scale(1).step()
-            // // 导出动画数据传递给data层
-            // this.animationData = this.animation.export();
-            this.timer = setInterval(() => {
-                //  调用 step() 来表示一组动画完成
-                this.animation.scale(0.8).step();
-                // 定义动画内容 偏移
-                this.animation.scale(1).step()
-                this.animation.scale(1.2).step()
-                this.animation.scale(1).step()
-                this.animation.scale(0.9).step()
-                // 导出动画数据传递给data层
-                this.animationData = this.animation.export(); //每次执行导出动画时 会覆盖之前的动画
-                // this.animationData=null
-                setTimeout(() => {
-                    this.animation.scale(1).step()
-                    this.animationData = this.animation.export();
-                }, 600)
-            }, 800)
-        },
         //识别语音 -- 初始化
         initRecord: function () {
             const that = this;
@@ -229,12 +194,12 @@ export default {
             // 识别错误事件
             manager.onError = function (res) {
                 that.recordState = false;
-                console.error("error msg", res)
                 uni.showToast({
-                    title: res.msg,
-                    // icon: res.msg,
-                    duration: 2000
+                    title: "语音识别失败",
+                    icon: "error",
+                    duration: 1000
                 });
+                console.error("error msg", res)
             }
             //识别结束事件
             manager.onStop = function (res) {
@@ -244,7 +209,7 @@ export default {
                 console.log('文件大小 --> ' + res.fileSize + 'B');
                 console.log('语音内容 --> ' + res.result);
                 if (res.result == '') {
-                    wx.showModal({
+                    uni.showModal({
                         title: '提示',
                         content: '听不清楚，请重新说一遍！',
                         showCancel: false,
@@ -257,10 +222,8 @@ export default {
             }
         },
         //语音  --按住说话
-        touchStart: async function (e) {
-            this.praiseMe()
-            let status = await this.handleRecord()
-            if (!status) return
+        touchStart(e) {
+            if (!this.recordAuthorStatus) return
             //录音状态
             this.recordState = true
             // 语音开始识别
@@ -269,16 +232,15 @@ export default {
             })
         },
         //语音  --松开结束
-        touchEnd: function (e) {
-            this.timer && clearInterval(this.timer)
-            this.animationData=null
-            if (this.recordState) {
+        touchEnd(e) {
+            console.log("结束了");
+            if (this.recordAuthorStatus) {
                 manager.stop();
                 this.recordState = false;
             }
             // 语音结束识别
         },
-        // 用户是否授权录音
+        // 用户是否授权录音 true 授权
         async handleRecord() {
             let scoped = false;
             let scopedRecord = await getSetting("scope.record");
