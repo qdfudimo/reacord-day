@@ -191,10 +191,6 @@
   content: "\e632";
 }
 
-.icon-shijian:before {
-  content: "\e6c7";
-}
-
 .icon-weizhi-tianchong:before {
   content: "\e653";
 }
@@ -211,14 +207,6 @@
   content: "\e608";
 }
 
-.icon-shanchu:before {
-  content: "\e714";
-}
-
-.icon-lajitong:before {
-  content: "\e633";
-}
-
 .icon-tianjiatupian1:before {
   content: "\e6b9";
 }
@@ -233,10 +221,6 @@
 
 .icon-iconfontfenxiang:before {
   content: "\e626";
-}
-
-.icon-tianjia:before {
-  content: "\e630";
 }
 
 .icon-aixin-copy:before {

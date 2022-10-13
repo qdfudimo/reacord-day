@@ -26,5 +26,5 @@ const _sfc_main = {
     };
   }
 };
-var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-3c71bfe4"], ["__file", "F:/wx-uni/reacrd-day/components/famous/famous.vue"]]);
+var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-3c71bfe4"], ["__file", "E:/xiaocx/reacord-day/components/famous/famous.vue"]]);
 wx.createComponent(Component);

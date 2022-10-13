@@ -5,7 +5,8 @@
     "pages/mine/index",
     "pages/famousSaying/index",
     "pages/create-record/create-record",
-    "pages/clander/index"
+    "pages/clander/index",
+    "pages/userInfo/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

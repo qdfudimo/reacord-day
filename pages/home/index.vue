@@ -15,7 +15,7 @@
                         {{currentDate.chinaDate}}
                     </view>
                     <view class="week">
-                        {{currentDate.week}}
+                        {{CDate.ncWeek}}
                     </view>
                 </view>
             </view>
@@ -73,12 +73,11 @@
             <view class="clander_content">
                 <view class="iconfont icon-tubiaolunkuo-" style="color:#4dbb14;font-size:32px;font-weight: 800;">
                 </view>
-                <view> {{new Date().toLocaleDateString()}}</view>
-                <!-- <view> {{new Date().toLocaleString('zh', { hour12: true })}}</view> -->
-                <view> {{currentDate.week}}</view>
-                <view> 农历{{CDate.m}}{{CDate.d}}</view>
-                <view> {{CDate.g}} {{CDate.a.animal}}年</view>
-                <view :class="['iconfont',`icon-${CDate.a.icon}`]" style="font-size:46px;color: #8a8a8a;"></view>
+                <view> {{`${CDate.cYear}/${CDate.cMonth}/${CDate.cDay}`}} {{CDate.ncWeek}}</view>
+                <view> {{CDate.astro}}</view>
+                <view> 农历{{CDate.IMonthCn}}{{CDate.IDayCn}}</view>
+                <view> {{`${CDate.gzYear}年${CDate.gzMonth}月${CDate.gzDay}日`}}</view>
+                <view :class="['iconfont',`icon-${CDate.icon}`]" style="font-size:46px;color: #8a8a8a;"></view>
             </view>
         </dia-log>
     </view>
@@ -416,24 +415,6 @@ page {
             }
         }
 
-        .write {
-            height: 40px;
-            width: 160px;
-            line-height: 40px;
-            text-align: center;
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            border-radius: 18px;
-            font-weight: 800;
-            background-image: linear-gradient(to right, rgb(220, 194, 11), rgb(10, 185, 156), rgb(4, 151, 99));
-
-            &::after {
-                border: none;
-            }
-        }
     }
 }
 
@@ -560,7 +541,7 @@ page {
 .clander_content {
     view {
         text-align: center;
-        padding: 4px 0;
+        padding: 2px 0;
     }
 }
 </style>

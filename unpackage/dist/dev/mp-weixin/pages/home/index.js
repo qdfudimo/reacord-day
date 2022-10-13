@@ -4,6 +4,7 @@ var hooks_useGetTabBar = require("../../hooks/useGetTabBar.js");
 var utils_util = require("../../utils/util.js");
 var utils_upload = require("../../utils/upload.js");
 var utils_index = require("../../utils/index.js");
+require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
   common_vendor.unref(diaLog)();
 }
@@ -149,7 +150,7 @@ const _sfc_main = {
         b: common_vendor.n(`iconfont icon-shuzi${common_vendor.unref(currentDate).currentDay[0]}`),
         c: common_vendor.n(`iconfont icon-shuzi${common_vendor.unref(currentDate).currentDay[1]}`),
         d: common_vendor.t(common_vendor.unref(currentDate).chinaDate),
-        e: common_vendor.t(common_vendor.unref(currentDate).week),
+        e: common_vendor.t(common_vendor.unref(CDate).ncWeek),
         f: common_vendor.o(showClander),
         g: common_vendor.t(homeShort.short),
         h: common_vendor.t(homeShort.author.indexOf("-") != -1 ? homeShort.author : "-- " + homeShort.author),
@@ -194,13 +195,13 @@ const _sfc_main = {
           title: "\u8BBE\u7F6E\u80CC\u666F\u683C\u8A00",
           show: showDialog.value
         }),
-        F: common_vendor.t(new Date().toLocaleDateString()),
-        G: common_vendor.t(common_vendor.unref(currentDate).week),
-        H: common_vendor.t(common_vendor.unref(CDate).m),
-        I: common_vendor.t(common_vendor.unref(CDate).d),
-        J: common_vendor.t(common_vendor.unref(CDate).g),
-        K: common_vendor.t(common_vendor.unref(CDate).a.animal),
-        L: common_vendor.n(`icon-${common_vendor.unref(CDate).a.icon}`),
+        F: common_vendor.t(`${common_vendor.unref(CDate).cYear}/${common_vendor.unref(CDate).cMonth}/${common_vendor.unref(CDate).cDay}`),
+        G: common_vendor.t(common_vendor.unref(CDate).ncWeek),
+        H: common_vendor.t(common_vendor.unref(CDate).astro),
+        I: common_vendor.t(common_vendor.unref(CDate).IMonthCn),
+        J: common_vendor.t(common_vendor.unref(CDate).IDayCn),
+        K: common_vendor.t(`${common_vendor.unref(CDate).gzYear}\u5E74${common_vendor.unref(CDate).gzMonth}\u6708${common_vendor.unref(CDate).gzDay}\u65E5`),
+        L: common_vendor.n(`icon-${common_vendor.unref(CDate).icon}`),
         M: common_vendor.o(clickDialog),
         N: common_vendor.o(($event) => showClanderDialog.value = $event),
         O: common_vendor.p({
@@ -212,5 +213,5 @@ const _sfc_main = {
     };
   }
 };
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-71e217db"], ["__file", "F:/wx-uni/reacrd-day/pages/home/index.vue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-71e217db"], ["__file", "E:/xiaocx/reacord-day/pages/home/index.vue"]]);
 wx.createPage(MiniProgramPage);

@@ -47,9 +47,20 @@
 }
 .uploader_delete {
     position: absolute;
-    right: -16rpx;
-    top: -16rpx;
-    color: #333;
+    top: 0;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 0 0 0 12px;
+}
+.shanchu {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    color: #fff;
+    font-size: 16px;
+    transform: scale(0.5);
 }
 .location {
     padding: 28rpx 0;
@@ -134,7 +145,7 @@
     height: 100rpx;
 }
 .startYuyinImage .iconfont {
-   font-size: 32px;
+    font-size: 32px;
 }
 
 /* .yuyin::after {

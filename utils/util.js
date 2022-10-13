@@ -1,16 +1,34 @@
 import {
-    ChineseZodiac
+    ChineseZodiacs
 } from './index'
-const formatTime = (date = new Date()) => {
+import calendar from "@/uni_modules/uni-calendar/components/uni-calendar/calendar";
+const formatTimeDate = (date = new Date()) => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const hour = date.getHours();
     const minute = date.getMinutes();
     const second = date.getSeconds();
+    return {
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second
+    }
+}
+const formatTime = (date = new Date()) => {
+    let {
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second
+    } = formatTimeDate()
     return `${[year, month, day].map(formatNumber).join('/')} ${[hour, minute, second].map(formatNumber).join(':')}`;
 };
-
 const handelTime = (date = new Date()) => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
@@ -78,32 +96,21 @@ const numberToString = (number) => {
  * @param {*} time 
  * @returns 
  */
-const getChineseDate = (time) => {
-    let date = time ? new Date(time) : new Date();
-    let dateString = date.toLocaleString('zh-CN-u-ca-chinese');
-    dateString = dateString.replace(/(\d+)\s*?年/, (x, y) => {
-        let result = '';
-        result = "甲乙丙丁戊己庚辛壬癸".charAt((y - 4) % 10); // 天干
-        result += "子丑寅卯辰巳午未申酉戌亥".charAt((y - 4) % 12); // 地支
-        return result;
-    });
-    dateString = dateString.split(' ')[0]; // 取年月日
-    let g = dateString.substr(0, 2) + '年';
-    let m = dateString.substring(2, dateString.match('月').index) + '月';
-    let d = dateString.match(/\d+/)[0];
-    d = d < 11 ? '初' + numberToString(d) : numberToString(d);
-    // let animals = ["猴", "鸡", "狗", "猪", "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊"];
-    let index = date.toLocaleString('zh-CN-u-ca-chinese').substr(0, 4) % 12;
-    let a = ChineseZodiac[index];
+const getChineseDate = () => {
+    let {
+        year,
+        month,
+        day,
+    } = formatTimeDate()
+    let getlunar = calendar.solar2lunar(year, month, day)
+    let animal = ChineseZodiacs.get(getlunar.Animal)
     return {
-        g, // 干支
-        m, // 月
-        d, // 日
-        a // 生肖
-    };
+        ...getlunar,
+        icon: animal
+    }
 }
 /**
- * 返回当前日期 和几号
+ * 返回当前日期 和几号 汉字形式
  * @param {*} time 
  * @returns 
  */
@@ -139,5 +146,6 @@ export default {
     formatTime,
     handelTime,
     getCurrentDate,
-    getChineseDate
+    getChineseDate,
+    tip
 };

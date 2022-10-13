@@ -1,26 +1,23 @@
 <template>
     <!-- pages/mine/index.wxml -->
-    <view :class="'container ' + (hasUserInfo ? '' : 'noColor')">
-        <image v-if="hasUserInfo" class="background_image" :src="currentBackground || defaultImg" mode="aspectFill">
+    <view :class="'container ' + 'noColor'">
+        <image class="background_image" :src="currentBackground || defaultImg" mode="aspectFill">
         </image>
         <view class="main">
-            <view class="con"
-                :style="'height:' + customBar + 'px;padding-top:' + statusBar + 'px;background-color:' + (hasUserInfo ? 'transparent' : '#fff')">
+            <view class="con" :style="'height:' + customBar + 'px;padding-top:' + statusBar + 'px;'">
             </view>
             <view class="content">
-                <view class="content_top" :style="'background-color:' + (hasUserInfo ? 'transparent' : '#fff') + ';'">
+                <view class="content_top">
                     <view class="user_avtar" @tap="getUserProfile">
-                        <image class="avtar" :src="userInfo.avatarUrl || '/static/image/vx.png'" />
-                        <view class="userName" v-if="hasUserInfo">
-                            <view style="font-size: 12px">{{ userInfo.nickName }}</view>
-                            <view>普通用户</view>
+                        <view class="avtarImg">
+                            <image class="avtar" :src="userInfo.avatarUrl || '/static/image/vx.png'" />
                         </view>
-                        <view class="getInfo" v-else>
-                            <text class="iconfont icon-shuaxin1" style="color: #28c445; font-size: 18px"></text>
-                            <text style="margin-left: 10px">同步获取微信头像与昵称</text>
+                        <view class="userName">
+                            <view class="nickName">{{ userInfo.nickName||"用户XXXX" }}</view>
+                            <view class="changeM">点击更换用户信息</view>
                         </view>
                     </view>
-                    <view v-if="hasUserInfo" class="background" @tap="showIfBackground">更换背景</view>
+                    <view class="background" @tap="showIfBackground">更换背景</view>
                 </view>
                 <view class="details">
                     <view class="diary">
@@ -45,14 +42,8 @@
                                 open-type="feedback"></button>
                         </view>
                     </view>
-                    <view class="empty" v-if="!scheduleLsits.length || !hasUserInfo">暂无记录</view>
-                    <!-- <view class="empty" v-if="!scheduleLsits.length || !hasUserInfo">暂无记录</view> -->
+                    <view class="empty" v-if="!scheduleLsits.length">暂无记录</view>
                 </view>
-                <block v-for="(item, index) in scheduleLsits" :key="index">
-                    <view class="talkList">
-                        <famous :homeShort="item" @collectShort="collectShort"></famous>
-                    </view>
-                </block>
                 <block v-for="(item, index) in scheduleLsits" :key="index">
                     <view class="talkList">
                         <famous :homeShort="item" @collectShort="collectShort"></famous>
@@ -84,217 +75,140 @@
     </view>
 </template>
 
-<script>
-import famous from '@/components/famous/famous';
+<script setup>
 // pages/mine/index.js
-const app = getApp();
+import famous from '@/components/famous/famous';
 import { chooseFile } from '@/utils/upload';
-export default {
-    components: {
-        famous
-    },
-    data() {
-        return {
-            statusBar: app.globalData.statusBar,
-            customBar: app.globalData.customBar,
-            custom: app.globalData.custom,
-            imgList: [],
-            showBackground: false,
-            currentBackground: '/static/image/background/rainbow.jpg',
-            hasUserInfo: false,
-            ifCollect: false,
-            defaultImg: '/static/image/background/rainbow.jpg',
-            loadMore: false,
-            scheduleLsits: [
-                {
-                    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
-                    author: "恩格尔",
-                    ifCollect: true,
-                    id: 1
-                },
-                {
-                    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
-                    author: "恩格尔",
-                    ifCollect: false,
-                    id: 2
-                },
-            ],
-
-            userInfo: {
-                avatarUrl: '',
-                nickName: ''
-            },
-
-            selected: 0
-        };
-    },
-    /**
-     * 生命周期函数--监听页面加载
-     */
-    onLoad: function () {
-        const fs = uni.getFileSystemManager();
-        const pathName = '/static/image/background';
-        fs.readdir({
-            dirPath: pathName,
-            // dirPath: `${wx.env.USER_DATA_PATH}/recordDay/image`,
-            success: (res) => {
-                this.imgList = res.files.map((item) => `${pathName}/${item}`)
-            },
-
-            fail(res) {
-                console.error(res);
-            }
-        });
-        uni.getStorage({
-            key: 'currentBackground',
-            success: (res) => {
-                this.currentBackground = res.data
-            },
-            fail: (error) => {
-                this.currentBackground = '/static/image/background/rainbow.jpg'
-            }
-        });
-        uni.getStorage({
-            key: 'userInfo',
-            success: (res) => {
-                this.userInfo = JSON.parse(res.data)
-                this.hasUserInfo = true
-            },
-            fail: (error) => {
-                this.hasUserInfo = false
-            }
-        });
-    },
-    /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage(item) {
-        // console.log(item);
-        const shareimg = ['/static/image/write.png', '/static/image/write1.png', '/static/image/write2.png', '/static/image/write3.png'];
-        const randomImg = shareimg[Math.floor(Math.random() * shareimg.length)];
-        return {
-            title: '写下你的生活',
-            path: '/page/mine/index',
-            imageUrl: randomImg
-        };
-    },
-    /**
-     * 生命周期函数--监听页面初次渲染完成
-     */
-    onReady: function () { },
-    /**
-     * 生命周期函数--监听页面显示
-     */
-    onShow: function () {
-        //在 Vue3 中，this 对象下的 $mp 调整为 $scope
-        if (typeof this.$scope.getTabBar === 'function' &&
-            this.$scope.getTabBar()) {
-            this.$scope.getTabBar().setData({
-                selected: 1
+import { ref, reactive } from 'vue';
+import { useGetTabBar } from "@/hooks/useGetTabBar";
+import {
+    onLoad,
+    onShareAppMessage,
+    onReachBottom,
+} from "@dcloudio/uni-app";
+useGetTabBar(1)
+const app = getApp();
+const statusBar = app.globalData.statusBar
+const customBar = app.globalData.customBar
+const custom = app.globalData.custom;
+const defaultImg = "/static/image/background/rainbow.jpg"
+const imgList = ref([])
+const scheduleLsits = ref([{
+    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
+    author: "恩格尔",
+    ifCollect: true,
+    id: 1
+},
+{
+    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
+    author: "恩格尔",
+    ifCollect: false,
+    id: 2
+},])
+const userInfo = reactive({
+    avatarUrl: '/static/image/vx.png',
+    nickName: '用户XXXX',
+})
+const showBackground = ref(false)
+const loadMore = ref(false)
+//是否收藏小程序
+const ifCollect = ref(false)
+const currentBackground = ref('/static/image/background/rainbow.jpg')
+const showIfBackground = () => {
+    showBackground.value = !showBackground.value
+}
+const selectImage = (e) => {
+    currentBackground.value = e.target.dataset.url
+    uni.setStorage({
+        key: 'currentBackground',
+        data: e.target.dataset.url
+    });
+}
+const selectBackground = () => {
+    chooseFile({
+        accept: 'img',
+        maxCount: 1,
+        multiple: false
+    })
+        .then((res) => {
+            currentBackground.value = res[0].url
+        })
+        .catch((error) => { });
+}
+const getUserProfile = () => {
+    uni.navigateTo({
+        url: `../userInfo/index`,
+        success: function (res) {
+            // 通过eventChannel向被打开页面传送数据
+            res.eventChannel.emit('userData', {
+                avatarUrl: userInfo.avatarUrl,
+                nickName: userInfo.nickName
             })
         }
-        // const curPages = getCurrentPages()[0];  // 获取当前页面实例  
-        // if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
-        //     curPages.getTabBar().setData({
-        //         selected: 1
-        //     });
-        // }
-    },
-    /**
-     * 生命周期函数--监听页面隐藏
-     */
-    onHide: function () { },
-    /**
-     * 生命周期函数--监听页面卸载
-     */
-    onUnload: function () { },
-    /**
-     * 页面相关事件处理函数--监听用户下拉动作
-     */
-    onPullDownRefresh: function () { },
-    /**
-     * 页面上拉触底事件的处理函数
-     */
-    onReachBottom: function () {
-        if (this.loadMore) return
-        this.loadMore = true
-        setTimeout(() => {
-            this.loadMore = false
-        }, 300)
-    },
-    methods: {
-        showIfBackground() {
-            this.showBackground = !this.showBackground
+    });
+}
+/**收藏小程序 */
+const collectApplet = () => {
+    ifCollect.value = true
+    setTimeout(() => {
+        ifCollect.value = false
+    }, 2000);
+}
+const setApplet = () => {
+    uni.showToast({
+        title: '暂未开发',
+        icon: 'error',
+        duration: 2000
+    });
+}
+const collectShort = () => {
+}
+/**
+  * 生命周期函数--监听页面加载
+  */
+onLoad(() => {
+    const fs = uni.getFileSystemManager();
+    const pathName = '/static/image/background';
+    fs.readdir({
+        dirPath: pathName,
+        // dirPath: `${wx.env.USER_DATA_PATH}/recordDay/image`,
+        success: (res) => {
+            imgList.value = res.files.map((item) => `${pathName}/${item}`)
         },
-
-        selectImage(e) {
-            this.currentBackground = e.target.dataset.url
-            uni.setStorage({
-                key: 'currentBackground',
-                data: e.target.dataset.url
-            });
-        },
-
-        /**自定义背景 */
-        selectBackground() {
-            chooseFile({
-                accept: 'img',
-                maxCount: 1,
-                multiple: false
-            })
-                .then((res) => {
-                    this.currentBackground = res[0].url
-                })
-                .catch((error) => { });
-        },
-
-        getUserProfile(e) {
-            if (this.hasUserInfo) return
-            // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-            uni.getUserProfile({
-                desc: '展示用户信息',
-                // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-                success: (res) => {
-                    this.userInfo = res.userInfo
-                    this.hasUserInfo = true
-                    uni.setStorage({
-                        key: 'userInfo',
-                        data: res.rawData
-                    });
-                },
-                fail: (error) => { }
-            });
-        },
-
-        /**收藏小程序 */
-        collectApplet() {
-            this.ifCollect = true
-            setTimeout(() => {
-                this.ifCollect = false
-            }, 3000);
-        },
-
-        setApplet() {
-            uni.showToast({
-                title: '暂未开发',
-                icon: 'error',
-                duration: 2000
-            });
-        },
-
-        shareApplet() {
-            // wx.showShareImageMenu({
-            //   path: "/image/sun.gif",
-            //   success() {},
-            //   fail() {}
-            // })
-        },
-
-        /**取消收藏 */
-        collectShort(e) {
+        fail(res) {
+            console.error(res);
         }
-    }
-};
+    });
+    uni.getStorage({
+        key: 'currentBackground',
+        success: (res) => {
+            currentBackground.value = res.data
+        },
+        fail: (error) => {
+            currentBackground.value = defaultImg
+        }
+    });
+})
+/**
+* 用户点击右上角分享
+*/
+onShareAppMessage(() => {
+    const shareimg = ['/static/image/write.png', '/static/image/write1.png', '/static/image/write2.png', '/static/image/write3.png'];
+    const randomImg = shareimg[Math.floor(Math.random() * shareimg.length)];
+    return {
+        title: '写下你的生活',
+        path: '/page/mine/index',
+        imageUrl: randomImg
+    };
+})
+onReachBottom(() => {
+    if (loadMore.value) return
+    loadMore.value = true
+    setTimeout(() => {
+        loadMore.value = false
+    }, 300)
+})
+
 </script>
 <style>
 @import './index.css';

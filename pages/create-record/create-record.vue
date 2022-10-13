@@ -12,8 +12,9 @@
                         <image mode="aspectFill" :data-index="index" :src="item.url" style="width: 100%; height: 100%"
                             @tap="onPreviewImage"></image>
 
-                        <view :data-index="index" class="iconfont icon-shanchu uploader_delete"
-                            @tap.stop.prevent="deleteItem"></view>
+                        <view :data-index="index" class="uploader_delete" @tap.stop.prevent="deleteItem">
+                            <view class="iconfont icon-chahao shanchu"></view>
+                        </view>
                     </view>
                 </block>
                 <view v-if="files.length < 9" class="uploader__file uploader__file_add" aria-role="button"

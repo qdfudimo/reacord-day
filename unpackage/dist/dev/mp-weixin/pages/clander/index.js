@@ -25,5 +25,5 @@ const _sfc_main = {
     };
   }
 };
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-ee5ce5d6"], ["__file", "F:/wx-uni/reacrd-day/pages/clander/index.vue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-ee5ce5d6"], ["__file", "E:/xiaocx/reacord-day/pages/clander/index.vue"]]);
 wx.createPage(MiniProgramPage);

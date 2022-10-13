@@ -34,56 +34,19 @@ export const category = [
         color: "#ed4e41"
     },
 ];
-export const ChineseZodiac =[
-    {
-        animal:"猴",
-        icon:"xiaolaohu"
-    },
-    {
-        animal:"鸡",
-        icon:"xiaoji"
-    },
-    {
-        animal:"狗",
-        icon:"xiaogouzi"
-    },
-    {
-        animal:"猪",
-        icon:"xiaozhuzhu"
-    },
-    {
-        animal:"鼠",
-        icon:"xiaolaoshu"
-    },
-    {
-        animal:"牛",
-        icon:"xiaoniuniu"
-    },
-    {
-        animal:"虎",
-        icon:"xiaolaohu"
-    },
-    {
-        animal:"兔",
-        icon:"xiaotuzi"
-    },
-    {
-        animal:"龙",
-        icon:"long"
-    },
-    {
-        animal:"蛇",
-        icon:"xiaosheshe"
-    },
-    {
-        animal:"马",
-        icon:"xiaoma"
-    },
-    {
-        animal:"羊",
-        icon:"xiaoyangyang"
-    },
-]
+export const ChineseZodiacs = new Map()
+ChineseZodiacs.set("猴","xiaohouzi")
+ChineseZodiacs.set("鸡","xiaoji")
+ChineseZodiacs.set("狗","xiaogouzi")
+ChineseZodiacs.set("猪","xiaozhuzhu")
+ChineseZodiacs.set("鼠","xiaolaoshu")
+ChineseZodiacs.set("牛","xiaoniuniu")
+ChineseZodiacs.set("虎","xiaolaohu")
+ChineseZodiacs.set("兔","xiaotuzi")
+ChineseZodiacs.set("龙","long")
+ChineseZodiacs.set("蛇","xiaosheshe")
+ChineseZodiacs.set("马","xiaoma")
+ChineseZodiacs.set("羊","xiaoyangyang")
 const ManagerError = {
     "-30001":"录音接口出错",
     "-30002":"录音暂停接口被调用，录音终止，识别终止",

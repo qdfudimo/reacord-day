@@ -147,9 +147,6 @@
 .icon-chahao:before {
   content: "\e632";
 }
-.icon-shijian:before {
-  content: "\e6c7";
-}
 .icon-weizhi-tianchong:before {
   content: "\e653";
 }
@@ -161,12 +158,6 @@
 }
 .icon-weizhi:before {
   content: "\e608";
-}
-.icon-shanchu:before {
-  content: "\e714";
-}
-.icon-lajitong:before {
-  content: "\e633";
 }
 .icon-tianjiatupian1:before {
   content: "\e6b9";
@@ -180,15 +171,29 @@
 .icon-iconfontfenxiang:before {
   content: "\e626";
 }
-.icon-tianjia:before {
-  content: "\e630";
-}
 .icon-aixin-copy:before {
   content: "\e609";
 }
 /**app.wxss**/
 page {
     height: 100%;
+}
+.write {
+  height: 40px;
+  width: 160px;
+  line-height: 40px;
+  text-align: center;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  border-radius: 18px;
+  font-weight: 800;
+  background-image: linear-gradient(to right, rgb(220, 194, 11), rgb(10, 185, 156), rgb(4, 151, 99));
+}
+.write::after {
+  border: none;
 }
 /* .container {
   height: 100%;

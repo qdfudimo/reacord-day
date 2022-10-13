@@ -37,6 +37,12 @@
 			"style": {
 				"navigationBarTitleText": "日历"
 			}
+		},
+		{
+			"path": "pages/userInfo/index",
+			"style": {
+				"navigationBarTitleText": "更改用户信息"
+			}
 		}
 	],
 	"tabBar": {

@@ -29,57 +29,20 @@ const category = [
     color: "#ed4e41"
   }
 ];
-const ChineseZodiac = [
-  {
-    animal: "\u7334",
-    icon: "xiaolaohu"
-  },
-  {
-    animal: "\u9E21",
-    icon: "xiaoji"
-  },
-  {
-    animal: "\u72D7",
-    icon: "xiaogouzi"
-  },
-  {
-    animal: "\u732A",
-    icon: "xiaozhuzhu"
-  },
-  {
-    animal: "\u9F20",
-    icon: "xiaolaoshu"
-  },
-  {
-    animal: "\u725B",
-    icon: "xiaoniuniu"
-  },
-  {
-    animal: "\u864E",
-    icon: "xiaolaohu"
-  },
-  {
-    animal: "\u5154",
-    icon: "xiaotuzi"
-  },
-  {
-    animal: "\u9F99",
-    icon: "long"
-  },
-  {
-    animal: "\u86C7",
-    icon: "xiaosheshe"
-  },
-  {
-    animal: "\u9A6C",
-    icon: "xiaoma"
-  },
-  {
-    animal: "\u7F8A",
-    icon: "xiaoyangyang"
-  }
-];
-exports.ChineseZodiac = ChineseZodiac;
+const ChineseZodiacs = /* @__PURE__ */ new Map();
+ChineseZodiacs.set("\u7334", "xiaohouzi");
+ChineseZodiacs.set("\u9E21", "xiaoji");
+ChineseZodiacs.set("\u72D7", "xiaogouzi");
+ChineseZodiacs.set("\u732A", "xiaozhuzhu");
+ChineseZodiacs.set("\u9F20", "xiaolaoshu");
+ChineseZodiacs.set("\u725B", "xiaoniuniu");
+ChineseZodiacs.set("\u864E", "xiaolaohu");
+ChineseZodiacs.set("\u5154", "xiaotuzi");
+ChineseZodiacs.set("\u9F99", "long");
+ChineseZodiacs.set("\u86C7", "xiaosheshe");
+ChineseZodiacs.set("\u9A6C", "xiaoma");
+ChineseZodiacs.set("\u7F8A", "xiaoyangyang");
+exports.ChineseZodiacs = ChineseZodiacs;
 exports.category = category;
 exports.defaultImg = defaultImg;
 exports.radioData = radioData;

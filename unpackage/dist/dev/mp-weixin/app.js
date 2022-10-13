@@ -9,6 +9,7 @@ if (!Math) {
   "./pages/famousSaying/index.js";
   "./pages/create-record/create-record.js";
   "./pages/clander/index.js";
+  "./pages/userInfo/index.js";
 }
 const _sfc_main = {
   data() {
@@ -21,11 +22,9 @@ const _sfc_main = {
       const that = this;
       common_vendor.index.getSystemInfo({
         success: (e) => {
-          console.log(e);
           that.statusBar = e.statusBarHeight;
           let custom = common_vendor.index.getMenuButtonBoundingClientRect();
           that.custom = custom;
-          console.log(custom);
           that.customBar = custom.bottom + custom.top - e.statusBarHeight;
         }
       });
@@ -37,7 +36,6 @@ const _sfc_main = {
   onLaunch() {
     this.globalData.checkIsIPhoneX();
     const logs = common_vendor.index.getStorageSync("logs") || [];
-    logs.unshift(Date.now());
     common_vendor.index.setStorageSync("logs", logs);
     common_vendor.index.login({
       success: (res) => {
@@ -51,7 +49,7 @@ const _sfc_main = {
     console.log("App Hide");
   }
 };
-var App = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "F:/wx-uni/reacrd-day/App.vue"]]);
+var App = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "E:/xiaocx/reacord-day/App.vue"]]);
 function createApp() {
   const app = common_vendor.createSSRApp(App);
   return {

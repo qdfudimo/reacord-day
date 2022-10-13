@@ -75,5 +75,5 @@ const _sfc_main = {
     };
   }
 };
-var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-314db344"], ["__file", "F:/wx-uni/reacrd-day/components/diaLog/diaLog.vue"]]);
+var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-314db344"], ["__file", "E:/xiaocx/reacord-day/components/diaLog/diaLog.vue"]]);
 wx.createComponent(Component);

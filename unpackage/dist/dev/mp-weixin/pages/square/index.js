@@ -121,7 +121,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.scheduleLsits.length ? common_vendor.e({
     b: common_vendor.f($data.scheduleLsits, (item, index, i0) => {
       return {
-        a: "46d61fb6-0-" + i0,
+        a: "7c36b24e-0-" + i0,
         b: common_vendor.p({
           reacordList: item,
           onlyIndex: index
@@ -149,6 +149,6 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     o: common_vendor.n("viewIcon " + ($data.ifTop ? "showTop" : "hideTop"))
   });
 }
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "F:/wx-uni/reacrd-day/pages/square/index.vue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/xiaocx/reacord-day/pages/square/index.vue"]]);
 _sfc_main.__runtimeHooks = 3;
 wx.createPage(MiniProgramPage);

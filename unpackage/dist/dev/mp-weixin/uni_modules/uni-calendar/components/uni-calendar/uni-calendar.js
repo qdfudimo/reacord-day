@@ -282,5 +282,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     D: $data.aniMaskShow ? 1 : ""
   }) : {});
 }
-var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-0682a296"], ["__file", "F:/wx-uni/reacrd-day/uni_modules/uni-calendar/components/uni-calendar/uni-calendar.vue"]]);
+var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-0682a296"], ["__file", "E:/xiaocx/reacord-day/uni_modules/uni-calendar/components/uni-calendar/uni-calendar.vue"]]);
 wx.createComponent(Component);

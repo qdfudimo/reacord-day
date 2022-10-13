@@ -1,13 +1,51 @@
 "use strict";
-require("../common/vendor.js");
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var common_vendor = require("../common/vendor.js");
 var utils_index = require("./index.js");
-const formatTime = (date = new Date()) => {
+var uni_modules_uniCalendar_components_uniCalendar_calendar = require("../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
+const formatTimeDate = (date = new Date()) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const hour = date.getHours();
   const minute = date.getMinutes();
   const second = date.getSeconds();
+  return {
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second
+  };
+};
+const formatTime = (date = new Date()) => {
+  let {
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second
+  } = formatTimeDate();
   return `${[year, month, day].map(formatNumber).join("/")} ${[hour, minute, second].map(formatNumber).join(":")}`;
 };
 const handelTime = (date = new Date()) => {
@@ -61,28 +99,17 @@ const numberToString = (number) => {
   string = string.replace(/零+/, "\u96F6");
   return string;
 };
-const getChineseDate = (time) => {
-  let date = time ? new Date(time) : new Date();
-  let dateString = date.toLocaleString("zh-CN-u-ca-chinese");
-  dateString = dateString.replace(/(\d+)\s*?年/, (x, y) => {
-    let result = "";
-    result = "\u7532\u4E59\u4E19\u4E01\u620A\u5DF1\u5E9A\u8F9B\u58EC\u7678".charAt((y - 4) % 10);
-    result += "\u5B50\u4E11\u5BC5\u536F\u8FB0\u5DF3\u5348\u672A\u7533\u9149\u620C\u4EA5".charAt((y - 4) % 12);
-    return result;
+const getChineseDate = () => {
+  let {
+    year,
+    month,
+    day
+  } = formatTimeDate();
+  let getlunar = uni_modules_uniCalendar_components_uniCalendar_calendar.calendar.solar2lunar(year, month, day);
+  let animal = utils_index.ChineseZodiacs.get(getlunar.Animal);
+  return __spreadProps(__spreadValues({}, getlunar), {
+    icon: animal
   });
-  dateString = dateString.split(" ")[0];
-  let g = dateString.substr(0, 2) + "\u5E74";
-  let m = dateString.substring(2, dateString.match("\u6708").index) + "\u6708";
-  let d = dateString.match(/\d+/)[0];
-  d = d < 11 ? "\u521D" + numberToString(d) : numberToString(d);
-  let index = date.toLocaleString("zh-CN-u-ca-chinese").substr(0, 4) % 12;
-  let a = utils_index.ChineseZodiac[index];
-  return {
-    g,
-    m,
-    d,
-    a
-  };
 };
 const getCurrentDate = (time) => {
   let date = time ? new Date(time) : new Date();
@@ -102,10 +129,19 @@ const getCurrentDate = (time) => {
     week
   };
 };
+const tip = (title, icon, duration) => {
+  common_vendor.index.showToast({
+    title: title || "\u64CD\u4F5C\u6210\u529F",
+    icon: icon || "none",
+    duration: duration || 1500,
+    mask: true
+  });
+};
 var util = {
   formatTime,
   handelTime,
   getCurrentDate,
-  getChineseDate
+  getChineseDate,
+  tip
 };
 exports.util = util;
