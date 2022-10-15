@@ -103,9 +103,7 @@ page {
     font-weight: 800;
     background-image: linear-gradient(to right, rgb(220, 194, 11), rgb(10, 185, 156), rgb(4, 151, 99));
     color: #fff;
-}
-.write::after {
-    border: none;
+    bottom: 160px;
 }
 .scrool_square {
     width: 100%;

@@ -1,0 +1,68 @@
+{
+	"bsonType": "object",
+	"required": ["user_id"],
+	"permission": {
+		"read": "doc.user_id == auth.uid",
+		"create": "auth.uid != null",
+		"update": "doc.user_id == auth.uid",
+		"delete": "doc.user_id == auth.uid"
+	},
+	"properties": {
+		"_id": {
+			"description": "存储文档 ID（用户 ID），系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"description": "文章作者ID， 参考`uni-id-users` 表",
+			"foreignKey": "reacord-users._id"
+		},
+		"content": {
+			"bsonType": "string",
+			"title": "文章内容",
+			"description": "文章内容",
+			"label": "文章内容",
+			"trim": "right"
+		},
+		"is_sticky": {
+			"bsonType": "bool",
+			"title": "是否置顶",
+			"description": "是否置顶",
+			"permission": {
+				"write": false
+			},
+			"defaultValue": false
+		},
+		"imgUrl": {
+			"bsonType": "array",
+			"title": "文章图片地址",
+			"description": "文章图片地址"
+		},
+		"mood": {
+			"bsonType": "string",
+			"title": "心情",
+			"description": "心情"
+		},
+		"point": {
+			"bsonType": "GeoPoint",
+			"title": "当前发布位置",
+			"description": "当前发布位置"
+		},
+		"last_modify_date": {
+			"bsonType": "timestamp",
+			"title": "最后修改时间",
+			"description": "最后修改时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"title": "创建时间",
+			"description": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		}
+	},
+	"version": "0.0.1"
+}

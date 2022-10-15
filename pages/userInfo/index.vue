@@ -16,13 +16,14 @@
 <script setup>
 import { onLoad } from "@dcloudio/uni-app";
 import { ref, getCurrentInstance, watch } from 'vue';
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+const defaultAvatarUrl = ''
 const avatarUrl = ref(defaultAvatarUrl)
 const nickname = ref("")
 const disabled = ref(true)
 // watch([nickname,avatarUrl],([newX, newY],[oldX, oldY])=>{
 // })
 onLoad(() => {
+  uni.hideShareMenu()
   const instance = getCurrentInstance().proxy
   const eventChannel = instance.getOpenerEventChannel();
   eventChannel.once('userData', function (data) {
@@ -36,7 +37,19 @@ const onChooseAvatar = (e) => {
   disabled.value = false;
 }
 const submitInfo = (e) => {
-  uni.navigateBack()
+  // uni.navigateBack()
+  let ext = avatarUrl.value.split('.').pop()
+  uniCloud.uploadFile({
+    filePath: avatarUrl.value,
+    cloudPath: Date.now() + "." + ext,
+    success(res) {
+      console.log(res);
+    },
+    fail(error) {
+      console.log(error);
+      util.tip("上传失败", "error")
+    },
+  });
 }
 const input = () => {
   disabled.value = false

@@ -1,7 +1,7 @@
 <template>
     <!-- pages/mine/index.wxml -->
     <view :class="'container ' + 'noColor'">
-        <image class="background_image" :src="currentBackground || defaultImg" mode="aspectFill">
+        <image class="background_image" :src="currentBackground" mode="aspectFill">
         </image>
         <view class="main">
             <view class="con" :style="'height:' + customBar + 'px;padding-top:' + statusBar + 'px;'">
@@ -36,7 +36,7 @@
                                 style="border: 0; padding: 0; width: 100%"></button>
                         </view>
                         <view class="common">
-                            <text class="iconfont icon-shezhi" style="font-size: 22px" @tap="setApplet"></text>
+                            <text class="iconfont icon-shezhi" style="font-size: 22px"></text>
                             <text style="font-size: 12px; margin-top: 6px">意见反馈</text>
                             <button style="border: 0; padding: 0; width: 100%" :plain="true" class="shareBtn"
                                 open-type="feedback"></button>
@@ -55,8 +55,7 @@
             <view class="iconfont icon-chahao delIcon" @tap="showIfBackground"></view>
             <scroll-view scroll-x style="height: 110px; white-space: nowrap">
                 <view class="selectImg">
-                    <image class="img_background" style="width: 100%; height: 100%"
-                        :src="currentBackground || defaultImg" />
+                    <image class="img_background" style="width: 100%; height: 100%" :src="currentBackground" />
                 </view>
                 <view class="selectImg addImg" @tap="selectBackground">
                     <view class="iconfont icon-xiangji" style="font-size: 36px; margin-top: 8px"></view>
@@ -66,7 +65,7 @@
                 </view>
                 <view class="selectImg" v-for="(item, index) in imgList" :key="index">
                     <image @tap="selectImage" class="img_background" :data-url="item" style="width: 100%; height: 100%"
-                        :src="item || defaultImg" />
+                        :src="item" />
                 </view>
             </scroll-view>
         </view>
@@ -79,6 +78,7 @@
 // pages/mine/index.js
 import famous from '@/components/famous/famous';
 import { chooseFile } from '@/utils/upload';
+import { randomImg, shareImg } from '@/utils/index';
 import { ref, reactive } from 'vue';
 import { useGetTabBar } from "@/hooks/useGetTabBar";
 import {
@@ -86,12 +86,12 @@ import {
     onShareAppMessage,
     onReachBottom,
 } from "@dcloudio/uni-app";
+import util from "@/utils/util";
 useGetTabBar(1)
 const app = getApp();
 const statusBar = app.globalData.statusBar
 const customBar = app.globalData.customBar
 const custom = app.globalData.custom;
-const defaultImg = "/static/image/background/rainbow.jpg"
 const imgList = ref([])
 const scheduleLsits = ref([{
     short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
@@ -106,14 +106,14 @@ const scheduleLsits = ref([{
     id: 2
 },])
 const userInfo = reactive({
-    avatarUrl: '/static/image/vx.png',
+    avatarUrl: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/da5f56fe-c939-4168-9c49-ae76ed29d0d0.png',
     nickName: '用户XXXX',
 })
 const showBackground = ref(false)
 const loadMore = ref(false)
 //是否收藏小程序
 const ifCollect = ref(false)
-const currentBackground = ref('/static/image/background/rainbow.jpg')
+const currentBackground = ref('')
 const showIfBackground = () => {
     showBackground.value = !showBackground.value
 }
@@ -131,7 +131,20 @@ const selectBackground = () => {
         multiple: false
     })
         .then((res) => {
-            currentBackground.value = res[0].url
+            console.log(res);
+            currentBackground.value = res[0].url;
+            let ext = res[0].url.split('.').pop()
+            uniCloud.uploadFile({
+                filePath: res[0].url,
+                cloudPath: Date.now() + "." + ext,
+                success(res) {
+                    console.log(res);
+                },
+                fail(error) {
+                    console.log(error);
+                    util.tip("上传失败", "error")
+                },
+            });
         })
         .catch((error) => { });
 }
@@ -154,53 +167,41 @@ const collectApplet = () => {
         ifCollect.value = false
     }, 2000);
 }
-const setApplet = () => {
-    uni.showToast({
-        title: '暂未开发',
-        icon: 'error',
-        duration: 2000
-    });
-}
-const collectShort = () => {
+
+const collectShort = (item) => {
 }
 /**
   * 生命周期函数--监听页面加载
   */
 onLoad(() => {
-    const fs = uni.getFileSystemManager();
-    const pathName = '/static/image/background';
-    fs.readdir({
-        dirPath: pathName,
-        // dirPath: `${wx.env.USER_DATA_PATH}/recordDay/image`,
-        success: (res) => {
-            imgList.value = res.files.map((item) => `${pathName}/${item}`)
-        },
-        fail(res) {
-            console.error(res);
-        }
-    });
+    // uni.hideShareMenu()
+    imgList.value = randomImg
     uni.getStorage({
         key: 'currentBackground',
         success: (res) => {
             currentBackground.value = res.data
         },
         fail: (error) => {
-            currentBackground.value = defaultImg
+            const randomImgurl = imgList.value[Math.floor(Math.random() * imgList.value.length)];
+            currentBackground.value = randomImgurl;
+            uni.setStorage({
+                key: 'currentBackground',
+                data: randomImgurl
+            });
         }
     });
 })
 /**
 * 用户点击右上角分享
 */
-onShareAppMessage(() => {
-    const shareimg = ['/static/image/write.png', '/static/image/write1.png', '/static/image/write2.png', '/static/image/write3.png'];
-    const randomImg = shareimg[Math.floor(Math.random() * shareimg.length)];
-    return {
-        title: '写下你的生活',
-        path: '/page/mine/index',
-        imageUrl: randomImg
-    };
-})
+// onShareAppMessage(() => {
+//     const randomImgs = shareImg[Math.floor(Math.random() * shareImg.length)];
+//     return {
+//         title: '写下你的生活',
+//         path: '/page/mine/index',
+//         imageUrl: randomImgs
+//     };
+// })
 onReachBottom(() => {
     if (loadMore.value) return
     loadMore.value = true

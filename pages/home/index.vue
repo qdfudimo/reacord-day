@@ -85,16 +85,13 @@
 
 <script setup>
 // pages/mine/index.js
-// import {
-//     onLoad,
-//     onShow,
-// } from "@dcloudio/uni-app";
+import { onLoad, onShareAppMessage, onShow } from "@dcloudio/uni-app";
 import { ref, reactive, watch } from 'vue';
 import diaLog from "@/components/diaLog/diaLog";
 import { useGetTabBar } from "@/hooks/useGetTabBar";
 import util from "@/utils/util";
 import { chooseFile } from '@/utils/upload';
-import { radioData, category, defaultImg } from '@/utils/index';
+import { radioData, category, defaultImg, randomImg, shareImg } from '@/utils/index';
 useGetTabBar(0)
 const app = getApp();
 const currentDate = util.getCurrentDate()
@@ -104,10 +101,14 @@ const backgroundImg = reactive({
     //背景图片地址
     currentBackground: "",
     //系统默认图片
-    defaultBackground: "/static/image/background/anime.jpg",
+    defaultBackground: "",
     //图片临时选择的图片
     temporaryImg: ""
 });
+onLoad(() => {
+    const randomImgurl = randomImg[Math.floor(Math.random() * randomImg.length)];
+    backgroundImg.defaultBackground = randomImgurl;
+})
 const showDialog = ref(false)
 const showClanderDialog = ref(false)
 //按钮图片选择类型 默认 还是自选
@@ -238,6 +239,42 @@ const handelCheck = (e) => {
             break;
     }
 }
+/**
+* 用户点击右上角分享
+*/
+onShareAppMessage(() => {
+    // const randomImgs = shareImg[Math.floor(Math.random() * shareImg.length)];
+    return {
+        title: '写下你的生活',
+        path: '/page/home/index',
+        // imageUrl: randomImgs
+    };
+})
+var myAtoi = function (s) {
+    let numStr = ''
+    let startNumIndex = 0
+    let trueIndex = -1
+    for (var i = 0; i < s.length; i++) {
+        if (s[i] === ' ') {
+            trueIndex = i + 1
+            continue
+        }
+        if (!(/[0-9]/.test(s[trueIndex + 1]))) {
+            console.log(/[0-9]/.test(s[trueIndex + 1]),s[trueIndex + 1]);
+            console.log(s[i]);
+            numStr = ""
+            break
+        }
+        if (/[a-zA-z]/.test(s[i])) {
+            break
+        }
+        numStr += s[i]
+    }
+    console.log(numStr, 11);
+
+    return numStr ? Number(numStr) : 0
+}
+myAtoi('   -12.88 ancnmskdjn 778'.trim())
 </script>
 <style lang="scss" scoped>
 page {

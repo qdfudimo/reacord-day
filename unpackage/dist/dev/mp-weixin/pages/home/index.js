@@ -18,8 +18,12 @@ const _sfc_main = {
     const CDate = utils_util.util.getChineseDate();
     const backgroundImg = common_vendor.reactive({
       currentBackground: "",
-      defaultBackground: "/static/image/background/anime.jpg",
+      defaultBackground: "",
       temporaryImg: ""
+    });
+    common_vendor.onLoad(() => {
+      const randomImgurl = utils_index.randomImg[Math.floor(Math.random() * utils_index.randomImg.length)];
+      backgroundImg.defaultBackground = randomImgurl;
     });
     const showDialog = common_vendor.ref(false);
     const showClanderDialog = common_vendor.ref(false);
@@ -144,6 +148,35 @@ const _sfc_main = {
           break;
       }
     };
+    common_vendor.onShareAppMessage(() => {
+      return {
+        title: "\u5199\u4E0B\u4F60\u7684\u751F\u6D3B",
+        path: "/page/home/index"
+      };
+    });
+    var myAtoi = function(s) {
+      let numStr = "";
+      let trueIndex = -1;
+      for (var i = 0; i < s.length; i++) {
+        if (s[i] === " ") {
+          trueIndex = i + 1;
+          continue;
+        }
+        if (!/[0-9]/.test(s[trueIndex + 1])) {
+          console.log(/[0-9]/.test(s[trueIndex + 1]), s[trueIndex + 1]);
+          console.log(s[i]);
+          numStr = "";
+          break;
+        }
+        if (/[a-zA-z]/.test(s[i])) {
+          break;
+        }
+        numStr += s[i];
+      }
+      console.log(numStr, 11);
+      return numStr ? Number(numStr) : 0;
+    };
+    myAtoi("   -12.88 ancnmskdjn 778".trim());
     return (_ctx, _cache) => {
       return {
         a: backgroundImg.currentBackground || backgroundImg.defaultBackground || common_vendor.unref(utils_index.defaultImg),
@@ -214,4 +247,5 @@ const _sfc_main = {
   }
 };
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-71e217db"], ["__file", "E:/xiaocx/reacord-day/pages/home/index.vue"]]);
+_sfc_main.__runtimeHooks = 2;
 wx.createPage(MiniProgramPage);

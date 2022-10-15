@@ -1,7 +1,10 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
 var utils_upload = require("../../utils/upload.js");
+var utils_index = require("../../utils/index.js");
 var hooks_useGetTabBar = require("../../hooks/useGetTabBar.js");
+var utils_util = require("../../utils/util.js");
+require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
   common_vendor.unref(famous)();
 }
@@ -14,7 +17,6 @@ const _sfc_main = {
     const statusBar = app.globalData.statusBar;
     const customBar = app.globalData.customBar;
     const custom = app.globalData.custom;
-    const defaultImg = "/static/image/background/rainbow.jpg";
     const imgList = common_vendor.ref([]);
     const scheduleLsits = common_vendor.ref([
       {
@@ -31,13 +33,13 @@ const _sfc_main = {
       }
     ]);
     const userInfo = common_vendor.reactive({
-      avatarUrl: "/static/image/vx.png",
+      avatarUrl: "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/da5f56fe-c939-4168-9c49-ae76ed29d0d0.png",
       nickName: "\u7528\u6237XXXX"
     });
     const showBackground = common_vendor.ref(false);
     const loadMore = common_vendor.ref(false);
     const ifCollect = common_vendor.ref(false);
-    const currentBackground = common_vendor.ref("/static/image/background/rainbow.jpg");
+    const currentBackground = common_vendor.ref("");
     const showIfBackground = () => {
       showBackground.value = !showBackground.value;
     };
@@ -54,7 +56,20 @@ const _sfc_main = {
         maxCount: 1,
         multiple: false
       }).then((res) => {
+        console.log(res);
         currentBackground.value = res[0].url;
+        let ext = res[0].url.split(".").pop();
+        common_vendor.pn.uploadFile({
+          filePath: res[0].url,
+          cloudPath: Date.now() + "." + ext,
+          success(res2) {
+            console.log(res2);
+          },
+          fail(error) {
+            console.log(error);
+            utils_util.util.tip("\u4E0A\u4F20\u5931\u8D25", "error");
+          }
+        });
       }).catch((error) => {
       });
     };
@@ -75,45 +90,24 @@ const _sfc_main = {
         ifCollect.value = false;
       }, 2e3);
     };
-    const setApplet = () => {
-      common_vendor.index.showToast({
-        title: "\u6682\u672A\u5F00\u53D1",
-        icon: "error",
-        duration: 2e3
-      });
-    };
-    const collectShort = () => {
+    const collectShort = (item) => {
     };
     common_vendor.onLoad(() => {
-      const fs = common_vendor.index.getFileSystemManager();
-      const pathName = "/static/image/background";
-      fs.readdir({
-        dirPath: pathName,
-        success: (res) => {
-          imgList.value = res.files.map((item) => `${pathName}/${item}`);
-        },
-        fail(res) {
-          console.error(res);
-        }
-      });
+      imgList.value = utils_index.randomImg;
       common_vendor.index.getStorage({
         key: "currentBackground",
         success: (res) => {
           currentBackground.value = res.data;
         },
         fail: (error) => {
-          currentBackground.value = defaultImg;
+          const randomImgurl = imgList.value[Math.floor(Math.random() * imgList.value.length)];
+          currentBackground.value = randomImgurl;
+          common_vendor.index.setStorage({
+            key: "currentBackground",
+            data: randomImgurl
+          });
         }
       });
-    });
-    common_vendor.onShareAppMessage(() => {
-      const shareimg = ["/static/image/write.png", "/static/image/write1.png", "/static/image/write2.png", "/static/image/write3.png"];
-      const randomImg = shareimg[Math.floor(Math.random() * shareimg.length)];
-      return {
-        title: "\u5199\u4E0B\u4F60\u7684\u751F\u6D3B",
-        path: "/page/mine/index",
-        imageUrl: randomImg
-      };
     });
     common_vendor.onReachBottom(() => {
       if (loadMore.value)
@@ -125,7 +119,7 @@ const _sfc_main = {
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
-        a: currentBackground.value || defaultImg,
+        a: currentBackground.value,
         b: common_vendor.s("height:" + common_vendor.unref(customBar) + "px;padding-top:" + common_vendor.unref(statusBar) + "px;"),
         c: userInfo.avatarUrl || "/static/image/vx.png",
         d: common_vendor.t(userInfo.nickName || "\u7528\u6237XXXX"),
@@ -134,10 +128,9 @@ const _sfc_main = {
         g: common_vendor.t(0),
         h: common_vendor.t(0),
         i: common_vendor.o(collectApplet),
-        j: common_vendor.o(setApplet),
-        k: !scheduleLsits.value.length
+        j: !scheduleLsits.value.length
       }, !scheduleLsits.value.length ? {} : {}, {
-        l: common_vendor.f(scheduleLsits.value, (item, index, i0) => {
+        k: common_vendor.f(scheduleLsits.value, (item, index, i0) => {
           return {
             a: "2e3e0f84-0-" + i0,
             b: common_vendor.p({
@@ -146,26 +139,26 @@ const _sfc_main = {
             c: index
           };
         }),
-        m: common_vendor.o(collectShort),
-        n: showBackground.value
+        l: common_vendor.o(collectShort),
+        m: showBackground.value
       }, showBackground.value ? {
-        o: common_vendor.o(showIfBackground),
-        p: currentBackground.value || defaultImg,
-        q: common_vendor.o(selectBackground),
-        r: common_vendor.f(imgList.value, (item, index, i0) => {
+        n: common_vendor.o(showIfBackground),
+        o: currentBackground.value,
+        p: common_vendor.o(selectBackground),
+        q: common_vendor.f(imgList.value, (item, index, i0) => {
           return {
             a: item,
-            b: item || defaultImg,
+            b: item,
             c: index
           };
         }),
-        s: common_vendor.o(selectImage)
+        r: common_vendor.o(selectImage)
       } : {}, {
-        t: ifCollect.value
+        s: ifCollect.value
       }, ifCollect.value ? {
-        v: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
+        t: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
       } : {}, {
-        w: common_vendor.n("container noColor")
+        v: common_vendor.n("container noColor")
       });
     };
   }

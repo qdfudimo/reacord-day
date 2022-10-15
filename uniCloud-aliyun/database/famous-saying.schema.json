@@ -1,0 +1,34 @@
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": false,
+		"update": true,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"famousContent": {
+			"bsonType": "string",
+			"description": "名言名句"
+		},
+		"creator": {
+			"bsonType": "string",
+			"description": "来源||创作人",
+			"defaultValue": "匿名"
+		},
+		"collectPersons": {
+			"bsonType": "number",
+			"description": "收藏人数",
+			"defaultValue": 0
+		},
+		"collection": {
+			"bsonType": "array",
+			"description": "收藏id",
+			"defaultValue": []
+		}
+	}
+}

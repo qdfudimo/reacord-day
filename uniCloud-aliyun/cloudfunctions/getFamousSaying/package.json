@@ -1,0 +1,7 @@
+{
+  "name": "getFamousSaying",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

@@ -3,11 +3,12 @@ var common_vendor = require("../../common/vendor.js");
 const _sfc_main = {
   __name: "index",
   setup(__props) {
-    const defaultAvatarUrl = "https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0";
+    const defaultAvatarUrl = "";
     const avatarUrl = common_vendor.ref(defaultAvatarUrl);
     const nickname = common_vendor.ref("");
     const disabled = common_vendor.ref(true);
     common_vendor.onLoad(() => {
+      common_vendor.index.hideShareMenu();
       const instance = common_vendor.getCurrentInstance().proxy;
       const eventChannel = instance.getOpenerEventChannel();
       eventChannel.once("userData", function(data) {
@@ -21,7 +22,18 @@ const _sfc_main = {
       disabled.value = false;
     };
     const submitInfo = (e) => {
-      common_vendor.index.navigateBack();
+      let ext = avatarUrl.value.split(".").pop();
+      common_vendor.pn.uploadFile({
+        filePath: avatarUrl.value,
+        cloudPath: Date.now() + "." + ext,
+        success(res) {
+          console.log(res);
+        },
+        fail(error) {
+          console.log(error);
+          util.tip("\u4E0A\u4F20\u5931\u8D25", "error");
+        }
+      });
     };
     const input = () => {
       disabled.value = false;

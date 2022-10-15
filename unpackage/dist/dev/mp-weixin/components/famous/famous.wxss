@@ -30,6 +30,7 @@
   width: 100%;
   border-radius: 6px;
   padding: 6px;
+  padding-left: 10px;
   box-sizing: border-box;
   background-image: radial-gradient(rgba(107, 107, 107, 0.08) 12%, transparent 0), radial-gradient(rgba(175, 71, 71, 0.1) 12%, transparent 0);
   background-size: 14px 14px;

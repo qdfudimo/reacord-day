@@ -1,0 +1,38 @@
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"description": "创建人ID， 参考`uni-id-users` 表",
+			"foreignKey": "reacord-users._id"
+		},
+		"type": {
+			"bsonType": "int",
+			"title": "图片应用于",
+			"description": "图片应用于：0 首页背景 1 我的背景",
+			"defaultValue": 0,
+			"enum": [{
+				"text": "首页背景",
+				"value": 0
+			}, {
+				"text": "我的背景",
+				"value": 1
+			}]
+		},
+		"imgUrl": {
+			"bsonType": "string",
+			"title": "背景图片地址",
+			"description": "背景图片地址"
+		}
+	}
+}

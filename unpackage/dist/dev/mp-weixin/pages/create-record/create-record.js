@@ -57,6 +57,7 @@ const _sfc_main = {
     };
   },
   onLoad: function(options) {
+    common_vendor.index.hideShareMenu();
     common_vendor.index.showNavigationBarLoading();
     common_vendor.index.setNavigationBarTitle({
       title: "\u5199\u8BF4\u8BF4"

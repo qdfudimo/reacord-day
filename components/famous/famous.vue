@@ -1,13 +1,12 @@
 <template>
     <view class="content">
         <text class="text" :user-select="true">
-           {{props.homeShort.short}}
+            {{props.homeShort.famousContent}}
         </text>
         <view class="name">
             <view :style="`color:${props.homeShort.ifCollect?'#FBBD08':'#ccc'}`"
                 class="shoucang iconfont icon-shoucang2" @tap="collectShort"></view>
-            <view class="whoSay"> {{props.homeShort.author.indexOf("-")!=-1?props.homeShort.author:"-- " +
-            props.homeShort.author}}
+            <view class="whoSay"> {{"-- " + (props.homeShort.creator||"匿名")}}
             </view>
         </view>
         <view class="shuqian iconfont icon-label"></view>
@@ -41,6 +40,7 @@ const collectShort = (e) => {
     width: 100%;
     border-radius: 6px;
     padding: 6px;
+    padding-left: 10px;
     box-sizing: border-box;
     background-image: radial-gradient(rgba(107, 107, 107, 0.08) 12%, transparent 0), radial-gradient(rgba(175, 71, 71, 0.1) 12%, transparent 0);
     background-size: 14px 14px;

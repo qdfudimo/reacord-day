@@ -20,7 +20,7 @@
             </view>
         </scroll-view>
         <view v-else class="empty">
-            <image class="image" src="/static/image/empty.png" />
+            <image class="image" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/6a3cc55f-f376-4ea0-a2a2-eec5f36f7054.png" />
             <button class="write" @tap="goRecord"> 去写篇日记</button>
         </view>
         <view @tap="scrollToop" :class="'viewIcon ' + (ifTop ? 'showTop' : 'hideTop')">
@@ -108,6 +108,7 @@ export default {
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
+        uni.hideShareMenu()
         uni.showNavigationBarLoading();
         uni.setNavigationBarTitle({
             title: '日记本'

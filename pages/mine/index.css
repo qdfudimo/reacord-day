@@ -1,9 +1,4 @@
 /* pages/mine/index.wxss */
-page {
-    width: auto;
-    height: auto;
-    /* background-color: rgba(230, 230, 230,.6); */
-}
 
 .container {
     width: 100%;
@@ -13,6 +8,7 @@ page {
     position: relative;
     padding-bottom: calc(54px + constant(safe-area-inset-bottom));
     padding-bottom: calc(54px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
 }
 
 .background_image {

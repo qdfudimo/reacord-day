@@ -18,10 +18,10 @@ const _sfc_main = {
     };
     return (_ctx, _cache) => {
       return {
-        a: common_vendor.t(props.homeShort.short),
+        a: common_vendor.t(props.homeShort.famousContent),
         b: common_vendor.s(`color:${props.homeShort.ifCollect ? "#FBBD08" : "#ccc"}`),
         c: common_vendor.o(collectShort),
-        d: common_vendor.t(props.homeShort.author.indexOf("-") != -1 ? props.homeShort.author : "-- " + props.homeShort.author)
+        d: common_vendor.t("-- " + (props.homeShort.creator || "\u533F\u540D"))
       };
     };
   }

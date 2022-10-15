@@ -1,5 +1,9 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
+var utils_util = require("../../utils/util.js");
+var utils_request = require("../../utils/request.js");
+require("../../utils/index.js");
+require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
   common_vendor.unref(famous)();
 }
@@ -8,44 +12,70 @@ const _sfc_main = {
   __name: "index",
   setup(__props) {
     const homeShort = common_vendor.reactive({
-      data: [
-        {
-          short: "\u8981\u4F7F\u6574\u4E2A\u4EBA\u751F\u90FD\u8FC7\u5F97\u8212\u9002\u3001\u6109\u5FEB\uFF0C\u8FD9\u662F\u4E0D\u53EF\u80FD\u7684\uFF0C\u56E0\u4E3A\u4EBA\u7C7B\u5FC5\u987B\u5177\u5907\u4E00\u79CD\u80FD\u5E94\u4ED8\u9006\u5883\u7684\u6001\u5EA6",
-          author: "\u6069\u683C\u5C14",
-          ifCollect: false,
-          id: 1
-        },
-        {
-          short: "\u8981\u4F7F\u6574\u4E2A\u4EBA\u751F\u90FD\u8FC7\u5F97\u8212\u9002\u3001\u6109\u5FEB\uFF0C\u8FD9\u662F\u4E0D\u53EF\u80FD\u7684\uFF0C\u56E0\u4E3A\u4EBA\u7C7B\u5FC5\u987B\u5177\u5907\u4E00\u79CD\u80FD\u5E94\u4ED8\u9006\u5883\u7684\u6001\u5EA6",
-          author: "\u6069\u683C\u5C14",
-          ifCollect: false,
-          id: 2
-        }
-      ]
+      data: []
     });
     const loadMore = common_vendor.ref(false);
+    const currentPage = common_vendor.ref(1);
     const ifMoreData = common_vendor.ref(false);
     const collectShort = (e) => {
-      console.log(e);
+      console.log(e._id);
+      let data = {
+        userId: "1",
+        type: e.ifCollect ? "noCollect" : "collect",
+        id: e._id
+      };
+      common_vendor.index.showModal({
+        content: e.ifCollect ? "\u662F\u5426\u53D6\u6D88\u6536\u85CF" : "\u662F\u5426\u6DFB\u52A0\u6536\u85CF",
+        success: function(res) {
+          if (res.confirm) {
+            utils_request.request("getFamousSaying", data).then(({ result = {} }) => {
+              if (result.updated != 1) {
+                utils_util.util.tip("\u64CD\u4F5C\u5931\u8D25", "error");
+              } else {
+                e.ifCollect = !e.ifCollect;
+              }
+            });
+          } else if (res.cancel) {
+            console.log("\u7528\u6237\u70B9\u51FB\u53D6\u6D88");
+          }
+        }
+      });
     };
-    let id = 12;
-    common_vendor.onReachBottom(() => {
+    const requests = async (e) => {
+      getFamousSaying("search");
+    };
+    const requests1 = async (e) => {
+      getFamousSaying("mySearch");
+    };
+    const getFamousSaying = async (type) => {
+      let data = {
+        userId: "1",
+        type
+      };
+      if (type == "search" || type == "mySearch") {
+        data.pageSize = 10;
+        data.currentPage = currentPage.value;
+      }
+      let { result } = await utils_request.request("getFamousSaying", data);
+      console.log(result);
+      if (result.code === 0) {
+        if (type == "search") {
+          homeShort.data.push(...result.data);
+          if (!result.data.length || result.data.length < 10) {
+            ifMoreData.value = true;
+          }
+        }
+      } else {
+        utils_util.util.tip("\u8BF7\u6C42\u5931\u8D25", "error");
+      }
+    };
+    common_vendor.onReachBottom(async () => {
       if (loadMore.value || ifMoreData.value)
         return;
       loadMore.value = true;
-      setTimeout(() => {
-        id++;
-        homeShort.data.push({
-          short: "\u8981\u4F7F\u6574\u4E2A\u4EBA\u751F\u90FD\u8FC7\u5F97\u8212\u9002\u3001\u6109\u5FEB\uFF0C\u8FD9\u662F\u4E0D\u53EF\u80FD\u7684\uFF0C\u56E0\u4E3A\u4EBA\u7C7B\u5FC5\u987B\u5177\u5907\u4E00\u79CD\u80FD\u5E94\u4ED8\u9006\u5883\u7684\u6001\u5EA6" + id,
-          author: "\u6069\u683C\u5C14",
-          ifCollect: true,
-          id
-        });
-        loadMore.value = false;
-        if (id == 14) {
-          ifMoreData.value = true;
-        }
-      }, 300);
+      currentPage.value++;
+      await getFamousSaying("search");
+      loadMore.value = false;
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -57,12 +87,19 @@ const _sfc_main = {
             b: common_vendor.p({
               homeShort: item
             }),
-            c: item.id
+            c: item._id
           };
         }),
         c: common_vendor.o(collectShort),
-        d: ifMoreData.value
-      }, ifMoreData.value ? {} : {}) : {});
+        d: loadMore.value || ifMoreData.value
+      }, loadMore.value || ifMoreData.value ? common_vendor.e({
+        e: loadMore.value
+      }, loadMore.value ? {} : ifMoreData.value ? {} : {}, {
+        f: ifMoreData.value
+      }) : {}) : {}, {
+        g: common_vendor.o(requests),
+        h: common_vendor.o(requests1)
+      });
     };
   }
 };
