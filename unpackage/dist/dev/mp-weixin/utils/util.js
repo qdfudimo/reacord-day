@@ -20,6 +20,7 @@ var __spreadValues = (a, b) => {
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var common_vendor = require("../common/vendor.js");
 var utils_index = require("./index.js");
+var utils_request = require("./request.js");
 var uni_modules_uniCalendar_components_uniCalendar_calendar = require("../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 const formatTimeDate = (date = new Date()) => {
   const year = date.getFullYear();
@@ -137,11 +138,38 @@ const tip = (title, icon, duration) => {
     mask: true
   });
 };
+const collectFamous = (e, callBack) => {
+  let data = {
+    userId: "1",
+    type: e.ifCollect ? "noCollect" : "collect",
+    id: e._id
+  };
+  common_vendor.index.showModal({
+    title: "\u63D0\u793A",
+    content: !e.ifCollect ? "\u662F\u5426\u6DFB\u52A0\u5230\u6211\u7684\u6536\u85CF" : "\u662F\u5426\u53D6\u6D88\u6536\u85CF",
+    success: function(res) {
+      if (res.confirm) {
+        utils_request.request("getFamousSaying", data).then(({
+          result = {}
+        }) => {
+          if (result.updated != 1) {
+            tip("\u64CD\u4F5C\u5931\u8D25", "error");
+          } else {
+            e.ifCollect = !e.ifCollect;
+            callBack && callBack();
+          }
+        });
+      } else if (res.cancel)
+        ;
+    }
+  });
+};
 var util = {
   formatTime,
   handelTime,
   getCurrentDate,
   getChineseDate,
+  collectFamous,
   tip
 };
 exports.util = util;

@@ -44,11 +44,19 @@
                     </view>
                     <view class="empty" v-if="!scheduleLsits.length">暂无记录</view>
                 </view>
-                <block v-for="(item, index) in scheduleLsits" :key="index">
+                <block v-for="(item,index) in scheduleLsits" :key="item._id">
                     <view class="talkList">
-                        <famous :homeShort="item" @collectShort="collectShort"></famous>
+                        <famous :homeShort="item" @collectShort="collectShort(item,index)"></famous>
                     </view>
                 </block>
+                <view class="more iconfont icon-a-weixiaokaixingaoxing-03" v-if="loadMore||ifMoreData">
+                    <text v-if="loadMore">
+                        正在加载...
+                    </text>
+                    <text v-else-if="ifMoreData">
+                        😊没有更多了
+                    </text>
+                </view>
             </view>
         </view>
         <view class="selectBackground" v-if="showBackground">
@@ -87,42 +95,52 @@ import {
     onReachBottom,
 } from "@dcloudio/uni-app";
 import util from "@/utils/util";
+import { request } from "@/utils/request";
 useGetTabBar(1)
 const app = getApp();
 const statusBar = app.globalData.statusBar
 const customBar = app.globalData.customBar
 const custom = app.globalData.custom;
 const imgList = ref([])
-const scheduleLsits = ref([{
-    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
-    author: "恩格尔",
-    ifCollect: true,
-    id: 1
-},
-{
-    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
-    author: "恩格尔",
-    ifCollect: false,
-    id: 2
-},])
+const scheduleLsits = ref([])
 const userInfo = reactive({
     avatarUrl: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/da5f56fe-c939-4168-9c49-ae76ed29d0d0.png',
     nickName: '用户XXXX',
 })
 const showBackground = ref(false)
 const loadMore = ref(false)
+const ifMoreData = ref(false)
 //是否收藏小程序
 const ifCollect = ref(false)
 const currentBackground = ref('')
+const currentBackgroundId = ref('')
+const currentPage = ref(1)
 const showIfBackground = () => {
     showBackground.value = !showBackground.value
 }
 const selectImage = (e) => {
-    currentBackground.value = e.target.dataset.url
-    uni.setStorage({
-        key: 'currentBackground',
-        data: e.target.dataset.url
-    });
+    let url = e.target.dataset.url
+    if (url == currentBackground.value) return
+    changeFile(url)
+}
+const changeFile = (url) => {
+    let data = {
+        userId: "1",
+        type: "update",
+        url,
+        id: currentBackgroundId.value,
+        oldImgUrl: currentBackground.value
+    }
+    data.isDel = !randomImg.includes(currentBackground.value)
+    request("backgroundUrl", data).then(({ result = {} }) => {
+        if (result.updated) {
+            currentBackground.value = url
+            uni.setStorage({
+                key: 'currentBackground',
+                data: url
+            });
+        }
+    })
 }
 const selectBackground = () => {
     chooseFile({
@@ -131,14 +149,13 @@ const selectBackground = () => {
         multiple: false
     })
         .then((res) => {
-            console.log(res);
-            currentBackground.value = res[0].url;
+            // currentBackground.value = res[0].url;
             let ext = res[0].url.split('.').pop()
             uniCloud.uploadFile({
                 filePath: res[0].url,
                 cloudPath: Date.now() + "." + ext,
                 success(res) {
-                    console.log(res);
+                    changeFile(res.fileID)
                 },
                 fail(error) {
                     console.log(error);
@@ -168,14 +185,53 @@ const collectApplet = () => {
     }, 2000);
 }
 
-const collectShort = (item) => {
+const collectShort = (item, index) => {
+    util.collectFamous(item, () => scheduleLsits.value.splice(index, 1));
+}
+const getFamousSaying = async (type) => {
+    let data = {
+        userId: "1",
+        type,
+        pageSize: 10,
+        currentPage: currentPage.value
+    }
+    try {
+        let { result = {} } = await request("getFamousSaying", data)
+        if (result.affectedDocs) {
+            scheduleLsits.value.push(...result.data);
+            if (!result.data.length || result.data.length < 10) {
+                ifMoreData.value = true
+            }
+        }
+    } catch (error) {
+        util.tip("请求失败", "error")
+    }
+}
+const requsetImg = () => {
+    let data = {
+        userId: "1",
+        type: "read",
+        imgType: 1,
+    }
+    request("backgroundUrl", data).then(({ result = {} }) => {
+        if (result.affectedDocs) {
+            currentBackground.value = result.data[0].imgUrl || ""
+            currentBackgroundId.value = result.data[0]._id || ""
+            uni.setStorage({
+                key: 'currentBackground',
+                data: currentBackground.value
+            });
+        }
+    })
 }
 /**
   * 生命周期函数--监听页面加载
   */
 onLoad(() => {
     // uni.hideShareMenu()
-    imgList.value = randomImg
+    imgList.value = randomImg;
+    getFamousSaying("mySearch")
+    requsetImg()
     uni.getStorage({
         key: 'currentBackground',
         success: (res) => {
@@ -202,12 +258,12 @@ onLoad(() => {
 //         imageUrl: randomImgs
 //     };
 // })
-onReachBottom(() => {
-    if (loadMore.value) return
+onReachBottom(async () => {
+    if (loadMore.value || ifMoreData.value) return
     loadMore.value = true
-    setTimeout(() => {
-        loadMore.value = false
-    }, 300)
+    currentPage.value++
+    await getFamousSaying("mySearch")
+    loadMore.value = false
 })
 
 </script>

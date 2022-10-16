@@ -3,6 +3,7 @@ var common_vendor = require("../../common/vendor.js");
 var hooks_useGetTabBar = require("../../hooks/useGetTabBar.js");
 var utils_util = require("../../utils/util.js");
 var utils_upload = require("../../utils/upload.js");
+var utils_request = require("../../utils/request.js");
 var utils_index = require("../../utils/index.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
@@ -19,27 +20,68 @@ const _sfc_main = {
     const backgroundImg = common_vendor.reactive({
       currentBackground: "",
       defaultBackground: "",
-      temporaryImg: ""
-    });
-    common_vendor.onLoad(() => {
-      const randomImgurl = utils_index.randomImg[Math.floor(Math.random() * utils_index.randomImg.length)];
-      backgroundImg.defaultBackground = randomImgurl;
+      temporaryImg: "",
+      imgId: ""
     });
     const showDialog = common_vendor.ref(false);
+    const isOriginal = common_vendor.ref(false);
+    const confirmDisabled = common_vendor.ref(false);
     const showClanderDialog = common_vendor.ref(false);
     const checkImgType = common_vendor.ref("default");
     const textareaValue = common_vendor.ref("");
     const inputVal = common_vendor.ref("");
+    let ifchangeBackGroud = false;
+    const homeShort = common_vendor.reactive({
+      data: {
+        famousContent: "",
+        creator: "",
+        _id: "",
+        ifCollect: false
+      }
+    });
     common_vendor.watch(() => textareaValue.value, (val, oldVal) => {
-      if (!val && val == 0)
+      if (!val)
         inputVal.value = "";
     });
-    const homeShort = common_vendor.reactive({
-      short: "\u8981\u4F7F\u6574\u4E2A\u4EBA\u751F\u90FD\u8FC7\u5F97\u8212\u9002\u3001\u6109\u5FEB\uFF0C\u8FD9\u662F\u4E0D\u53EF\u80FD\u7684\uFF0C\u56E0\u4E3A\u4EBA\u7C7B\u5FC5\u987B\u5177\u5907\u4E00\u79CD\u80FD\u5E94\u4ED8\u9006\u5883\u7684\u6001\u5EA6",
-      author: "\u6069\u683C\u5C14",
-      ifCollect: false,
-      isChangeImg: false
+    common_vendor.onLoad(() => {
+      requsetImg();
+      requsetFamous();
     });
+    const requsetImg = () => {
+      let data = {
+        userId: "1",
+        type: "read",
+        imgType: 0
+      };
+      utils_request.request("backgroundUrl", data).then(({ result = {} }) => {
+        if (result.affectedDocs != 0) {
+          backgroundImg.currentBackground = result.data[0].imgUrl || "";
+          backgroundImg.imgId = result.data[0]._id || "";
+        }
+        if (backgroundImg.defaultBackground)
+          return;
+        const randomImgurl = utils_index.randomImg[Math.floor(Math.random() * utils_index.randomImg.length)];
+        backgroundImg.defaultBackground = randomImgurl;
+      });
+    };
+    const requsetFamous = () => {
+      let data = {
+        userId: "1",
+        type: "read"
+      };
+      utils_request.request("signatureHistory", data).then(({ result = {} }) => {
+        if (result.affectedDocs == 1) {
+          let { famousContent, creator, ifCollect = false, _id = "" } = result.data[0];
+          homeShort.data.famousContent = famousContent;
+          homeShort.data.creator = creator;
+          homeShort.data.ifCollect = ifCollect;
+          homeShort.data._id = _id;
+          isOriginal.value = result.isOriginal;
+        } else {
+          isOriginal.value = false;
+        }
+      });
+    };
     const goRecord = () => {
       common_vendor.index.navigateTo({
         url: `../create-record/create-record`
@@ -47,15 +89,14 @@ const _sfc_main = {
     };
     const changeImg = () => {
       showDialog.value = true;
-      textareaValue.value = homeShort.short;
-      inputVal.value = homeShort.author;
-      if (homeShort.isChangeImg) {
-        checkImgType.value = "optional";
-        backgroundImg.temporaryImg = backgroundImg.currentBackground;
-      } else {
-        checkImgType.value = "default";
-        backgroundImg.temporaryImg = "";
+      confirmDisabled.value = false;
+      ifchangeBackGroud = false;
+      if (isOriginal.value) {
+        textareaValue.value = homeShort.data.famousContent;
+        inputVal.value = homeShort.data.creator;
       }
+      checkImgType.value = backgroundImg.imgId ? "optional" : "default";
+      backgroundImg.temporaryImg = backgroundImg.imgId ? backgroundImg.currentBackground : "";
     };
     const radioChange = (e) => {
       changeBackIMG(e.detail.value);
@@ -79,24 +120,54 @@ const _sfc_main = {
           maxCount: 1,
           multiple: false
         }).then((res) => {
+          ifchangeBackGroud = true;
           backgroundImg.temporaryImg = res[0].url;
         }).catch((error) => {
+          console.log(error, "error");
           if (backgroundImg.temporaryImg)
             return;
           checkImgType.value = "default";
         });
       }
     };
-    const confirm = () => {
+    const confirm = async () => {
+      confirmDisabled.value = true;
+      let oldImgUrl = backgroundImg.currentBackground;
       backgroundImg.currentBackground = checkImgType.value == "default" ? backgroundImg.defaultBackground : backgroundImg.temporaryImg;
+      let data = {
+        userId: "1",
+        type: "add",
+        imgType: 0,
+        oldImgUrl,
+        id: backgroundImg.imgId
+      };
       if (checkImgType.value == "optional") {
-        homeShort.isChangeImg = true;
+        if (ifchangeBackGroud) {
+          let res = await utils_upload.uplodFile(backgroundImg.currentBackground);
+          if (res.success) {
+            data.url = res.fileID;
+            let { result = {} } = await utils_request.request("backgroundUrl", data);
+            result.success && (backgroundImg.imgId = result.id);
+          }
+        }
+      } else {
+        if (backgroundImg.imgId) {
+          data.type = "delete";
+          await utils_request.request("backgroundUrl", data);
+          backgroundImg.imgId = "";
+        }
       }
-      if (textareaValue.value) {
-        homeShort.short = textareaValue.value;
-        homeShort.author = inputVal.value;
-        homeShort.homeShort = false;
+      if (textareaValue.value != homeShort.data.famousContent || homeShort.data.creator != inputVal.value) {
+        let text = {
+          famousContent: textareaValue.value,
+          creator: inputVal.value,
+          userId: "1",
+          type: "add"
+        };
+        isOriginal.value && (text.id = homeShort.data._id);
+        await utils_request.request("signatureHistory", text);
       }
+      requsetFamous();
       showDialog.value = false;
     };
     const cancle = () => {
@@ -106,16 +177,7 @@ const _sfc_main = {
       inputVal.value = textareaValue.value = "";
     };
     const collectShort = (e) => {
-      common_vendor.index.showModal({
-        title: "\u63D0\u793A",
-        content: !homeShort.ifCollect ? "\u662F\u5426\u6DFB\u52A0\u5230\u6211\u7684\u6536\u85CF" : "\u662F\u5426\u53D6\u6D88\u6536\u85CF",
-        success: function(res) {
-          if (res.confirm) {
-            homeShort.ifCollect = !homeShort.ifCollect;
-          } else if (res.cancel)
-            ;
-        }
-      });
+      utils_util.util.collectFamous(homeShort.data);
     };
     const handelCheck = (e) => {
       switch (e.currentTarget.dataset.name) {
@@ -154,43 +216,23 @@ const _sfc_main = {
         path: "/page/home/index"
       };
     });
-    var myAtoi = function(s) {
-      let numStr = "";
-      let trueIndex = -1;
-      for (var i = 0; i < s.length; i++) {
-        if (s[i] === " ") {
-          trueIndex = i + 1;
-          continue;
-        }
-        if (!/[0-9]/.test(s[trueIndex + 1])) {
-          console.log(/[0-9]/.test(s[trueIndex + 1]), s[trueIndex + 1]);
-          console.log(s[i]);
-          numStr = "";
-          break;
-        }
-        if (/[a-zA-z]/.test(s[i])) {
-          break;
-        }
-        numStr += s[i];
-      }
-      console.log(numStr, 11);
-      return numStr ? Number(numStr) : 0;
-    };
-    myAtoi("   -12.88 ancnmskdjn 778".trim());
     return (_ctx, _cache) => {
-      return {
-        a: backgroundImg.currentBackground || backgroundImg.defaultBackground || common_vendor.unref(utils_index.defaultImg),
+      return common_vendor.e({
+        a: backgroundImg.currentBackground || backgroundImg.defaultBackground,
         b: common_vendor.n(`iconfont icon-shuzi${common_vendor.unref(currentDate).currentDay[0]}`),
         c: common_vendor.n(`iconfont icon-shuzi${common_vendor.unref(currentDate).currentDay[1]}`),
         d: common_vendor.t(common_vendor.unref(currentDate).chinaDate),
         e: common_vendor.t(common_vendor.unref(CDate).ncWeek),
         f: common_vendor.o(showClander),
-        g: common_vendor.t(homeShort.short),
-        h: common_vendor.t(homeShort.author.indexOf("-") != -1 ? homeShort.author : "-- " + homeShort.author),
-        i: common_vendor.s(`color:${homeShort.ifCollect ? "#FBBD08" : "#fff"}`),
-        j: common_vendor.o(collectShort),
-        k: common_vendor.o(changeImg),
-        l: common_vendor.f(common_vendor.unref(utils_index.category), (item, k0, i0) => {
+        g: common_vendor.t(homeShort.data.famousContent),
+        h: common_vendor.t("-- " + (homeShort.data.creator || "\u533F\u540D")),
+        i: !isOriginal.value
+      }, !isOriginal.value ? {
+        j: common_vendor.s(`color:${homeShort.data.ifCollect ? "#FBBD08" : "#fff"}`),
+        k: common_vendor.o(collectShort)
+      } : {}, {
+        l: common_vendor.o(changeImg),
+        m: common_vendor.f(common_vendor.unref(utils_index.category), (item, k0, i0) => {
           return {
             a: common_vendor.n(`iconfont ${item.icon}`),
             b: common_vendor.s(`background-color:${item.color}`),
@@ -200,12 +242,12 @@ const _sfc_main = {
             f: common_vendor.o(handelCheck, item.icon)
           };
         }),
-        m: common_vendor.o(goRecord),
-        n: backgroundImg.defaultBackground || common_vendor.unref(utils_index.defaultImg),
-        o: backgroundImg.temporaryImg || "/static/image/error.png",
-        p: common_vendor.n(backgroundImg.currentBackground ? "" : "border"),
-        q: common_vendor.o(selectImg),
-        r: common_vendor.f(common_vendor.unref(utils_index.radioData), (item, k0, i0) => {
+        n: common_vendor.o(goRecord),
+        o: backgroundImg.defaultBackground,
+        p: backgroundImg.temporaryImg || "/static/image/error.png",
+        q: common_vendor.n(backgroundImg.currentBackground ? "" : "border"),
+        r: common_vendor.o(selectImg),
+        s: common_vendor.f(common_vendor.unref(utils_index.radioData), (item, k0, i0) => {
           return {
             a: item.value,
             b: checkImgType.value == item.value,
@@ -213,36 +255,37 @@ const _sfc_main = {
             d: item.value
           };
         }),
-        s: common_vendor.o(radioChange),
-        t: textareaValue.value,
-        v: common_vendor.o(($event) => textareaValue.value = $event.detail.value),
-        w: !textareaValue.value,
-        x: common_vendor.o(clearText),
-        y: !textareaValue.value,
-        z: inputVal.value,
-        A: common_vendor.o(($event) => inputVal.value = $event.detail.value),
-        B: common_vendor.o(confirm),
-        C: common_vendor.o(cancle),
-        D: common_vendor.o(($event) => showDialog.value = $event),
-        E: common_vendor.p({
+        t: common_vendor.o(radioChange),
+        v: textareaValue.value,
+        w: common_vendor.o(($event) => textareaValue.value = $event.detail.value),
+        x: !textareaValue.value,
+        y: common_vendor.o(clearText),
+        z: !textareaValue.value,
+        A: inputVal.value,
+        B: common_vendor.o(($event) => inputVal.value = $event.detail.value),
+        C: common_vendor.o(confirm),
+        D: common_vendor.o(cancle),
+        E: common_vendor.o(($event) => showDialog.value = $event),
+        F: common_vendor.p({
+          confirmDisabled: confirmDisabled.value,
           title: "\u8BBE\u7F6E\u80CC\u666F\u683C\u8A00",
           show: showDialog.value
         }),
-        F: common_vendor.t(`${common_vendor.unref(CDate).cYear}/${common_vendor.unref(CDate).cMonth}/${common_vendor.unref(CDate).cDay}`),
-        G: common_vendor.t(common_vendor.unref(CDate).ncWeek),
-        H: common_vendor.t(common_vendor.unref(CDate).astro),
-        I: common_vendor.t(common_vendor.unref(CDate).IMonthCn),
-        J: common_vendor.t(common_vendor.unref(CDate).IDayCn),
-        K: common_vendor.t(`${common_vendor.unref(CDate).gzYear}\u5E74${common_vendor.unref(CDate).gzMonth}\u6708${common_vendor.unref(CDate).gzDay}\u65E5`),
-        L: common_vendor.n(`icon-${common_vendor.unref(CDate).icon}`),
-        M: common_vendor.o(clickDialog),
-        N: common_vendor.o(($event) => showClanderDialog.value = $event),
-        O: common_vendor.p({
+        G: common_vendor.t(`${common_vendor.unref(CDate).cYear}/${common_vendor.unref(CDate).cMonth}/${common_vendor.unref(CDate).cDay}`),
+        H: common_vendor.t(common_vendor.unref(CDate).ncWeek),
+        I: common_vendor.t(common_vendor.unref(CDate).astro),
+        J: common_vendor.t(common_vendor.unref(CDate).IMonthCn),
+        K: common_vendor.t(common_vendor.unref(CDate).IDayCn),
+        L: common_vendor.t(`${common_vendor.unref(CDate).gzYear}\u5E74${common_vendor.unref(CDate).gzMonth}\u6708${common_vendor.unref(CDate).gzDay}\u65E5`),
+        M: common_vendor.n(`icon-${common_vendor.unref(CDate).icon}`),
+        N: common_vendor.o(clickDialog),
+        O: common_vendor.o(($event) => showClanderDialog.value = $event),
+        P: common_vendor.p({
           showButton: false,
           width: "70%",
           show: showClanderDialog.value
         })
-      };
+      });
     };
   }
 };

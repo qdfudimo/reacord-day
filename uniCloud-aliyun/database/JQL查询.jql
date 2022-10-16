@@ -9,4 +9,16 @@
 // 详细JQL语法，请参考：https://uniapp.dcloud.net.cn/uniCloud/jql.html
 
 // 下面示例查询uni-id-users表的所有数据
-db.collection('uni-id-users').get();
+db.collection('famous-saying').where({
+	collection: db.command.all(["1"])
+}).get()
+db.collection('famous-saying').where('in("2",collection)').field(
+	`creator,true as ifCollect`).get()
+db.collection('famous-saying')
+	.aggregate()
+	.sample({
+		size: 1
+	}).addFields({
+		'ifCollect': db.command.aggregate.in(["1", '$collection'])
+	})
+	.end()

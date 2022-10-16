@@ -1,6 +1,7 @@
 // import {
 //     pickExclude
 // } from '../common/utils';
+import util from "@/utils/util";
 const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
 const VIDEO_REGEXP = /\.(mp4|mpg|mpeg|dat|asf|avi|rm|rmvb|mov|wmv|flv|mkv)/i;
 
@@ -93,4 +94,23 @@ export function chooseFile({
                 break;
         }
     });
+}
+export const uplodFile = (filePath = "") => {
+    if (!filePath) return
+    let ext = filePath.split('.').pop()
+    return new Promise((resolve, reject) => {
+        uniCloud.uploadFile({
+            filePath,
+            cloudPath: Date.now() + "." + ext,
+            success(res) {
+                console.log(res);
+                resolve(res)
+            },
+            fail(error) {
+                reject(error)
+                console.log(error);
+                util.tip("上传失败", "error")
+            },
+        });
+    })
 }

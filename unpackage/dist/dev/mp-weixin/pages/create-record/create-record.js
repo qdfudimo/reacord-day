@@ -2,6 +2,10 @@
 var common_vendor = require("../../common/vendor.js");
 var utils_upload = require("../../utils/upload.js");
 var utils_authorPre = require("../../utils/authorPre.js");
+require("../../utils/util.js");
+require("../../utils/index.js");
+require("../../utils/request.js");
+require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 const plugin = requirePlugin("WechatSI");
 const manager = plugin.getRecordRecognitionManager();
 const _sfc_main = {

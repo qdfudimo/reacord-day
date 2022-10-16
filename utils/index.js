@@ -64,17 +64,20 @@ const ManagerError = {
 }
 /**背景图片 */
 export const randomImg = [
-    "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/8dd111f6-d990-41c8-b178-96656a56ba68.jpg",
     "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/c8446bbf-6121-47fb-ac08-35affdfae2b6.jpg",
-    "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/77f9d195-9061-4e7d-9c10-69dce9b4f840.jpg",
     "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/1433b052-daab-4f5d-afcd-6ff071e24a7c.jpg",
+    "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/2284dc69-b4c5-4a6e-aaf2-de7a7429d382.jpg",
+    "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/897baf77-401a-42c5-a6e5-fe0ee0be1738.jpg",
+    "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/630592af-8e5a-4262-a9bf-98139ad44a19.jpg",
     "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/e60e944f-ca5f-423e-ad49-87345a271e2b.jpg",
     "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/431a8a5f-b029-49ad-8df4-4cab53385263.jpg",
     "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/bd229f4c-86eb-4399-a39b-460d764d456b.jpg",
     "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/0ece416d-4e46-4a26-83bc-d4fa453b72de.jpg",
-    "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/31709677-61c2-4f17-8433-d8aed2ea541d.jpg",
+    "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/31e0be52-618e-469a-a070-ed2bbfb8c9dd.jpg",
     "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/4ba5b999-9b96-4b39-b1d5-88c5e6e0ea94.jpg",
     "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/7bf6a7eb-dba2-440d-8717-7c6b01a5a6e4.jpg",
+    "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/34bc5696-85e5-400c-bf03-77b191ffadd4.jpg",
+    "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/445d582b-cd5d-412c-b598-53abd5ac1b57.jpg",
     "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/01c9908a-569f-4a16-b85e-29098ad9b344.jpg"
 ]
 /**分享图片 */

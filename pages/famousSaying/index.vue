@@ -13,11 +13,11 @@
         </text>
       </view>
     </template>
-    <view @tap="requests">请求数据</view>
-    <view @tap="requests1">请求用户数据</view>
-    <!-- <view class="emptuData " v-else>
+    <!-- <view @tap="requests">请求数据</view>
+    <view @tap="requests1">请求用户数据</view> -->
+    <view class="emptuData " v-else>
       <text class="iconfont icon-zanwushuju"></text><text> 暂无数据</text>
-    </view> -->
+    </view>
   </view>
 </template>
 
@@ -30,61 +30,28 @@ import { request } from "@/utils/request";
 const homeShort = reactive({
   data: []
 })
-
+onLoad(() => {
+  getFamousSaying("search")
+})
 const loadMore = ref(false)
 const currentPage = ref(1)
 //false 还有
 const ifMoreData = ref(false)
 const collectShort = (e) => {
-  console.log(e._id);
-  let data = {
-    userId: "1",
-    type: e.ifCollect ? "noCollect" : "collect",
-    id: e._id
-  }
-  uni.showModal({
-    content: e.ifCollect ? '是否取消收藏' : "是否添加收藏",
-    success: function (res) {
-      if (res.confirm) {
-        request("getFamousSaying", data).then(({ result = {} }) => {
-          if (result.updated != 1) {
-            util.tip("操作失败", "error")
-          } else {
-            e.ifCollect = !e.ifCollect
-          }
-        })
-      } else if (res.cancel) {
-        console.log('用户点击取消');
-      }
-    }
-  })
-  // request("getFamousSaying", data).then(res=>{
-
-  // })
-}
-const requests = async (e) => {
-  getFamousSaying("search")
-}
-const requests1 = async (e) => {
-  getFamousSaying("mySearch")
+  util.collectFamous(e)
 }
 const getFamousSaying = async (type) => {
   let data = {
     userId: "1",
     type
   }
-  if (type == "search"||type == "mySearch") {
-    data.pageSize = 10
-    data.currentPage = currentPage.value
-  }
+  data.pageSize = 10
+  data.currentPage = currentPage.value
   let { result } = await request("getFamousSaying", data)
-  console.log(result);
   if (result.code === 0) {
-    if (type == "search") {
-      homeShort.data.push(...result.data);
-      if (!result.data.length || result.data.length < 10) {
-        ifMoreData.value = true
-      }
+    homeShort.data.push(...result.data);
+    if (!result.data.length || result.data.length < 10) {
+      ifMoreData.value = true
     }
   } else {
     util.tip("请求失败", "error")

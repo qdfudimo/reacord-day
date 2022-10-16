@@ -1,8 +1,8 @@
 <template>
     <!-- pages/mine/index.wxml -->
     <view class='container '>
-        <image class="background_image"
-            :src="backgroundImg.currentBackground ||backgroundImg.defaultBackground|| defaultImg" mode="aspectFill">
+        <image class="background_image" :src="backgroundImg.currentBackground ||backgroundImg.defaultBackground"
+            mode="aspectFill">
         </image>
         <view class="top_content">
             <view class="time" @tap="showClander">
@@ -22,13 +22,14 @@
             <view class="textCon">
                 <view class="text">
                     <view class="sayCont">
-                        {{homeShort.short}}
+                        {{homeShort.data.famousContent}}
                     </view>
-                    <view class="whoSay"> {{homeShort.author.indexOf("-")!=-1?homeShort.author:"-- "+homeShort.author}}
+                    <view class="whoSay">
+                        {{"-- " + (homeShort.data.creator||"匿名")}}
                     </view>
                 </view>
-                <view :style="`color:${homeShort.ifCollect?'#FBBD08':'#fff'}`" class="shoucang iconfont icon-shoucang2"
-                    @tap="collectShort"></view>
+                <view v-if="!isOriginal" :style="`color:${homeShort.data.ifCollect?'#FBBD08':'#fff'}`"
+                    class="shoucang iconfont icon-shoucang2" @tap="collectShort"></view>
             </view>
             <view class="iconfont icon-shezhi1 setIcon" @tap="changeImg"></view>
         </view>
@@ -40,14 +41,16 @@
                     <view class="type_name">{{item.name}}</view>
                 </view>
             </view>
+            <!-- <button class="write iconfont icon-xie" @tap="requests"> 写日记</button> -->
             <button class="write iconfont icon-xie" @tap="goRecord"> 写日记</button>
         </view>
-        <dia-log v-model:show="showDialog" title="设置背景格言" @confirm="confirm" @cancle="cancle">
+        <dia-log v-model:show="showDialog" :confirmDisabled="confirmDisabled" title="设置背景格言" @confirm="confirm"
+            @cancle="cancle">
             <view class="modal_content">
                 <view class="picture" @tap="selectImg">
                     <view style="margin-right: 8px;" class="select_img" data-img="default">
-                        <img data-img="default" class="default_image"
-                            :src="backgroundImg.defaultBackground || defaultImg" mode="aspectFill" />
+                        <img data-img="default" class="default_image" :src="backgroundImg.defaultBackground"
+                            mode="aspectFill" />
                     </view>
                     <view style="margin-left: 8px;" :class="['select_img',backgroundImg.currentBackground?'':'border']"
                         data-img="optional">
@@ -90,7 +93,8 @@ import { ref, reactive, watch } from 'vue';
 import diaLog from "@/components/diaLog/diaLog";
 import { useGetTabBar } from "@/hooks/useGetTabBar";
 import util from "@/utils/util";
-import { chooseFile } from '@/utils/upload';
+import { chooseFile, uplodFile } from '@/utils/upload';
+import { request } from "@/utils/request";
 import { radioData, category, defaultImg, randomImg, shareImg } from '@/utils/index';
 useGetTabBar(0)
 const app = getApp();
@@ -103,30 +107,102 @@ const backgroundImg = reactive({
     //系统默认图片
     defaultBackground: "",
     //图片临时选择的图片
-    temporaryImg: ""
+    temporaryImg: "",
+    imgId: ""
 });
-onLoad(() => {
-    const randomImgurl = randomImg[Math.floor(Math.random() * randomImg.length)];
-    backgroundImg.defaultBackground = randomImgurl;
-})
 const showDialog = ref(false)
+//是否是自己原创 true shi
+const isOriginal = ref(false)
+const confirmDisabled = ref(false)
 const showClanderDialog = ref(false)
 //按钮图片选择类型 默认 还是自选
 const checkImgType = ref("default")
 const textareaValue = ref("")
 const inputVal = ref("")
-watch(() => textareaValue.value, (val, oldVal) => {
-    // console.log(val, oldVal);
-    if (!val && val == 0) inputVal.value = ""
-})
+let ifchangeBackGroud = false;
 //短句
 const homeShort = reactive({
-    short: "要使整个人生都过得舒适、愉快，这是不可能的，因为人类必须具备一种能应付逆境的态度",
-    author: "恩格尔",
-    ifCollect: false,
-    //是否更改过自选图片 false 否 
-    isChangeImg: false
+    data: {
+        famousContent: "",
+        creator: "",
+        _id: "",
+        ifCollect: false,
+    }
 })
+watch(() => textareaValue.value, (val, oldVal) => {
+    if (!val) inputVal.value = ""
+})
+onLoad(() => {
+    requsetImg()
+    requsetFamous()
+})
+const requsetImg = () => {
+    let data = {
+        userId: "1",
+        type: "read",
+        imgType: 0,
+    }
+    request("backgroundUrl", data).then(({ result = {} }) => {
+        if (result.affectedDocs != 0) {
+            backgroundImg.currentBackground = result.data[0].imgUrl || ""
+            backgroundImg.imgId = result.data[0]._id || ""
+        }
+        if (backgroundImg.defaultBackground) return
+        const randomImgurl = randomImg[Math.floor(Math.random() * randomImg.length)];
+        backgroundImg.defaultBackground = randomImgurl;
+    })
+}
+const requsetFamous = () => {
+    let data = {
+        userId: "1",
+        type: "read",
+    }
+    request("signatureHistory", data).then(({ result = {} }) => {
+        if (result.affectedDocs == 1) {
+            let { famousContent, creator, ifCollect = false, _id = "" } = result.data[0]
+            homeShort.data.famousContent = famousContent
+            homeShort.data.creator = creator
+            homeShort.data.ifCollect = ifCollect
+            homeShort.data._id = _id
+            isOriginal.value = result.isOriginal
+        } else {
+            isOriginal.value = false;
+        }
+    })
+}
+const requests = () => {
+    let data1 = {
+        userId: "1",
+        type: "add",
+        famousContent: "很显然，英国独立电视台原创剧集的收视胜过了英国广播公司的节目。",
+        creator: "麻痹小子"
+    }
+    request("signatureHistory", data1).then(({ result = {} }) => {
+        console.log(result);
+    })
+    // let data = {
+    //     userId: "1",
+    //     type: "read",
+    //     imgType: 0,
+    //     id:"",
+    //     url:"1"
+    // }
+
+    // request("backgroundUrl", data).then(({ result = {} }) => {
+    //     console.log(result);
+    // })
+    // request("backgroundUrl", data).then(({ result = {} }) => {
+    //     console.log(result);
+    //     if (result.affectedDocs != 0) {
+    //         // util.tip("操作失败", "error")
+    //         backgroundImg.currentBackground = result.data[0].imgUrl || ""
+    //         backgroundImg.imgId = result.data[0]._id || ""
+    //     } else {
+    //         const randomImgurl = randomImg[Math.floor(Math.random() * randomImg.length)];
+    //         backgroundImg.defaultBackground = randomImgurl;
+    //     }
+    // })
+}
 const goRecord = () => {
     uni.navigateTo({
         url: `../create-record/create-record`
@@ -134,15 +210,14 @@ const goRecord = () => {
 }
 const changeImg = () => {
     showDialog.value = true;
-    textareaValue.value = homeShort.short
-    inputVal.value = homeShort.author
-    if (homeShort.isChangeImg) {
-        checkImgType.value = "optional"
-        backgroundImg.temporaryImg = backgroundImg.currentBackground
-    } else {
-        checkImgType.value = 'default';
-        backgroundImg.temporaryImg = "";
+    confirmDisabled.value = false;
+    ifchangeBackGroud = false;
+    if (isOriginal.value) {
+        textareaValue.value = homeShort.data.famousContent
+        inputVal.value = homeShort.data.creator;
     }
+    checkImgType.value = backgroundImg.imgId ? "optional" : "default"
+    backgroundImg.temporaryImg = backgroundImg.imgId ? backgroundImg.currentBackground : ""
 }
 const radioChange = (e) => {
     changeBackIMG(e.detail.value)
@@ -166,25 +241,57 @@ const changeBackIMG = (value) => {
             multiple: false
         })
             .then((res) => {
+                ifchangeBackGroud = true;
                 backgroundImg.temporaryImg = res[0].url
             })
             .catch((error) => {
+                console.log(error, "error");
                 if (backgroundImg.temporaryImg) return
                 checkImgType.value = "default"
             });
     }
 }
-const confirm = () => {
+const confirm = async () => {
+    confirmDisabled.value = true;
+    let oldImgUrl = backgroundImg.currentBackground;
     backgroundImg.currentBackground = checkImgType.value == 'default' ? backgroundImg.defaultBackground : backgroundImg.temporaryImg;
+    let data = {
+        userId: "1",
+        type: "add",
+        imgType: 0,
+        oldImgUrl,
+        id: backgroundImg.imgId
+    }
     if (checkImgType.value == 'optional') {
         //上传图片
-        homeShort.isChangeImg = true;
+        if (ifchangeBackGroud) {
+            let res = await uplodFile(backgroundImg.currentBackground)
+            if (res.success) {
+                data.url = res.fileID
+                let {result={}} = await request("backgroundUrl", data)
+                result.success && (backgroundImg.imgId = result.id)
+            }
+        }
+    } else {
+        if (backgroundImg.imgId) {
+            //删除图片 如果有id 就把已经上传的删除的调 用自选
+            data.type = "delete";
+            await request("backgroundUrl", data)
+            backgroundImg.imgId = ""
+        }
     }
-    if (textareaValue.value) {
-        homeShort.short = textareaValue.value
-        homeShort.author = inputVal.value
-        homeShort.homeShort = false
+    if (textareaValue.value != homeShort.data.famousContent || homeShort.data.creator != inputVal.value) {
+        let text = {
+            famousContent: textareaValue.value,
+            creator: inputVal.value,
+            userId: "1",
+            type: "add",
+        }
+        isOriginal.value && (text.id = homeShort.data._id)
+        let res = await request("signatureHistory", text)
     }
+    // requsetImg()
+    requsetFamous()
     showDialog.value = false;
 }
 const cancle = () => {
@@ -194,16 +301,7 @@ const clearText = () => {
     inputVal.value = textareaValue.value = ""
 }
 const collectShort = (e) => {
-    uni.showModal({
-        title: '提示',
-        content: !homeShort.ifCollect ? '是否添加到我的收藏' : '是否取消收藏',
-        success: function (res) {
-            if (res.confirm) {
-                homeShort.ifCollect = !homeShort.ifCollect
-            } else if (res.cancel) {
-            }
-        }
-    });
+    util.collectFamous(homeShort.data)
 }
 const handelCheck = (e) => {
     switch (e.currentTarget.dataset.name) {
@@ -250,31 +348,6 @@ onShareAppMessage(() => {
         // imageUrl: randomImgs
     };
 })
-var myAtoi = function (s) {
-    let numStr = ''
-    let startNumIndex = 0
-    let trueIndex = -1
-    for (var i = 0; i < s.length; i++) {
-        if (s[i] === ' ') {
-            trueIndex = i + 1
-            continue
-        }
-        if (!(/[0-9]/.test(s[trueIndex + 1]))) {
-            console.log(/[0-9]/.test(s[trueIndex + 1]),s[trueIndex + 1]);
-            console.log(s[i]);
-            numStr = ""
-            break
-        }
-        if (/[a-zA-z]/.test(s[i])) {
-            break
-        }
-        numStr += s[i]
-    }
-    console.log(numStr, 11);
-
-    return numStr ? Number(numStr) : 0
-}
-myAtoi('   -12.88 ancnmskdjn 778'.trim())
 </script>
 <style lang="scss" scoped>
 page {

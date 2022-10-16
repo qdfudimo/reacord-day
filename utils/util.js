@@ -1,6 +1,9 @@
 import {
     ChineseZodiacs
 } from './index'
+import {
+    request
+} from './request'
 import calendar from "@/uni_modules/uni-calendar/components/uni-calendar/calendar";
 const formatTimeDate = (date = new Date()) => {
     const year = date.getFullYear();
@@ -134,7 +137,7 @@ const getCurrentDate = (time) => {
     }
 }
 //弹窗提示统一设置
-export const tip = (title, icon, duration) => {
+const tip = (title, icon, duration) => {
     uni.showToast({
         title: title || '操作成功',
         icon: icon || 'none',
@@ -142,10 +145,36 @@ export const tip = (title, icon, duration) => {
         mask: true
     })
 }
+const collectFamous = (e, callBack) => {
+    let data = {
+        userId: "1",
+        type: e.ifCollect ? "noCollect" : "collect",
+        id: e._id
+    }
+    uni.showModal({
+        title: '提示',
+        content: !e.ifCollect ? '是否添加到我的收藏' : '是否取消收藏',
+        success: function (res) {
+            if (res.confirm) {
+                request("getFamousSaying", data).then(({
+                    result = {}
+                }) => {
+                    if (result.updated != 1) {
+                        tip("操作失败", "error")
+                    } else {
+                        e.ifCollect = !e.ifCollect
+                        callBack && callBack()
+                    }
+                })
+            } else if (res.cancel) {}
+        }
+    });
+}
 export default {
     formatTime,
     handelTime,
     getCurrentDate,
     getChineseDate,
+    collectFamous,
     tip
 };

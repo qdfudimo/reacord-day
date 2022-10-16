@@ -4,6 +4,7 @@ var utils_upload = require("../../utils/upload.js");
 var utils_index = require("../../utils/index.js");
 var hooks_useGetTabBar = require("../../hooks/useGetTabBar.js");
 var utils_util = require("../../utils/util.js");
+var utils_request = require("../../utils/request.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
   common_vendor.unref(famous)();
@@ -18,36 +19,44 @@ const _sfc_main = {
     const customBar = app.globalData.customBar;
     const custom = app.globalData.custom;
     const imgList = common_vendor.ref([]);
-    const scheduleLsits = common_vendor.ref([
-      {
-        short: "\u8981\u4F7F\u6574\u4E2A\u4EBA\u751F\u90FD\u8FC7\u5F97\u8212\u9002\u3001\u6109\u5FEB\uFF0C\u8FD9\u662F\u4E0D\u53EF\u80FD\u7684\uFF0C\u56E0\u4E3A\u4EBA\u7C7B\u5FC5\u987B\u5177\u5907\u4E00\u79CD\u80FD\u5E94\u4ED8\u9006\u5883\u7684\u6001\u5EA6",
-        author: "\u6069\u683C\u5C14",
-        ifCollect: true,
-        id: 1
-      },
-      {
-        short: "\u8981\u4F7F\u6574\u4E2A\u4EBA\u751F\u90FD\u8FC7\u5F97\u8212\u9002\u3001\u6109\u5FEB\uFF0C\u8FD9\u662F\u4E0D\u53EF\u80FD\u7684\uFF0C\u56E0\u4E3A\u4EBA\u7C7B\u5FC5\u987B\u5177\u5907\u4E00\u79CD\u80FD\u5E94\u4ED8\u9006\u5883\u7684\u6001\u5EA6",
-        author: "\u6069\u683C\u5C14",
-        ifCollect: false,
-        id: 2
-      }
-    ]);
+    const scheduleLsits = common_vendor.ref([]);
     const userInfo = common_vendor.reactive({
       avatarUrl: "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/da5f56fe-c939-4168-9c49-ae76ed29d0d0.png",
       nickName: "\u7528\u6237XXXX"
     });
     const showBackground = common_vendor.ref(false);
     const loadMore = common_vendor.ref(false);
+    const ifMoreData = common_vendor.ref(false);
     const ifCollect = common_vendor.ref(false);
     const currentBackground = common_vendor.ref("");
+    const currentBackgroundId = common_vendor.ref("");
+    const currentPage = common_vendor.ref(1);
     const showIfBackground = () => {
       showBackground.value = !showBackground.value;
     };
     const selectImage = (e) => {
-      currentBackground.value = e.target.dataset.url;
-      common_vendor.index.setStorage({
-        key: "currentBackground",
-        data: e.target.dataset.url
+      let url = e.target.dataset.url;
+      if (url == currentBackground.value)
+        return;
+      changeFile(url);
+    };
+    const changeFile = (url) => {
+      let data = {
+        userId: "1",
+        type: "update",
+        url,
+        id: currentBackgroundId.value,
+        oldImgUrl: currentBackground.value
+      };
+      data.isDel = !utils_index.randomImg.includes(currentBackground.value);
+      utils_request.request("backgroundUrl", data).then(({ result = {} }) => {
+        if (result.updated) {
+          currentBackground.value = url;
+          common_vendor.index.setStorage({
+            key: "currentBackground",
+            data: url
+          });
+        }
       });
     };
     const selectBackground = () => {
@@ -56,14 +65,12 @@ const _sfc_main = {
         maxCount: 1,
         multiple: false
       }).then((res) => {
-        console.log(res);
-        currentBackground.value = res[0].url;
         let ext = res[0].url.split(".").pop();
         common_vendor.pn.uploadFile({
           filePath: res[0].url,
           cloudPath: Date.now() + "." + ext,
           success(res2) {
-            console.log(res2);
+            changeFile(res2.fileID);
           },
           fail(error) {
             console.log(error);
@@ -90,10 +97,49 @@ const _sfc_main = {
         ifCollect.value = false;
       }, 2e3);
     };
-    const collectShort = (item) => {
+    const collectShort = (item, index) => {
+      utils_util.util.collectFamous(item, () => scheduleLsits.value.splice(index, 1));
+    };
+    const getFamousSaying = async (type) => {
+      let data = {
+        userId: "1",
+        type,
+        pageSize: 10,
+        currentPage: currentPage.value
+      };
+      try {
+        let { result = {} } = await utils_request.request("getFamousSaying", data);
+        if (result.affectedDocs) {
+          scheduleLsits.value.push(...result.data);
+          if (!result.data.length || result.data.length < 10) {
+            ifMoreData.value = true;
+          }
+        }
+      } catch (error) {
+        utils_util.util.tip("\u8BF7\u6C42\u5931\u8D25", "error");
+      }
+    };
+    const requsetImg = () => {
+      let data = {
+        userId: "1",
+        type: "read",
+        imgType: 1
+      };
+      utils_request.request("backgroundUrl", data).then(({ result = {} }) => {
+        if (result.affectedDocs) {
+          currentBackground.value = result.data[0].imgUrl || "";
+          currentBackgroundId.value = result.data[0]._id || "";
+          common_vendor.index.setStorage({
+            key: "currentBackground",
+            data: currentBackground.value
+          });
+        }
+      });
     };
     common_vendor.onLoad(() => {
       imgList.value = utils_index.randomImg;
+      getFamousSaying("mySearch");
+      requsetImg();
       common_vendor.index.getStorage({
         key: "currentBackground",
         success: (res) => {
@@ -109,13 +155,13 @@ const _sfc_main = {
         }
       });
     });
-    common_vendor.onReachBottom(() => {
-      if (loadMore.value)
+    common_vendor.onReachBottom(async () => {
+      if (loadMore.value || ifMoreData.value)
         return;
       loadMore.value = true;
-      setTimeout(() => {
-        loadMore.value = false;
-      }, 300);
+      currentPage.value++;
+      await getFamousSaying("mySearch");
+      loadMore.value = false;
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -132,33 +178,39 @@ const _sfc_main = {
       }, !scheduleLsits.value.length ? {} : {}, {
         k: common_vendor.f(scheduleLsits.value, (item, index, i0) => {
           return {
-            a: "2e3e0f84-0-" + i0,
-            b: common_vendor.p({
+            a: common_vendor.o(($event) => collectShort(item, index)),
+            b: "2e3e0f84-0-" + i0,
+            c: common_vendor.p({
               homeShort: item
             }),
-            c: index
+            d: item._id
           };
         }),
-        l: common_vendor.o(collectShort),
-        m: showBackground.value
+        l: loadMore.value || ifMoreData.value
+      }, loadMore.value || ifMoreData.value ? common_vendor.e({
+        m: loadMore.value
+      }, loadMore.value ? {} : ifMoreData.value ? {} : {}, {
+        n: ifMoreData.value
+      }) : {}, {
+        o: showBackground.value
       }, showBackground.value ? {
-        n: common_vendor.o(showIfBackground),
-        o: currentBackground.value,
-        p: common_vendor.o(selectBackground),
-        q: common_vendor.f(imgList.value, (item, index, i0) => {
+        p: common_vendor.o(showIfBackground),
+        q: currentBackground.value,
+        r: common_vendor.o(selectBackground),
+        s: common_vendor.f(imgList.value, (item, index, i0) => {
           return {
             a: item,
             b: item,
             c: index
           };
         }),
-        r: common_vendor.o(selectImage)
+        t: common_vendor.o(selectImage)
       } : {}, {
-        s: ifCollect.value
+        v: ifCollect.value
       }, ifCollect.value ? {
-        t: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
+        w: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
       } : {}, {
-        v: common_vendor.n("container noColor")
+        x: common_vendor.n("container noColor")
       });
     };
   }

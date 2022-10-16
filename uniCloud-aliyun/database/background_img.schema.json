@@ -2,7 +2,7 @@
 	"bsonType": "object",
 	"required": [],
 	"permission": {
-		"read": false,
+		"read": true,
 		"create": false,
 		"update": false,
 		"delete": false
@@ -14,7 +14,10 @@
 		"user_id": {
 			"bsonType": "string",
 			"description": "创建人ID， 参考`uni-id-users` 表",
-			"foreignKey": "reacord-users._id"
+			"foreignKey": "reacord-users._id",
+			"forceDefaultValue": {
+				"$env": "uid"
+			}
 		},
 		"type": {
 			"bsonType": "int",

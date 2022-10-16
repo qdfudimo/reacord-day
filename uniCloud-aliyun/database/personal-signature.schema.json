@@ -14,7 +14,10 @@
 		"user_id": {
 			"bsonType": "string",
 			"description": "个性签名ID， 参考`uni-id-users` 表",
-			"foreignKey": "reacord-users._id"
+			"foreignKey": "reacord-users._id",
+			"forceDefaultValue": {
+				"$env": "uid"
+			}
 		},
 		"short_content": {
 			"bsonType": "string",
@@ -26,26 +29,14 @@
 			"bsonType": "string",
 			"title": "个性短句创始人",
 			"description": "个性短句创始人",
+			"defaultValue": "",
 			"trim": "both"
-		},
-		"status": {
-			"bsonType": "int",
-			"title": "签名状态",
-			"description": "签名状态：0 历史 1 使用",
-			"defaultValue": 0,
-			"enum": [{
-				"text": "历史",
-				"value": 0
-			}, {
-				"text": "使用",
-				"value": 1
-			}]
 		},
 		"create_time": {
 			"bsonType": "timestamp",
 			"title": "创建时间",
 			"description": "创建时间",
-			"defaultValue": {
+			"forceDefaultValue": {
 				"$env": "now"
 			}
 		}
