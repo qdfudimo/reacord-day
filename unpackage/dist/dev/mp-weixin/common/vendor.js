@@ -6644,7 +6644,7 @@ switch (f) {
   default:
     g = f;
 }
-const p = h('{\n    "address": [\n        "127.0.0.1",\n        "192.168.0.190"\n    ],\n    "debugPort": 9001,\n    "initialLaunchType": "local",\n    "servePort": 7001,\n    "skipFiles": [\n        "<node_internals>/**/*.js",\n        "D:/dowload/HBuilderX.3.2.16.20211122/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), m = h('[{"provider":"aliyun","spaceName":"record-day-cloud","spaceId":"8a42471b-0c50-4781-a564-186c52631541","clientSecret":"F6BMbmr9A/OwrikiVhgwKg==","endpoint":"https://api.bspapp.com"}]') || [];
+const p = h('{\n    "address": [\n        "127.0.0.1",\n        "192.168.0.190"\n    ],\n    "debugPort": 9000,\n    "initialLaunchType": "local",\n    "servePort": 7000,\n    "skipFiles": [\n        "<node_internals>/**/*.js",\n        "D:/dowload/HBuilderX.3.2.16.20211122/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), m = h('[{"provider":"aliyun","spaceName":"record-day-cloud","spaceId":"8a42471b-0c50-4781-a564-186c52631541","clientSecret":"F6BMbmr9A/OwrikiVhgwKg==","endpoint":"https://api.bspapp.com"}]') || [];
 let _ = "";
 try {
   _ = "__UNI__CBC301A";

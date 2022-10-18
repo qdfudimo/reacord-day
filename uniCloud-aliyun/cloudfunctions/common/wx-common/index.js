@@ -1,7 +1,7 @@
 let jwt = require('jsonwebtoken');
 
-const appId = 'wxf58d00fd2fd0cef9';
-const appSecret = 'bb67ccf559ffd67a3b2d9272294441c7';
+const appId = '';
+const appSecret = '';
 
 const db = uniCloud.database();
 async function requestNewAccessToken() {
