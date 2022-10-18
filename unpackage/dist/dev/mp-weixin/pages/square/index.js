@@ -1,5 +1,9 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
+require("../../utils/index.js");
+var utils_request = require("../../utils/request.js");
+require("../../utils/util.js");
+require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 const reacordList = () => "../../components/reacordList/reacordList.js";
 const _sfc_main = {
   components: {
@@ -8,12 +12,15 @@ const _sfc_main = {
   },
   data() {
     return {
-      _refreshing: false,
-      _loadmoreIng: false,
+      loadMore: false,
       ifMoreData: false,
+      currentPage: 1,
       ifTop: false,
-      scheduleLsits: [],
-      triggered: false
+      userInfo: {
+        nickName: "",
+        avatarUrl: ""
+      },
+      scheduleLsits: []
     };
   },
   onLoad: function(options) {
@@ -22,21 +29,22 @@ const _sfc_main = {
     common_vendor.index.setNavigationBarTitle({
       title: "\u65E5\u8BB0\u672C"
     });
+    common_vendor.index.getStorage({
+      key: "userInfo",
+      success: ({ data }) => {
+        this.userInfo.avatarUrl = data.avatarUrl || "";
+        this.userInfo.nickName = data.nickName || "";
+        this.getSquare();
+      },
+      fail: (error) => {
+        this.getSquare();
+        console.log(error);
+      }
+    });
   },
   onReady: function() {
-    setTimeout(() => {
-      this.triggered = true;
-    }, 1e3);
   },
   onShow: function() {
-    if (typeof this.$scope.getTabBar === "function" && this.$scope.getTabBar()) {
-      this.$scope.getTabBar().setData({
-        selected: 1
-      });
-    }
-    setTimeout(() => {
-      common_vendor.index.hideNavigationBarLoading();
-    }, 1e3);
   },
   onPageScroll(e) {
     this.ifTop = e.scrollTop >= 400;
@@ -46,43 +54,51 @@ const _sfc_main = {
   onUnload: function() {
   },
   onPullDownRefresh: function() {
+    this.currentPage = 1;
+    this.ifMoreData = false;
+    this.loadMore = false;
+    this.getSquare("refersh");
   },
-  onReachBottom: function() {
+  onReachBottom: async function() {
+    if (this.loadMore || this.ifMoreData)
+      return;
+    this.loadMore = true;
+    this.currentPage++;
+    await this.getSquare();
+    this.loadMore = false;
   },
   onShareAppMessage: function() {
   },
   methods: {
-    onRefresh() {
-      if (this._refreshing)
-        return;
-      this._refreshing = true;
-      this.triggered = true;
-      setTimeout(() => {
-        this.triggered = false;
-        this._refreshing = false;
-        console.log("onRefresh \u81EA\u5B9A\u4E49\u4E0B\u62C9\u5237\u65B0\u88AB\u89E6\u53D1");
-      }, 2e3);
-    },
-    loadMore(e) {
-      if (this._loadmoreIng || this.ifMoreData) {
-        return;
-      }
-      this._loadmoreIng = true;
-      setTimeout(() => {
-        this._loadmoreIng = false;
-        this.ifMoreData = true;
-        console.log("loadMore loadMore", e);
-      }, 2e3);
-    },
-    onRestore(e) {
-      console.log("onRestore \u81EA\u5B9A\u4E49\u4E0B\u62C9\u5237\u65B0\u88AB\u590D\u4F4D", e);
+    async getSquare(whoType) {
+      let data = {
+        type: "read",
+        pageSize: 10,
+        currentPage: this.currentPage
+      };
+      data.ifRequestInfo = !this.userInfo.avatarUrl.length;
+      utils_request.request("createNote", data).then(({ result = {} }) => {
+        console.log(result);
+        if (result.affectedDocs) {
+          whoType == "refersh" && (this.scheduleLsits = []);
+          if (data.ifRequestInfo) {
+            this.userInfo.avatarUrl = result.avatarUrl || "";
+            this.userInfo.nickName = result.nickName || "";
+          }
+          this.scheduleLsits.push(...result.data);
+          if (!result.data.length || result.data.length < 10) {
+            this.ifMoreData = true;
+          }
+        }
+      }).finally((e) => {
+        common_vendor.index.hideNavigationBarLoading();
+        common_vendor.index.stopPullDownRefresh();
+      });
     },
     goRecord(e) {
       common_vendor.index.navigateTo({
         url: `../create-record/create-record`
       });
-    },
-    scrollView(e) {
     },
     remove(e) {
       common_vendor.index.showModal({
@@ -124,30 +140,25 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       return {
         a: "7c36b24e-0-" + i0,
         b: common_vendor.p({
+          userInfo: $data.userInfo,
           reacordList: item,
           onlyIndex: index
         }),
-        c: item.scheduleTime
+        c: item._id
       };
     }),
     c: common_vendor.o($options.remove),
-    d: $data._loadmoreIng || $data.ifMoreData
-  }, $data._loadmoreIng || $data.ifMoreData ? common_vendor.e({
-    e: $data._loadmoreIng
-  }, $data._loadmoreIng ? {} : $data.ifMoreData ? {} : {}, {
+    d: $data.loadMore || $data.ifMoreData
+  }, $data.loadMore || $data.ifMoreData ? common_vendor.e({
+    e: $data.loadMore
+  }, $data.loadMore ? {} : $data.ifMoreData ? {} : {}, {
     f: $data.ifMoreData
-  }) : {}, {
-    g: $data.triggered,
-    h: common_vendor.o((...args) => $options.onRefresh && $options.onRefresh(...args)),
-    i: common_vendor.o((...args) => $options.scrollView && $options.scrollView(...args)),
-    j: common_vendor.o((...args) => $options.loadMore && $options.loadMore(...args)),
-    k: common_vendor.o((...args) => $options.onRestore && $options.onRestore(...args))
-  }) : {
-    l: common_vendor.o((...args) => $options.goRecord && $options.goRecord(...args))
+  }) : {}) : {
+    g: common_vendor.o((...args) => $options.goRecord && $options.goRecord(...args))
   }, {
-    m: common_vendor.n("iconfont icon-huidaodingbu addRecord "),
-    n: common_vendor.o((...args) => $options.scrollToop && $options.scrollToop(...args)),
-    o: common_vendor.n("viewIcon " + ($data.ifTop ? "showTop" : "hideTop"))
+    h: common_vendor.n("iconfont icon-huidaodingbu addRecord "),
+    i: common_vendor.o((...args) => $options.scrollToop && $options.scrollToop(...args)),
+    j: common_vendor.n("viewIcon " + ($data.ifTop ? "showTop" : "hideTop"))
   });
 }
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/xiaocx/reacord-day/pages/square/index.vue"]]);

@@ -1,7 +1,10 @@
 "use strict";
 var common_vendor = require("../common/vendor.js");
 var utils_util = require("./util.js");
+let token;
 const request = (name = "", data = {}) => {
+  if (token)
+    data.token = token;
   return new Promise((resolve, reject) => {
     common_vendor.index.showLoading({
       title: "\u52A0\u8F7D\u4E2D"
@@ -19,4 +22,23 @@ const request = (name = "", data = {}) => {
     });
   });
 };
+function login() {
+  return new Promise((resolve, reject) => {
+    common_vendor.index.login({
+      provider: "weixin",
+      success: (res) => {
+        request("login", {
+          code: res.code
+        }).then((res2) => {
+          if (res2.result && res2.result.token)
+            token = res2.result.token;
+          resolve(res2);
+        }).catch((error) => {
+          reject(error);
+        });
+      }
+    });
+  });
+}
+exports.login = login;
 exports.request = request;

@@ -6336,15 +6336,24 @@ const createSubpackageApp = initCreateSubpackageApp();
 const pages = [
   {
     path: "pages/home/index",
-    style: {}
+    style: {
+      enablePullDownRefresh: true,
+      backgroundTextStyle: "dark"
+    }
   },
   {
-    path: "pages/square/index"
+    path: "pages/square/index",
+    style: {
+      enablePullDownRefresh: true,
+      backgroundTextStyle: "dark"
+    }
   },
   {
     path: "pages/mine/index",
     style: {
-      navigationStyle: "custom"
+      navigationStyle: "custom",
+      enablePullDownRefresh: true,
+      backgroundTextStyle: "dark"
     }
   },
   {
@@ -8619,7 +8628,9 @@ const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
 };
 const onShow = /* @__PURE__ */ createHook(ON_SHOW);
 const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
+const onUnload = /* @__PURE__ */ createHook(ON_UNLOAD);
 const onReachBottom = /* @__PURE__ */ createHook(ON_REACH_BOTTOM);
+const onPullDownRefresh = /* @__PURE__ */ createHook(ON_PULL_DOWN_REFRESH);
 const onShareAppMessage = /* @__PURE__ */ createHook(ON_SHARE_APP_MESSAGE);
 exports._export_sfc = _export_sfc;
 exports.createSSRApp = createSSRApp;
@@ -8632,9 +8643,11 @@ exports.n = n$1;
 exports.o = o$1;
 exports.onLoad = onLoad;
 exports.onMounted = onMounted;
+exports.onPullDownRefresh = onPullDownRefresh;
 exports.onReachBottom = onReachBottom;
 exports.onShareAppMessage = onShareAppMessage;
 exports.onShow = onShow;
+exports.onUnload = onUnload;
 exports.p = p$1;
 exports.pn = pn;
 exports.reactive = reactive;

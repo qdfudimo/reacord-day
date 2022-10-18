@@ -25,7 +25,6 @@ const _sfc_main = {
     };
     const getFamousSaying = async (type) => {
       let data = {
-        userId: "1",
         type
       };
       data.pageSize = 10;

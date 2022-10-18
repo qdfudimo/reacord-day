@@ -4,7 +4,7 @@
         <view class="container">
             <view class="uploadNum">
                 <text style="font-size: 14px">图片上传</text>
-                <text>{{ files.length }}/9</text>
+                <text>{{ files.length }}/3</text>
             </view>
             <view class="uploadContainer">
                 <block v-if="files.length">
@@ -17,12 +17,12 @@
                         </view>
                     </view>
                 </block>
-                <view v-if="files.length < 9" class="uploader__file uploader__file_add" aria-role="button"
+                <view v-if="files.length < 3" class="uploader__file uploader__file_add" aria-role="button"
                     aria-label="上传" data-type="img" @tap="chooseImage">
                     <text class="iconfont icon-tianjiatupian addPicture"></text>
                     <text style="color: #888; font-size: 24rpx">添加本地图片</text>
                 </view>
-                <view v-if="files.length < 9" class="uploader__file uploader__file_add" aria-role="button"
+                <view v-if="files.length < 3" class="uploader__file uploader__file_add" aria-role="button"
                     aria-label="上传" data-type="image" @tap="chooseImage">
                     <text class="iconfont icon-tianjiatupian1 addPicture"></text>
                     <text style="color: #888; font-size: 24rpx">添加聊天图片</text>
@@ -46,7 +46,7 @@
                 <view class="iconfont icon-saying" style=" margin-right: 4rpx;"></view> {{!recordState?" 按住语音识别":
                 "松开结束"}}
             </button>
-            <button :disabled="!files.length&&!textareaValue"
+            <button :disabled="!files.length&&!textareaValue" @tap="submit"
                 style="width: 320rpx; height: 64rpx; padding: 0; line-height: 64rpx; background-color: #25bdce"
                 class="report" type="primary">发表</button>
         </view>
@@ -61,9 +61,10 @@
 <script>
 // pages/mine/index.js
 //   "navigationStyle": "custom"
-import { chooseFile, isImageFile } from '@/utils/upload';
+import { chooseFile, isImageFile, uplodFile } from '@/utils/upload';
 import { authorize, getSetting, openSetting } from '@/utils/authorPre';
-
+import { request } from "@/utils/request";
+import util from "@/utils/util";
 //引入插件：微信同声传译
 const plugin = requirePlugin('WechatSI');
 //获取全局唯一的语音识别管理器recordRecoManager
@@ -74,9 +75,10 @@ export default {
             height: 20,
             focus: false,
             timer: null,
-            maxCount: 9,
+            maxCount: 3,
             textareaValue: "",
             files: [],
+            allFile: [],
             maxSize: 10 * 1024 * 1024,
             address: '请选择位置信息',
             location: {
@@ -308,7 +310,6 @@ export default {
         onAfterRead(file) {
             const { maxSize } = this;
             const oversize = Array.isArray(file) ? file.some((item) => item.size > maxSize) : file.size > maxSize;
-
             if (oversize) {
                 uni.showToast({
                     title: '单个图片大小不能超过10M',
@@ -335,10 +336,46 @@ export default {
                 }
             });
         },
-
         deleteItem(event) {
             const { index } = event.currentTarget.dataset;
             this.files = this.files.filter((item, i) => i !== index)
+        },
+        async submit() {
+            if (!this.textareaValue.length) {
+                util.tip("请输入内容", "error")
+                return
+            }
+            let fileUrls;
+            let data = {
+                type: "add",
+                content: this.textareaValue,
+                mood: this.array[this.canSee].mood,
+                imgUrl: []
+            }
+            if (this.files.length&&!data.imgUrl.length) {
+                this.files.forEach(item => {
+                    this.allFile.push(uplodFile(item.url))
+                });
+                fileUrls = await Promise.allSettled(this.allFile);
+                fileUrls.forEach(item => {
+                    if (item.status == "fulfilled" && item.value.success) {
+                        data.imgUrl.push(item.value.fileID)
+                    }
+                });
+            }
+            if (this.location.latitude && this.location.latitude) {
+                data.name = this.location.name
+                data.address = this.location.address
+                data.latitude = this.location.latitude
+                data.longitude = this.location.latitude
+            }
+            request("createNote", data).then(({result={}}) => {
+                if (result.id) {
+                    uni.navigateBack({
+                        delta: 1
+                    });
+                }
+            })
         },
 
         choosiePlace() {
@@ -346,6 +383,7 @@ export default {
             uni.chooseLocation({
                 success(res) {
                     console.log(res);
+                    //name 位置名称 address 详细地址
                     const { address, name, latitude, longitude } = res; // const regex = /^(.*?[市州]|.*?地区|.*?特别行政区)(.*?[市区县])(.*?)$/g;
                     // const address2 =regex.exec(address);
                     that.location = {

@@ -2,9 +2,9 @@
 var common_vendor = require("../../common/vendor.js");
 var utils_upload = require("../../utils/upload.js");
 var utils_authorPre = require("../../utils/authorPre.js");
-require("../../utils/util.js");
+var utils_request = require("../../utils/request.js");
+var utils_util = require("../../utils/util.js");
 require("../../utils/index.js");
-require("../../utils/request.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 const plugin = requirePlugin("WechatSI");
 const manager = plugin.getRecordRecognitionManager();
@@ -14,9 +14,10 @@ const _sfc_main = {
       height: 20,
       focus: false,
       timer: null,
-      maxCount: 9,
+      maxCount: 3,
       textareaValue: "",
       files: [],
+      allFile: [],
       maxSize: 10 * 1024 * 1024,
       address: "\u8BF7\u9009\u62E9\u4F4D\u7F6E\u4FE1\u606F",
       location: {
@@ -234,6 +235,43 @@ const _sfc_main = {
       const { index } = event.currentTarget.dataset;
       this.files = this.files.filter((item, i) => i !== index);
     },
+    async submit() {
+      if (!this.textareaValue.length) {
+        utils_util.util.tip("\u8BF7\u8F93\u5165\u5185\u5BB9", "error");
+        return;
+      }
+      let fileUrls;
+      let data = {
+        type: "add",
+        content: this.textareaValue,
+        mood: this.array[this.canSee].mood,
+        imgUrl: []
+      };
+      if (this.files.length && !data.imgUrl.length) {
+        this.files.forEach((item) => {
+          this.allFile.push(utils_upload.uplodFile(item.url));
+        });
+        fileUrls = await Promise.allSettled(this.allFile);
+        fileUrls.forEach((item) => {
+          if (item.status == "fulfilled" && item.value.success) {
+            data.imgUrl.push(item.value.fileID);
+          }
+        });
+      }
+      if (this.location.latitude && this.location.latitude) {
+        data.name = this.location.name;
+        data.address = this.location.address;
+        data.latitude = this.location.latitude;
+        data.longitude = this.location.latitude;
+      }
+      utils_request.request("createNote", data).then(({ result = {} }) => {
+        if (result.id) {
+          common_vendor.index.navigateBack({
+            delta: 1
+          });
+        }
+      });
+    },
     choosiePlace() {
       let that = this;
       common_vendor.index.chooseLocation({
@@ -304,12 +342,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     g: common_vendor.o((...args) => $options.deleteItem && $options.deleteItem(...args)),
     h: $data.files
   } : {}, {
-    i: $data.files.length < 9
-  }, $data.files.length < 9 ? {
+    i: $data.files.length < 3
+  }, $data.files.length < 3 ? {
     j: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args))
   } : {}, {
-    k: $data.files.length < 9
-  }, $data.files.length < 9 ? {
+    k: $data.files.length < 3
+  }, $data.files.length < 3 ? {
     l: common_vendor.o((...args) => $options.chooseImage && $options.chooseImage(...args))
   } : {}, {
     m: common_vendor.t($data.location.name || "\u6240\u5728\u4F4D\u7F6E"),
@@ -324,7 +362,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     w: common_vendor.o((...args) => $options.touchStart && $options.touchStart(...args)),
     x: common_vendor.o((...args) => $options.touchEnd && $options.touchEnd(...args)),
     y: !$data.files.length && !$data.textareaValue,
-    z: $data.recordState
+    z: common_vendor.o((...args) => $options.submit && $options.submit(...args)),
+    A: $data.recordState
   }, $data.recordState ? {} : {});
 }
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/xiaocx/reacord-day/pages/create-record/create-record.vue"]]);

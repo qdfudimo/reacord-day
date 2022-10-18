@@ -19,13 +19,18 @@
 				"$env": "uid"
 			}
 		},
-		"short_content": {
+		"famousContent": {
 			"bsonType": "string",
 			"title": "个性短句",
 			"description": "个性短句",
 			"trim": "both"
 		},
-		"short_name": {
+		"status": {
+			"bsonType": "number",
+			"title": "状态 0 失效",
+			"description": "状态 0 失效"
+		},
+		"creator": {
 			"bsonType": "string",
 			"title": "个性短句创始人",
 			"description": "个性短句创始人",

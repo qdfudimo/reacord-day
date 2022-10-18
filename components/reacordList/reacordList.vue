@@ -1,28 +1,28 @@
 <template>
     <view class="schedule_view">
         <view class="schedule_top">
-            <image class="schedule_avatr" :src="reacordList.userAvatrImage || '/static/image/avtar.png'" />
+            <image class="schedule_avatr" mode ="aspectFill" :src="userInfo.avatarUrl || '/static/image/avtar.png'" />
             <view class="issue_time">
-                <view class="schedule_userName">{{ reacordList.userName }}</view>
-                <text>{{ reacordList.scheduleTime }}</text>
+                <view class="schedule_userName">{{ userInfo.nickName }}</view>
+                <text v-if="reacordList.create_time">{{ formatTime(reacordList.create_time) }}</text>
             </view>
             <text class="mood" v-if="reacordList.mood">
                 {{ reacordList.mood }}
             </text>
         </view>
-        <view class="schedule_content">{{ reacordList.scheduleContent }}</view>
-        <view class="pictures" v-if="reacordList.scheduleImg && reacordList.scheduleImg.length">
+        <view class="schedule_content">{{ reacordList.content }}</view>
+        <view class="pictures" v-if="reacordList.imgUrl && reacordList.imgUrl.length">
             <!-- 大于等于两张图片 -->
-            <view :data-index="index" :data-urls="reacordList.scheduleImg" @tap.stop.prevent="preview" class="picture"
-                style="height: 228rpx" v-for="(i, index) in reacordList.scheduleImg" :key="index">
+            <view :data-index="index" :data-urls="reacordList.imgUrl" @tap.stop.prevent="preview" class="picture"
+                style="height: 228rpx" v-for="(i, index) in reacordList.imgUrl" :key="index">
                 <image mode="aspectFill" :src="i"></image>
             </view>
         </view>
         <view class="schedule_bottom">
-            <!-- <view class="share">
-                <text class="iconfont icon-iconfontfenxiang" style="color: '#ccc'; font-size: 14px; margin-right: 6px"></text>
-                <text style="font-size: 13px">分享</text>
-            </view> -->
+            <view class="share" style="color: #77aef3;" v-if="reacordList.name">
+                <text class="iconfont icon-weizhi" style="font-size: 14px; margin-right: 6px"></text>
+                <text style="font-size: 13px;">{{reacordList.name}}</text>
+            </view>
             <view class="comment" @tap="remove">
                 <text class="iconfont icon-shanchu1" style="color:#ccc;font-size: 18px; margin-right: 4px"></text>
                 <text style="font-size: 13px"> 删除</text>
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import util from "@/utils/util";
 // component/reacordList/reacordList.js
 export default {
     data() {
@@ -57,6 +58,7 @@ export default {
     },
     props: {
         reacordList: Object,
+        userInfo: Object,
         onlyIndex: Number // myProperty: { // 属性名
         //   type: String,
         //   value: ''
@@ -87,7 +89,9 @@ export default {
                 current: urls[index]
             });
         },
-
+        formatTime(time){
+            return util.formatTime(time)
+        },
         changeLike(e) {
             this.$emit('changeLike', {
                 detail: this.onlyIndex

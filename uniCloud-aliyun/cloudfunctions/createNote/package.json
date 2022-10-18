@@ -1,5 +1,5 @@
 {
-  "name": "homeData",
+  "name": "createNote",
   "dependencies": {
     "wx-common": "file:../common/wx-common"
   },

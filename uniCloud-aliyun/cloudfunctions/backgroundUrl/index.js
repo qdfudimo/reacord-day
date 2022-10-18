@@ -1,17 +1,29 @@
 'use strict';
+const {
+	verifyToken
+} = require('wx-common')
 exports.main = async (event, context) => {
 	//event为客户端上传的参数
 	console.log('event : ', event)
-	const userId = event.userId
+	const {
+		token
+	} = event;
+	const payload = token ? await verifyToken(token) : null;
 	const type = event.type
 	const db = uniCloud.database();
 	const collection = db.collection("background_img")
+	if (!payload) {
+		return {
+			errorCode: 2,
+			message: "token验证失败"
+		}
+	}
 
 	function add(url) {
 		return new Promise((resolve, reject) => {
 			collection
 				.add({
-					user_id: userId,
+					user_id: payload.id,
 					imgUrl: url,
 					type: event.imgType
 				}).then(res => {
@@ -26,7 +38,7 @@ exports.main = async (event, context) => {
 	function read() {
 		return new Promise((resolve, reject) => {
 			collection.where({
-				user_id: userId,
+				user_id: payload.id,
 				type: event.imgType
 			}).field({
 				'user_id': false,

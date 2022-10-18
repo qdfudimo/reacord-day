@@ -4,7 +4,7 @@
   "setting": {
     "compileHotReLoad": true
   },
-  "libVersion": "2.26.2",
+  "libVersion": "2.9.5",
   "condition": {
     "miniprogram": {
       "list": [
@@ -18,6 +18,20 @@
         {
           "name": "",
           "pathName": "pages/famousSaying/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/create-record/create-record",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/square/index",
           "query": "",
           "launchMode": "default",
           "scene": null

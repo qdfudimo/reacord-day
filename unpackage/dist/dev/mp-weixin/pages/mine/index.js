@@ -21,8 +21,11 @@ const _sfc_main = {
     const imgList = common_vendor.ref([]);
     const scheduleLsits = common_vendor.ref([]);
     const userInfo = common_vendor.reactive({
-      avatarUrl: "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/da5f56fe-c939-4168-9c49-ae76ed29d0d0.png",
-      nickName: "\u7528\u6237XXXX"
+      avatarUrl: "",
+      nickName: "",
+      id: "",
+      diaryCount: 0,
+      collectCount: 0
     });
     const showBackground = common_vendor.ref(false);
     const loadMore = common_vendor.ref(false);
@@ -42,7 +45,6 @@ const _sfc_main = {
     };
     const changeFile = (url) => {
       let data = {
-        userId: "1",
         type: "update",
         url,
         id: currentBackgroundId.value,
@@ -102,7 +104,6 @@ const _sfc_main = {
     };
     const getFamousSaying = async (type) => {
       let data = {
-        userId: "1",
         type,
         pageSize: 10,
         currentPage: currentPage.value
@@ -114,14 +115,15 @@ const _sfc_main = {
           if (!result.data.length || result.data.length < 10) {
             ifMoreData.value = true;
           }
+          common_vendor.index.stopPullDownRefresh();
         }
       } catch (error) {
+        common_vendor.index.stopPullDownRefresh();
         utils_util.util.tip("\u8BF7\u6C42\u5931\u8D25", "error");
       }
     };
     const requsetImg = () => {
       let data = {
-        userId: "1",
         type: "read",
         imgType: 1
       };
@@ -136,8 +138,37 @@ const _sfc_main = {
         }
       });
     };
+    const getUserInfo = () => {
+      let data = {
+        type: "read"
+      };
+      utils_request.request("getUserInfo", data).then(({ result = {} }) => {
+        if (result.affectedDocs) {
+          userInfo.avatarUrl = result.data[0].avatarUrl || "";
+          userInfo.nickName = result.data[0].nickName;
+          userInfo.id = result.data[0]._id;
+          userInfo.diaryCount = result.data[0].diaryCount;
+          userInfo.collectCount = result.data[0].collectCount;
+          common_vendor.index.stopPullDownRefresh();
+        }
+      });
+    };
+    common_vendor.watch(userInfo, (newVal, oldVal) => {
+      common_vendor.index.setStorage({
+        key: "userInfo",
+        data: {
+          avatarUrl: userInfo.avatarUrl,
+          nickName: userInfo.nickName
+        }
+      });
+    });
     common_vendor.onLoad(() => {
+      common_vendor.index.$on("updateInfo", function(data) {
+        userInfo.avatarUrl = data.avatarUrl;
+        userInfo.nickName = data.nickName;
+      });
       imgList.value = utils_index.randomImg;
+      getUserInfo();
       getFamousSaying("mySearch");
       requsetImg();
       common_vendor.index.getStorage({
@@ -155,6 +186,17 @@ const _sfc_main = {
         }
       });
     });
+    common_vendor.onUnload(() => {
+      common_vendor.index.$off("updateInfo");
+    });
+    common_vendor.onPullDownRefresh(() => {
+      currentPage.value = 1;
+      scheduleLsits.value = [];
+      ifMoreData.value = false;
+      loadMore.value = false;
+      getUserInfo();
+      getFamousSaying("mySearch");
+    });
     common_vendor.onReachBottom(async () => {
       if (loadMore.value || ifMoreData.value)
         return;
@@ -168,15 +210,16 @@ const _sfc_main = {
         a: currentBackground.value,
         b: common_vendor.s("height:" + common_vendor.unref(customBar) + "px;padding-top:" + common_vendor.unref(statusBar) + "px;"),
         c: userInfo.avatarUrl || "/static/image/vx.png",
-        d: common_vendor.t(userInfo.nickName || "\u7528\u6237XXXX"),
+        d: common_vendor.t(userInfo.nickName || "\u6682\u65E0\u7528\u6237\u540D"),
         e: common_vendor.o(getUserProfile),
         f: common_vendor.o(showIfBackground),
-        g: common_vendor.t(0),
-        h: common_vendor.t(0),
+        g: common_vendor.t(userInfo.diaryCount),
+        h: common_vendor.t(userInfo.collectCount),
         i: common_vendor.o(collectApplet),
-        j: !scheduleLsits.value.length
+        j: common_vendor.o(getUserProfile),
+        k: !scheduleLsits.value.length
       }, !scheduleLsits.value.length ? {} : {}, {
-        k: common_vendor.f(scheduleLsits.value, (item, index, i0) => {
+        l: common_vendor.f(scheduleLsits.value, (item, index, i0) => {
           return {
             a: common_vendor.o(($event) => collectShort(item, index)),
             b: "2e3e0f84-0-" + i0,
@@ -186,35 +229,34 @@ const _sfc_main = {
             d: item._id
           };
         }),
-        l: loadMore.value || ifMoreData.value
+        m: loadMore.value || ifMoreData.value
       }, loadMore.value || ifMoreData.value ? common_vendor.e({
-        m: loadMore.value
+        n: loadMore.value
       }, loadMore.value ? {} : ifMoreData.value ? {} : {}, {
-        n: ifMoreData.value
+        o: ifMoreData.value
       }) : {}, {
-        o: showBackground.value
+        p: showBackground.value
       }, showBackground.value ? {
-        p: common_vendor.o(showIfBackground),
-        q: currentBackground.value,
-        r: common_vendor.o(selectBackground),
-        s: common_vendor.f(imgList.value, (item, index, i0) => {
+        q: common_vendor.o(showIfBackground),
+        r: currentBackground.value,
+        s: common_vendor.o(selectBackground),
+        t: common_vendor.f(imgList.value, (item, index, i0) => {
           return {
             a: item,
             b: item,
             c: index
           };
         }),
-        t: common_vendor.o(selectImage)
+        v: common_vendor.o(selectImage)
       } : {}, {
-        v: ifCollect.value
+        w: ifCollect.value
       }, ifCollect.value ? {
-        w: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
+        x: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
       } : {}, {
-        x: common_vendor.n("container noColor")
+        y: common_vendor.n("container noColor")
       });
     };
   }
 };
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "E:/xiaocx/reacord-day/pages/mine/index.vue"]]);
-_sfc_main.__runtimeHooks = 2;
 wx.createPage(MiniProgramPage);

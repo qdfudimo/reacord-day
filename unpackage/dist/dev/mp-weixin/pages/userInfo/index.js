@@ -1,19 +1,26 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
+var utils_upload = require("../../utils/upload.js");
+var utils_request = require("../../utils/request.js");
+var utils_util = require("../../utils/util.js");
+require("../../utils/index.js");
+require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 const _sfc_main = {
   __name: "index",
   setup(__props) {
     const defaultAvatarUrl = "";
     const avatarUrl = common_vendor.ref(defaultAvatarUrl);
-    const nickname = common_vendor.ref("");
+    const nickName = common_vendor.ref("");
     const disabled = common_vendor.ref(true);
+    const oldUrl = common_vendor.ref("");
     common_vendor.onLoad(() => {
       common_vendor.index.hideShareMenu();
       const instance = common_vendor.getCurrentInstance().proxy;
       const eventChannel = instance.getOpenerEventChannel();
       eventChannel.once("userData", function(data) {
         avatarUrl.value = data.avatarUrl;
-        nickname.value = data.nickName;
+        nickName.value = data.nickName;
+        oldUrl.value = data.avatarUrl;
       });
     });
     const onChooseAvatar = (e) => {
@@ -21,29 +28,56 @@ const _sfc_main = {
       avatarUrl.value = avatarLink;
       disabled.value = false;
     };
-    const submitInfo = (e) => {
-      let ext = avatarUrl.value.split(".").pop();
-      common_vendor.pn.uploadFile({
-        filePath: avatarUrl.value,
-        cloudPath: Date.now() + "." + ext,
-        success(res) {
-          console.log(res);
-        },
-        fail(error) {
-          console.log(error);
-          util.tip("\u4E0A\u4F20\u5931\u8D25", "error");
+    const submitInfo = async (e) => {
+      if (nickName.value.length == 0) {
+        utils_util.util.tip("\u8BF7\u8F93\u5165\u5408\u6CD5\u7684\u6635\u79F0", "error");
+        return;
+      }
+      if (/[^/a-zA-Z0-9\u4E00-\u9FA5]/g.test(nickName.value)) {
+        utils_util.util.tip("\u8BF7\u8F93\u5165\u4E2D\u82F1\u6587\u548C\u6570\u5B57", "error");
+        return;
+      }
+      let data = {
+        type: "update",
+        data: {
+          nickName: nickName.value,
+          avatarUrl: oldUrl.value
+        }
+      };
+      if (oldUrl.value != avatarUrl.value) {
+        let res = await utils_upload.uplodFile(avatarUrl.value);
+        if (res.success) {
+          data.data.avatarUrl = res.fileID;
+          data.oldUrl = oldUrl.value;
+        }
+      }
+      getUserInfo(data);
+    };
+    const getUserInfo = (data) => {
+      utils_request.request("getUserInfo", data).then(({ result = {} }) => {
+        if (result.updated) {
+          common_vendor.index.$emit("updateInfo", {
+            nickName: nickName.value,
+            avatarUrl: data.data.avatarUrl
+          });
+          common_vendor.index.switchTab({
+            url: "/pages/mine/index",
+            success() {
+            }
+          });
         }
       });
     };
-    const input = () => {
+    const input = (e) => {
       disabled.value = false;
+      nickName.value = e.detail.value;
     };
     return (_ctx, _cache) => {
       return {
-        a: avatarUrl.value,
+        a: avatarUrl.value || "/static/image/vx.png",
         b: common_vendor.o(onChooseAvatar),
-        c: common_vendor.o([($event) => nickname.value = $event.detail.value, input]),
-        d: nickname.value,
+        c: nickName.value,
+        d: common_vendor.o(input),
         e: disabled.value,
         f: common_vendor.o(submitInfo)
       };

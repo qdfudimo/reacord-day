@@ -43,13 +43,13 @@ const _sfc_main = {
       if (!val)
         inputVal.value = "";
     });
-    common_vendor.onLoad(() => {
+    common_vendor.onLoad(async () => {
+      await utils_request.login();
       requsetImg();
       requsetFamous();
     });
     const requsetImg = () => {
       let data = {
-        userId: "1",
         type: "read",
         imgType: 0
       };
@@ -62,11 +62,12 @@ const _sfc_main = {
           return;
         const randomImgurl = utils_index.randomImg[Math.floor(Math.random() * utils_index.randomImg.length)];
         backgroundImg.defaultBackground = randomImgurl;
+      }).finally((e) => {
+        common_vendor.index.stopPullDownRefresh();
       });
     };
     const requsetFamous = () => {
       let data = {
-        userId: "1",
         type: "read"
       };
       utils_request.request("signatureHistory", data).then(({ result = {} }) => {
@@ -80,6 +81,8 @@ const _sfc_main = {
         } else {
           isOriginal.value = false;
         }
+      }).finally((e) => {
+        common_vendor.index.stopPullDownRefresh();
       });
     };
     const goRecord = () => {
@@ -135,7 +138,6 @@ const _sfc_main = {
       let oldImgUrl = backgroundImg.currentBackground;
       backgroundImg.currentBackground = checkImgType.value == "default" ? backgroundImg.defaultBackground : backgroundImg.temporaryImg;
       let data = {
-        userId: "1",
         type: "add",
         imgType: 0,
         oldImgUrl,
@@ -161,7 +163,6 @@ const _sfc_main = {
         let text = {
           famousContent: textareaValue.value,
           creator: inputVal.value,
-          userId: "1",
           type: "add"
         };
         isOriginal.value && (text.id = homeShort.data._id);
@@ -215,6 +216,10 @@ const _sfc_main = {
         title: "\u5199\u4E0B\u4F60\u7684\u751F\u6D3B",
         path: "/page/home/index"
       };
+    });
+    common_vendor.onPullDownRefresh(() => {
+      requsetImg();
+      requsetFamous();
     });
     return (_ctx, _cache) => {
       return common_vendor.e({

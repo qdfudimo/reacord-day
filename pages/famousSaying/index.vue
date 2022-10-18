@@ -42,7 +42,6 @@ const collectShort = (e) => {
 }
 const getFamousSaying = async (type) => {
   let data = {
-    userId: "1",
     type
   }
   data.pageSize = 10

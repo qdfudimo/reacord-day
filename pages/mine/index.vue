@@ -10,10 +10,11 @@
                 <view class="content_top">
                     <view class="user_avtar" @tap="getUserProfile">
                         <view class="avtarImg">
-                            <image class="avtar" :src="userInfo.avatarUrl || '/static/image/vx.png'" />
+                            <image class="avtar" mode="aspectFill"
+                                :src="userInfo.avatarUrl || '/static/image/vx.png'" />
                         </view>
                         <view class="userName">
-                            <view class="nickName">{{ userInfo.nickName||"用户XXXX" }}</view>
+                            <view class="nickName">{{ userInfo.nickName||"暂无用户名" }}</view>
                             <view class="changeM">点击更换用户信息</view>
                         </view>
                     </view>
@@ -21,8 +22,8 @@
                 </view>
                 <view class="details">
                     <view class="diary">
-                        <view>日记: {{ 0 }} 篇</view>
-                        <view>坚持: {{ 0 }} 天</view>
+                        <view>日记: {{ userInfo.diaryCount }} 篇</view>
+                        <view>收藏名言: {{ userInfo.collectCount }} 篇</view>
                     </view>
                     <view class="setting">
                         <view class="common">
@@ -30,10 +31,10 @@
                             <text style="font-size: 12px; margin-top: 6px">收藏小程序</text>
                         </view>
                         <view class="common">
-                            <text class="iconfont icon-fenxiang" style="font-size: 22px"></text>
-                            <text style="font-size: 12px; margin-top: 6px">分享好友</text>
-                            <button data-id="shareBtn" :plain="true" open-type="share" class="shareBtn"
-                                style="border: 0; padding: 0; width: 100%"></button>
+                            <text class="iconfont icon-fenxiang" style="font-size: 22px" @tap="getUserProfile"></text>
+                            <text style="font-size: 12px; margin-top: 6px">信息更新</text>
+                            <!-- <button data-id="shareBtn" :plain="true" open-type="share" class="shareBtn"
+                                style="border: 0; padding: 0; width: 100%"></button> -->
                         </view>
                         <view class="common">
                             <text class="iconfont icon-shezhi" style="font-size: 22px"></text>
@@ -86,12 +87,13 @@
 // pages/mine/index.js
 import famous from '@/components/famous/famous';
 import { chooseFile } from '@/utils/upload';
-import { randomImg, shareImg } from '@/utils/index';
-import { ref, reactive } from 'vue';
+import { randomImg } from '@/utils/index';
+import { ref, reactive, watch } from 'vue';
 import { useGetTabBar } from "@/hooks/useGetTabBar";
 import {
     onLoad,
-    onShareAppMessage,
+    onUnload,
+    onPullDownRefresh,
     onReachBottom,
 } from "@dcloudio/uni-app";
 import util from "@/utils/util";
@@ -104,8 +106,11 @@ const custom = app.globalData.custom;
 const imgList = ref([])
 const scheduleLsits = ref([])
 const userInfo = reactive({
-    avatarUrl: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/da5f56fe-c939-4168-9c49-ae76ed29d0d0.png',
-    nickName: '用户XXXX',
+    avatarUrl: "",
+    nickName: '',
+    id: '',
+    diaryCount: 0,
+    collectCount: 0,
 })
 const showBackground = ref(false)
 const loadMore = ref(false)
@@ -125,7 +130,6 @@ const selectImage = (e) => {
 }
 const changeFile = (url) => {
     let data = {
-        userId: "1",
         type: "update",
         url,
         id: currentBackgroundId.value,
@@ -190,7 +194,6 @@ const collectShort = (item, index) => {
 }
 const getFamousSaying = async (type) => {
     let data = {
-        userId: "1",
         type,
         pageSize: 10,
         currentPage: currentPage.value
@@ -202,14 +205,15 @@ const getFamousSaying = async (type) => {
             if (!result.data.length || result.data.length < 10) {
                 ifMoreData.value = true
             }
+            uni.stopPullDownRefresh();
         }
     } catch (error) {
+        uni.stopPullDownRefresh();
         util.tip("请求失败", "error")
     }
 }
 const requsetImg = () => {
     let data = {
-        userId: "1",
         type: "read",
         imgType: 1,
     }
@@ -224,12 +228,41 @@ const requsetImg = () => {
         }
     })
 }
+const getUserInfo = () => {
+    let data = {
+        type: "read",
+    }
+    request("getUserInfo", data).then(({ result = {} }) => {
+        if (result.affectedDocs) {
+            userInfo.avatarUrl = result.data[0].avatarUrl || "";
+            userInfo.nickName = result.data[0].nickName;
+            userInfo.id = result.data[0]._id;
+            userInfo.diaryCount = result.data[0].diaryCount;
+            userInfo.collectCount = result.data[0].collectCount;
+            uni.stopPullDownRefresh();
+        }
+    })
+}
+watch(userInfo, (newVal, oldVal) => {
+    uni.setStorage({
+        key: 'userInfo',
+        data: {
+            avatarUrl: userInfo.avatarUrl,
+            nickName: userInfo.nickName
+        }
+    });
+})
 /**
   * 生命周期函数--监听页面加载
   */
 onLoad(() => {
     // uni.hideShareMenu()
+    uni.$on('updateInfo', function (data) {
+        userInfo.avatarUrl = data.avatarUrl
+        userInfo.nickName = data.nickName
+    })
     imgList.value = randomImg;
+    getUserInfo()
     getFamousSaying("mySearch")
     requsetImg()
     uni.getStorage({
@@ -247,17 +280,21 @@ onLoad(() => {
         }
     });
 })
+onUnload(() => {
+    // 清除监听
+    uni.$off('updateInfo');
+})
 /**
 * 用户点击右上角分享
 */
-// onShareAppMessage(() => {
-//     const randomImgs = shareImg[Math.floor(Math.random() * shareImg.length)];
-//     return {
-//         title: '写下你的生活',
-//         path: '/page/mine/index',
-//         imageUrl: randomImgs
-//     };
-// })
+onPullDownRefresh(() => {
+    currentPage.value = 1
+    scheduleLsits.value = [];
+    ifMoreData.value = false
+    loadMore.value = false
+    getUserInfo();
+    getFamousSaying("mySearch");
+})
 onReachBottom(async () => {
     if (loadMore.value || ifMoreData.value) return
     loadMore.value = true

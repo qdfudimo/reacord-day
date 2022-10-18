@@ -1,6 +1,12 @@
 'use strict';
+const {
+	verifyToken
+} = require('wx-common')
 exports.main = async (event, context) => {
-	let userId = event.userId;
+	const {
+		token
+	} = event;
+	const payload = token ? await verifyToken(token) : null;
 	const db = uniCloud.database();
 	const dbCmd = db.command
 	const collection = db.collection("famous-saying");
@@ -8,6 +14,13 @@ exports.main = async (event, context) => {
 		event,
 		context
 	})
+	if (!payload) {
+		return {
+			errorCode: 2,
+			message: "token验证失败"
+		}
+	}
+	let userId = payload.id;
 	let serach = `creator,famousContent,size(collection) as collectCount,in("${userId}",collection) as ifCollect`;
 	//event为客户端上传的参数
 	switch (event.type) {
@@ -43,7 +56,7 @@ exports.main = async (event, context) => {
 			// 	'collection': false
 			// }).skip(skip1).limit(limit1).get() // 获取20条.get() // 直接执行数据库操作
 			// dbJQL.where({collection: db.command.all(["1"])})
-			const MyFamousQueryRes = await dbJQL.collection('famous-saying').where('in("1",collection)').field(serach).skip(skip1)
+			const MyFamousQueryRes = await dbJQL.collection('famous-saying').where(`in("${userId}",collection)`).field(serach).skip(skip1)
 				.limit(limit1).get()
 			return MyFamousQueryRes
 			//收藏

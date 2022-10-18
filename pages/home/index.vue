@@ -88,13 +88,13 @@
 
 <script setup>
 // pages/mine/index.js
-import { onLoad, onShareAppMessage, onShow } from "@dcloudio/uni-app";
+import { onLoad, onShareAppMessage, onPullDownRefresh } from "@dcloudio/uni-app";
 import { ref, reactive, watch } from 'vue';
 import diaLog from "@/components/diaLog/diaLog";
 import { useGetTabBar } from "@/hooks/useGetTabBar";
 import util from "@/utils/util";
 import { chooseFile, uplodFile } from '@/utils/upload';
-import { request } from "@/utils/request";
+import { request, login } from "@/utils/request";
 import { radioData, category, defaultImg, randomImg, shareImg } from '@/utils/index';
 useGetTabBar(0)
 const app = getApp();
@@ -132,13 +132,13 @@ const homeShort = reactive({
 watch(() => textareaValue.value, (val, oldVal) => {
     if (!val) inputVal.value = ""
 })
-onLoad(() => {
+onLoad(async () => {
+    await login()
     requsetImg()
     requsetFamous()
 })
 const requsetImg = () => {
     let data = {
-        userId: "1",
         type: "read",
         imgType: 0,
     }
@@ -150,11 +150,12 @@ const requsetImg = () => {
         if (backgroundImg.defaultBackground) return
         const randomImgurl = randomImg[Math.floor(Math.random() * randomImg.length)];
         backgroundImg.defaultBackground = randomImgurl;
+    }).finally(e => {
+        uni.stopPullDownRefresh();
     })
 }
 const requsetFamous = () => {
     let data = {
-        userId: "1",
         type: "read",
     }
     request("signatureHistory", data).then(({ result = {} }) => {
@@ -168,40 +169,9 @@ const requsetFamous = () => {
         } else {
             isOriginal.value = false;
         }
+    }).finally(e => {
+        uni.stopPullDownRefresh();
     })
-}
-const requests = () => {
-    let data1 = {
-        userId: "1",
-        type: "add",
-        famousContent: "很显然，英国独立电视台原创剧集的收视胜过了英国广播公司的节目。",
-        creator: "麻痹小子"
-    }
-    request("signatureHistory", data1).then(({ result = {} }) => {
-        console.log(result);
-    })
-    // let data = {
-    //     userId: "1",
-    //     type: "read",
-    //     imgType: 0,
-    //     id:"",
-    //     url:"1"
-    // }
-
-    // request("backgroundUrl", data).then(({ result = {} }) => {
-    //     console.log(result);
-    // })
-    // request("backgroundUrl", data).then(({ result = {} }) => {
-    //     console.log(result);
-    //     if (result.affectedDocs != 0) {
-    //         // util.tip("操作失败", "error")
-    //         backgroundImg.currentBackground = result.data[0].imgUrl || ""
-    //         backgroundImg.imgId = result.data[0]._id || ""
-    //     } else {
-    //         const randomImgurl = randomImg[Math.floor(Math.random() * randomImg.length)];
-    //         backgroundImg.defaultBackground = randomImgurl;
-    //     }
-    // })
 }
 const goRecord = () => {
     uni.navigateTo({
@@ -256,7 +226,6 @@ const confirm = async () => {
     let oldImgUrl = backgroundImg.currentBackground;
     backgroundImg.currentBackground = checkImgType.value == 'default' ? backgroundImg.defaultBackground : backgroundImg.temporaryImg;
     let data = {
-        userId: "1",
         type: "add",
         imgType: 0,
         oldImgUrl,
@@ -268,7 +237,7 @@ const confirm = async () => {
             let res = await uplodFile(backgroundImg.currentBackground)
             if (res.success) {
                 data.url = res.fileID
-                let {result={}} = await request("backgroundUrl", data)
+                let { result = {} } = await request("backgroundUrl", data)
                 result.success && (backgroundImg.imgId = result.id)
             }
         }
@@ -284,7 +253,6 @@ const confirm = async () => {
         let text = {
             famousContent: textareaValue.value,
             creator: inputVal.value,
-            userId: "1",
             type: "add",
         }
         isOriginal.value && (text.id = homeShort.data._id)
@@ -348,6 +316,22 @@ onShareAppMessage(() => {
         // imageUrl: randomImgs
     };
 })
+onPullDownRefresh(() => {
+    requsetImg()
+    requsetFamous()
+})
+// let data = {};
+// let str = ""
+// let i = 0
+// setInterval(() => {
+//     i++;
+//     setTimeout(() => {
+//         data[i] = "11";
+//         let keys = Object.keys(data[i]);
+//         let key = Math.max.apply(null, keys);
+//         str = data[key]
+//     }, 2000);
+// }, 1000);
 </script>
 <style lang="scss" scoped>
 page {

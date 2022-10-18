@@ -7,6 +7,7 @@ import {
  */
 export function useGetTabBar(index) {
     onShow(() => {
+        //option Api下
         //在 Vue3 中，this 对象下的 $mp 调整为 $scope
         // if (typeof this.$scope.getTabBar === 'function' &&
         //     this.$scope.getTabBar()) {

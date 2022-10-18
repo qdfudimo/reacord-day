@@ -140,7 +140,6 @@ const tip = (title, icon, duration) => {
 };
 const collectFamous = (e, callBack) => {
   let data = {
-    userId: "1",
     type: e.ifCollect ? "noCollect" : "collect",
     id: e._id
   };

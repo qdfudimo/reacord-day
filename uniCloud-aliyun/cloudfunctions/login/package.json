@@ -1,5 +1,5 @@
 {
-  "name": "homeData",
+  "name": "login",
   "dependencies": {
     "wx-common": "file:../common/wx-common"
   },

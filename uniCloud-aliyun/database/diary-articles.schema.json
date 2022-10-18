@@ -47,7 +47,7 @@
 			"title": "当前发布位置",
 			"description": "当前发布位置"
 		},
-		"last_modify_date": {
+		"update_time": {
 			"bsonType": "timestamp",
 			"title": "最后修改时间",
 			"description": "最后修改时间",

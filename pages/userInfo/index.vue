@@ -1,26 +1,30 @@
 <template>
   <view class="userInfo">
     <button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
-      <image class="avatar" :src="avatarUrl"></image>
+      <image class="avatar" mode="aspectFill" :src="avatarUrl||'/static/image/vx.png'"></image>
     </button>
     <view class="nick_name">
       <text>昵称</text>
-      <input v-model="nickname" @input="input" type="nickname" maxlength="10" class="weui-input" placeholder="请输入昵称" />
+      <input :value="nickName" @input="input" type="nickname" maxlength="10" class="weui-input" placeholder="请输入昵称" />
     </view>
     <button class="write submit" :disabled="disabled" @tap="submitInfo">
       保存修改
     </button>
   </view>
 </template>
-
+<!-- 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/da5f56fe-c939-4168-9c49-ae76ed29d0d0.png' -->
 <script setup>
 import { onLoad } from "@dcloudio/uni-app";
 import { ref, getCurrentInstance, watch } from 'vue';
+import { uplodFile } from '@/utils/upload';
+import { request } from "@/utils/request";
+import util from "@/utils/util";
 const defaultAvatarUrl = ''
 const avatarUrl = ref(defaultAvatarUrl)
-const nickname = ref("")
+const nickName = ref("")
 const disabled = ref(true)
-// watch([nickname,avatarUrl],([newX, newY],[oldX, oldY])=>{
+const oldUrl = ref("")
+// watch([nickName,avatarUrl],([newX, newY],[oldX, oldY])=>{
 // })
 onLoad(() => {
   uni.hideShareMenu()
@@ -28,7 +32,8 @@ onLoad(() => {
   const eventChannel = instance.getOpenerEventChannel();
   eventChannel.once('userData', function (data) {
     avatarUrl.value = data.avatarUrl;
-    nickname.value = data.nickName;
+    nickName.value = data.nickName;
+    oldUrl.value = data.avatarUrl;
   })
 })
 const onChooseAvatar = (e) => {
@@ -36,23 +41,49 @@ const onChooseAvatar = (e) => {
   avatarUrl.value = avatarLink;
   disabled.value = false;
 }
-const submitInfo = (e) => {
-  // uni.navigateBack()
-  let ext = avatarUrl.value.split('.').pop()
-  uniCloud.uploadFile({
-    filePath: avatarUrl.value,
-    cloudPath: Date.now() + "." + ext,
-    success(res) {
-      console.log(res);
-    },
-    fail(error) {
-      console.log(error);
-      util.tip("上传失败", "error")
-    },
-  });
+const submitInfo = async (e) => {
+  if (nickName.value.length == 0) {
+    util.tip("请输入合法的昵称", "error")
+    return
+  }
+  if ((/[^/a-zA-Z0-9\u4E00-\u9FA5]/g).test(nickName.value)) {
+    util.tip("请输入中英文和数字", "error")
+    return
+  }
+  let data = {
+    type: "update",
+    data: {
+      nickName: nickName.value,
+      avatarUrl: oldUrl.value,
+    }
+  }
+  if (oldUrl.value != avatarUrl.value) {
+    let res = await uplodFile(avatarUrl.value);
+    if (res.success) {
+      data.data.avatarUrl = res.fileID
+      data.oldUrl = oldUrl.value
+    }
+  }
+  getUserInfo(data)
 }
-const input = () => {
+const getUserInfo = (data) => {
+  request("getUserInfo", data).then(({ result = {} }) => {
+    if (result.updated) {
+      uni.$emit('updateInfo', {
+        nickName: nickName.value,
+        avatarUrl: data.data.avatarUrl
+      })
+      uni.switchTab({
+        url: '/pages/mine/index',
+        success() {
+        }
+      });
+    }
+  })
+}
+const input = (e) => {
   disabled.value = false
+  nickName.value = e.detail.value;
 }
 </script>
 

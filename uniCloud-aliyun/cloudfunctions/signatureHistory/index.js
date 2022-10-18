@@ -1,11 +1,25 @@
 'use strict';
+const {
+	verifyToken,
+	msgSecCheck
+} = require('wx-common')
 exports.main = async (event, context) => {
 	//event为客户端上传的参数
-	const userId = event.userId
+	const {
+		token
+	} = event;
+	const payload = token ? await verifyToken(token) : null;
 	const db = uniCloud.database();
 	const collection = db.collection("personal-signature");
 	const dbCmd = db.command;
 	const now = new Date().getTime();
+	if (!payload) {
+		return {
+			errorCode: 2,
+			message: "token验证失败"
+		}
+	}
+	const userId = payload.id
 	switch (event.type) {
 		case "read":
 			//读取
@@ -22,7 +36,8 @@ exports.main = async (event, context) => {
 				let res = await uniCloud.callFunction({
 					name: "getFamousSaying",
 					data: {
-						type: "oneSearch"
+						type: "oneSearch",
+						token: token
 					}
 				})
 				if (res.success && res.result.affectedDocs == 1) {
@@ -67,6 +82,13 @@ exports.main = async (event, context) => {
 				})
 			}
 			if (event.famousContent || (event.famousContent == 0 && event.famousContent != "")) {
+				const res = await msgSecCheck(payload.openid, `${event.famousContent}${event.creator}`);
+				if (res.result.suggest != "pass") {
+					return {
+						err: 1,
+						msg: "内容不安全"
+					};
+				}
 				//新增
 				addData = await collection.add({
 					user_id: userId,
