@@ -18,13 +18,15 @@
     <view class="emptuData " v-else>
       <text class="iconfont icon-zanwushuju"></text><text> 暂无数据</text>
     </view>
+    <fab-top></fab-top>
   </view>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue';
 import famous from '@/components/famous/famous';
-import { onReachBottom, onLoad } from "@dcloudio/uni-app";
+import fabTop from '@/components/fabTop';
+import { onReachBottom, onLoad,onPageScroll } from "@dcloudio/uni-app";
 import util from "@/utils/util";
 import { request } from "@/utils/request";
 const homeShort = reactive({
@@ -32,6 +34,8 @@ const homeShort = reactive({
 })
 onLoad(() => {
   getFamousSaying("search")
+})
+onPageScroll(() => {
 })
 const loadMore = ref(false)
 const currentPage = ref(1)

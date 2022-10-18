@@ -9,7 +9,7 @@
             <view class="uploadContainer">
                 <block v-if="files.length">
                     <view class="uploader__file" :data-urls="files" v-for="(item, index) in files" :key="index">
-                        <image mode="aspectFill" :data-index="index" :src="item.url" style="width: 100%; height: 100%"
+                        <image mode="scaleToFill" :data-index="index" :src="item.url" style="width: 100%; height: 100%"
                             @tap="onPreviewImage"></image>
 
                         <view :data-index="index" class="uploader_delete" @tap.stop.prevent="deleteItem">
@@ -352,7 +352,7 @@ export default {
                 mood: this.array[this.canSee].mood,
                 imgUrl: []
             }
-            if (this.files.length&&!data.imgUrl.length) {
+            if (this.files.length && !data.imgUrl.length) {
                 this.files.forEach(item => {
                     this.allFile.push(uplodFile(item.url))
                 });
@@ -367,12 +367,12 @@ export default {
                 data.name = this.location.name
                 data.address = this.location.address
                 data.latitude = this.location.latitude
-                data.longitude = this.location.latitude
+                data.longitude = this.location.longitude
             }
-            request("createNote", data).then(({result={}}) => {
+            request("createNote", data).then(({ result = {} }) => {
                 if (result.id) {
-                    uni.navigateBack({
-                        delta: 1
+                    uni.switchTab({
+                        url: '/pages/home/index'
                     });
                 }
             })
@@ -384,8 +384,10 @@ export default {
                 success(res) {
                     console.log(res);
                     //name 位置名称 address 详细地址
-                    const { address, name, latitude, longitude } = res; // const regex = /^(.*?[市州]|.*?地区|.*?特别行政区)(.*?[市区县])(.*?)$/g;
+                    const { address, name, latitude, longitude } = res;
+                    // const regex = /^(.*?[市州]|.*?地区|.*?特别行政区)(.*?[市区县])(.*?)$/g;
                     // const address2 =regex.exec(address);
+                    // console.log(address2);
                     that.location = {
                         address,
                         name,

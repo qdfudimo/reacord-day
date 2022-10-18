@@ -21,7 +21,7 @@ exports.main = async (event, context) => {
 	const userId = payload.id
 
 	function read() {
-		let limit = event.pageSize;
+		let limit = event.pageSize||10;
 		let skip = (event.currentPage - 1) * 10;
 		return new Promise((resolve, reject) => {
 			collection.where({
@@ -68,10 +68,10 @@ exports.main = async (event, context) => {
 	function deleteContent(id) {
 		return new Promise(async (resolve, reject) => {
 			let res = await collection.doc(id).remove();
-			if (event.oldImgUrl) {
+			if (event.oldImgUrl.length) {
 				// 云函数删除文件示例代码 旧的url
 				await uniCloud.deleteFile({
-					fileList: [event.oldImgUrl]
+					fileList: event.oldImgUrl
 				});
 			}
 			resolve(res)

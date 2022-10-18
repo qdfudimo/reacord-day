@@ -4,7 +4,8 @@
             <view style="height: 20px; width: 100%"></view>
             <block v-for="(item, index) in scheduleLsits" :key="item._id">
                 <view class="talkList">
-                    <reacord-list @remove="remove" :userInfo="userInfo" :reacordList="item" :onlyIndex="index">
+                    <reacord-list @remove="remove(item,index)" :userInfo="userInfo" :reacordList="item"
+                        :onlyIndex="index">
                     </reacord-list>
                 </view>
             </block>
@@ -23,21 +24,19 @@
                 src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/6a3cc55f-f376-4ea0-a2a2-eec5f36f7054.png" />
             <button class="write" @tap="goRecord"> 去写篇日记</button>
         </view>
-        <view @tap="scrollToop" :class="'viewIcon ' + (ifTop ? 'showTop' : 'hideTop')">
-            <view :class="'iconfont icon-huidaodingbu addRecord '"></view>
-        </view>
+        <fab-top></fab-top>
     </view>
 </template>
 
 <script>
 import reacordList from '@/components/reacordList/reacordList';
-import util from "@/utils/util";
+import fabTop from '@/components/fabTop';
 import { request } from "@/utils/request";
 // pages/home/index.js
 export default {
     components: {
         reacordList,
-        reacordList
+        fabTop
     },
     data() {
         return {
@@ -46,12 +45,23 @@ export default {
             //是否还有更多数据
             ifMoreData: false,
             currentPage: 1,
-            ifTop: false,
             userInfo: {
                 nickName: "",
                 avatarUrl: ""
             },
-            scheduleLsits: [],
+            scheduleLsits: [
+                // {
+                //     content: "321",
+                //     create_time: 1666015887609,
+                //     imgUrl: [],
+                //     is_sticky: 0,
+                //     mood: "开心",
+                //     update_time: 1666015887609,
+                //     name:"雨花台风景区",
+                //     point: { type: "Point", coordinates: [118.7787, 31.99226] },
+                //     _id: "634d6290737e2800013797fa",
+                // }
+            ],
         };
     },
     /**
@@ -63,6 +73,12 @@ export default {
         uni.setNavigationBarTitle({
             title: '日记本'
         });
+        // const eventChannel = this.getOpenerEventChannel();
+        // // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
+        // eventChannel.on('rquestData', (data) => {
+        //     console.log(1111);
+        //     this.getSquare()
+        // })
         uni.getStorage({
             key: 'userInfo',
             success: ({ data }) => {
@@ -90,7 +106,6 @@ export default {
      * 监听页面滚动
      */
     onPageScroll(e) {
-        this.ifTop = e.scrollTop >= 400
     },
     /**
      * 生命周期函数--监听页面隐藏
@@ -132,7 +147,6 @@ export default {
             }
             data.ifRequestInfo = !this.userInfo.avatarUrl.length
             request("createNote", data).then(({ result = {} }) => {
-                console.log(result);
                 if (result.affectedDocs) {
                     whoType == "refersh" && (this.scheduleLsits = [])
                     if (data.ifRequestInfo) {
@@ -143,6 +157,8 @@ export default {
                     if (!result.data.length || result.data.length < 10) {
                         this.ifMoreData = true
                     }
+                } else {
+                    this.ifMoreData = true
                 }
             }).finally(e => {
                 uni.hideNavigationBarLoading();
@@ -154,27 +170,32 @@ export default {
                 url: `../create-record/create-record`
             });
         },
-        remove(e) {
+        remove(item, index) {
             uni.showModal({
                 title: '提示',
                 content: '是否删除这篇日记',
-                success: function (res) {
+                success: (res) => {
                     if (res.confirm) {
                         console.log('用户点击确定');
+                        this.delNote(item, index)
                     } else if (res.cancel) {
                         console.log('用户点击取消');
                     }
                 }
             });
         },
-
-        scrollToop() {
-            uni.pageScrollTo({
-                scrollTop: 0,
-                duration: 300
-            });
+        delNote(item, index) {
+            let data = {
+                type: "del",
+                oldImgUrl: item.imgUrl || [],
+                id: item._id
+            }
+            request("createNote", data).then(({ result = {} }) => {
+                if (result.deleted) {
+                    this.scheduleLsits.splice(index, 1)
+                }
+            })
         },
-
         changeLike(e) {
             let ifMyLike = this.scheduleLsits[e.detail].ifMyLike;
             let likeCount = this.scheduleLsits[e.detail].likeCount;

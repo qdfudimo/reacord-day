@@ -44,38 +44,6 @@ page {
     bottom: 160px;
 }
 
-.viewIcon {
-    position: fixed;
-    z-index: 6;
-    bottom: 100px;
-    right: 0;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-}
-
-.showTop {
-    transform: translateX(-20px);
-    opacity: 1;
-    transition: all 0.4s;
-}
-
-.hideTop {
-    transform: translateX(40px);
-    opacity: 0;
-    transition: all 0.4s;
-}
-
-.addRecord {
-    width: 28px;
-    font-size: 28px;
-    border-radius: 50%;
-    box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(85, 85, 85, 0.1);
-    color: #000;
-    margin: 3px auto;
-}
-
 .talkList {
     background-color: #fff;
     margin: 0 8px 16px 8px;

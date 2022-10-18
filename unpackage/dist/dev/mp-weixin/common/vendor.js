@@ -6644,7 +6644,7 @@ switch (f) {
   default:
     g = f;
 }
-const p = h('{\n    "address": [\n        "127.0.0.1",\n        "192.168.0.190"\n    ],\n    "debugPort": 9000,\n    "initialLaunchType": "local",\n    "servePort": 7000,\n    "skipFiles": [\n        "<node_internals>/**/*.js",\n        "D:/dowload/HBuilderX.3.2.16.20211122/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), m = h('[{"provider":"aliyun","spaceName":"record-day-cloud","spaceId":"8a42471b-0c50-4781-a564-186c52631541","clientSecret":"F6BMbmr9A/OwrikiVhgwKg==","endpoint":"https://api.bspapp.com"}]') || [];
+const p = h('{\n    "address": [\n        "127.0.0.1",\n        "192.168.0.190"\n    ],\n    "debugPort": 9001,\n    "initialLaunchType": "local",\n    "servePort": 7001,\n    "skipFiles": [\n        "<node_internals>/**/*.js",\n        "D:/dowload/HBuilderX.3.2.16.20211122/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), m = h('[{"provider":"aliyun","spaceName":"record-day-cloud","spaceId":"8a42471b-0c50-4781-a564-186c52631541","clientSecret":"F6BMbmr9A/OwrikiVhgwKg==","endpoint":"https://api.bspapp.com"}]') || [];
 let _ = "";
 try {
   _ = "__UNI__CBC301A";
@@ -8629,6 +8629,7 @@ const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
 const onShow = /* @__PURE__ */ createHook(ON_SHOW);
 const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
 const onUnload = /* @__PURE__ */ createHook(ON_UNLOAD);
+const onPageScroll = /* @__PURE__ */ createHook(ON_PAGE_SCROLL);
 const onReachBottom = /* @__PURE__ */ createHook(ON_REACH_BOTTOM);
 const onPullDownRefresh = /* @__PURE__ */ createHook(ON_PULL_DOWN_REFRESH);
 const onShareAppMessage = /* @__PURE__ */ createHook(ON_SHARE_APP_MESSAGE);
@@ -8643,6 +8644,7 @@ exports.n = n$1;
 exports.o = o$1;
 exports.onLoad = onLoad;
 exports.onMounted = onMounted;
+exports.onPageScroll = onPageScroll;
 exports.onPullDownRefresh = onPullDownRefresh;
 exports.onReachBottom = onReachBottom;
 exports.onShareAppMessage = onShareAppMessage;

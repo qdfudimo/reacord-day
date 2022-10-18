@@ -1,7 +1,7 @@
 <template>
     <view class="schedule_view">
         <view class="schedule_top">
-            <image class="schedule_avatr" mode ="aspectFill" :src="userInfo.avatarUrl || '/static/image/avtar.png'" />
+            <image class="schedule_avatr" mode="aspectFill" :src="userInfo.avatarUrl || '/static/image/avtar.png'" />
             <view class="issue_time">
                 <view class="schedule_userName">{{ userInfo.nickName }}</view>
                 <text v-if="reacordList.create_time">{{ formatTime(reacordList.create_time) }}</text>
@@ -15,11 +15,11 @@
             <!-- 大于等于两张图片 -->
             <view :data-index="index" :data-urls="reacordList.imgUrl" @tap.stop.prevent="preview" class="picture"
                 style="height: 228rpx" v-for="(i, index) in reacordList.imgUrl" :key="index">
-                <image mode="aspectFill" :src="i"></image>
+                <image mode="scaleToFill" :src="i"></image>
             </view>
         </view>
         <view class="schedule_bottom">
-            <view class="share" style="color: #77aef3;" v-if="reacordList.name">
+            <view class="share" @tap="choosiePosi" style="color: #77aef3;" v-if="reacordList.name">
                 <text class="iconfont icon-weizhi" style="font-size: 14px; margin-right: 6px"></text>
                 <text style="font-size: 13px;">{{reacordList.name}}</text>
             </view>
@@ -89,8 +89,20 @@ export default {
                 current: urls[index]
             });
         },
-        formatTime(time){
+        formatTime(time) {
             return util.formatTime(time)
+        },
+        choosiePosi() {
+            let longitude = this.reacordList.point.coordinates[0]
+            let latitude = this.reacordList.point.coordinates[1]
+            uni.openLocation({
+                latitude: latitude,
+                longitude: longitude,
+                success: function () {
+                    console.log('success');
+                }
+            });
+
         },
         changeLike(e) {
             this.$emit('changeLike', {

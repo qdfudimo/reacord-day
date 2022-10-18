@@ -5,9 +5,10 @@ var utils_request = require("../../utils/request.js");
 require("../../utils/index.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
-  common_vendor.unref(famous)();
+  (common_vendor.unref(famous) + common_vendor.unref(fabTop))();
 }
 const famous = () => "../../components/famous/famous.js";
+const fabTop = () => "../../components/fabTop/index.js";
 const _sfc_main = {
   __name: "index",
   setup(__props) {
@@ -16,6 +17,8 @@ const _sfc_main = {
     });
     common_vendor.onLoad(() => {
       getFamousSaying("search");
+    });
+    common_vendor.onPageScroll(() => {
     });
     const loadMore = common_vendor.ref(false);
     const currentPage = common_vendor.ref(1);
@@ -71,4 +74,5 @@ const _sfc_main = {
   }
 };
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-29987d2e"], ["__file", "E:/xiaocx/reacord-day/pages/famousSaying/index.vue"]]);
+_sfc_main.__runtimeHooks = 1;
 wx.createPage(MiniProgramPage);

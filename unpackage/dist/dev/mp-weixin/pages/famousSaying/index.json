@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "名句鉴赏",
   "usingComponents": {
-    "famous": "../../components/famous/famous"
+    "famous": "../../components/famous/famous",
+    "fab-top": "../../components/fabTop/index"
   }
 }

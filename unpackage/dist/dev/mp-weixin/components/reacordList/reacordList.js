@@ -47,6 +47,17 @@ const _sfc_main = {
     formatTime(time) {
       return utils_util.util.formatTime(time);
     },
+    choosiePosi() {
+      let longitude = this.reacordList.point.coordinates[0];
+      let latitude = this.reacordList.point.coordinates[1];
+      common_vendor.index.openLocation({
+        latitude,
+        longitude,
+        success: function() {
+          console.log("success");
+        }
+      });
+    },
     changeLike(e) {
       this.$emit("changeLike", {
         detail: this.onlyIndex
@@ -86,9 +97,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   } : {}, {
     k: $props.reacordList.name
   }, $props.reacordList.name ? {
-    l: common_vendor.t($props.reacordList.name)
+    l: common_vendor.t($props.reacordList.name),
+    m: common_vendor.o((...args) => $options.choosiePosi && $options.choosiePosi(...args))
   } : {}, {
-    m: common_vendor.o((...args) => $options.remove && $options.remove(...args))
+    n: common_vendor.o((...args) => $options.remove && $options.remove(...args))
   });
 }
 var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/xiaocx/reacord-day/components/reacordList/reacordList.vue"]]);

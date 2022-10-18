@@ -24,13 +24,9 @@
 			"trim": "right"
 		},
 		"is_sticky": {
-			"bsonType": "bool",
+			"bsonType": "number",
 			"title": "是否置顶",
-			"description": "是否置顶",
-			"permission": {
-				"write": false
-			},
-			"defaultValue": false
+			"description": "是否置顶"
 		},
 		"imgUrl": {
 			"bsonType": "array",
@@ -41,6 +37,16 @@
 			"bsonType": "string",
 			"title": "心情",
 			"description": "心情"
+		},
+		"name": {
+			"bsonType": "string",
+			"title": "位置名称",
+			"description": "位置名称"
+		},
+		"address": {
+			"bsonType": "string",
+			"title": "详细地址",
+			"description": "详细地址"
 		},
 		"point": {
 			"bsonType": "GeoPoint",

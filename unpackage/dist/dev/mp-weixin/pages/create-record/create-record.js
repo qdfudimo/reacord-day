@@ -262,12 +262,12 @@ const _sfc_main = {
         data.name = this.location.name;
         data.address = this.location.address;
         data.latitude = this.location.latitude;
-        data.longitude = this.location.latitude;
+        data.longitude = this.location.longitude;
       }
       utils_request.request("createNote", data).then(({ result = {} }) => {
         if (result.id) {
-          common_vendor.index.navigateBack({
-            delta: 1
+          common_vendor.index.switchTab({
+            url: "/pages/home/index"
           });
         }
       });

@@ -1,21 +1,21 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
-require("../../utils/index.js");
 var utils_request = require("../../utils/request.js");
 require("../../utils/util.js");
+require("../../utils/index.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 const reacordList = () => "../../components/reacordList/reacordList.js";
+const fabTop = () => "../../components/fabTop/index.js";
 const _sfc_main = {
   components: {
     reacordList,
-    reacordList
+    fabTop
   },
   data() {
     return {
       loadMore: false,
       ifMoreData: false,
       currentPage: 1,
-      ifTop: false,
       userInfo: {
         nickName: "",
         avatarUrl: ""
@@ -47,7 +47,6 @@ const _sfc_main = {
   onShow: function() {
   },
   onPageScroll(e) {
-    this.ifTop = e.scrollTop >= 400;
   },
   onHide: function() {
   },
@@ -78,7 +77,6 @@ const _sfc_main = {
       };
       data.ifRequestInfo = !this.userInfo.avatarUrl.length;
       utils_request.request("createNote", data).then(({ result = {} }) => {
-        console.log(result);
         if (result.affectedDocs) {
           whoType == "refersh" && (this.scheduleLsits = []);
           if (data.ifRequestInfo) {
@@ -89,6 +87,8 @@ const _sfc_main = {
           if (!result.data.length || result.data.length < 10) {
             this.ifMoreData = true;
           }
+        } else {
+          this.ifMoreData = true;
         }
       }).finally((e) => {
         common_vendor.index.hideNavigationBarLoading();
@@ -100,23 +100,30 @@ const _sfc_main = {
         url: `../create-record/create-record`
       });
     },
-    remove(e) {
+    remove(item, index) {
       common_vendor.index.showModal({
         title: "\u63D0\u793A",
         content: "\u662F\u5426\u5220\u9664\u8FD9\u7BC7\u65E5\u8BB0",
-        success: function(res) {
+        success: (res) => {
           if (res.confirm) {
             console.log("\u7528\u6237\u70B9\u51FB\u786E\u5B9A");
+            this.delNote(item, index);
           } else if (res.cancel) {
             console.log("\u7528\u6237\u70B9\u51FB\u53D6\u6D88");
           }
         }
       });
     },
-    scrollToop() {
-      common_vendor.index.pageScrollTo({
-        scrollTop: 0,
-        duration: 300
+    delNote(item, index) {
+      let data = {
+        type: "del",
+        oldImgUrl: item.imgUrl || [],
+        id: item._id
+      };
+      utils_request.request("createNote", data).then(({ result = {} }) => {
+        if (result.deleted) {
+          this.scheduleLsits.splice(index, 1);
+        }
       });
     },
     changeLike(e) {
@@ -130,7 +137,8 @@ const _sfc_main = {
 };
 if (!Array) {
   const _component_reacord_list = common_vendor.resolveComponent("reacord-list");
-  _component_reacord_list();
+  const _component_fab_top = common_vendor.resolveComponent("fab-top");
+  (_component_reacord_list + _component_fab_top)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
@@ -138,27 +146,23 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.scheduleLsits.length ? common_vendor.e({
     b: common_vendor.f($data.scheduleLsits, (item, index, i0) => {
       return {
-        a: "7c36b24e-0-" + i0,
-        b: common_vendor.p({
+        a: common_vendor.o(($event) => $options.remove(item, index)),
+        b: "7c36b24e-0-" + i0,
+        c: common_vendor.p({
           userInfo: $data.userInfo,
           reacordList: item,
           onlyIndex: index
         }),
-        c: item._id
+        d: item._id
       };
     }),
-    c: common_vendor.o($options.remove),
-    d: $data.loadMore || $data.ifMoreData
+    c: $data.loadMore || $data.ifMoreData
   }, $data.loadMore || $data.ifMoreData ? common_vendor.e({
-    e: $data.loadMore
+    d: $data.loadMore
   }, $data.loadMore ? {} : $data.ifMoreData ? {} : {}, {
-    f: $data.ifMoreData
+    e: $data.ifMoreData
   }) : {}) : {
-    g: common_vendor.o((...args) => $options.goRecord && $options.goRecord(...args))
-  }, {
-    h: common_vendor.n("iconfont icon-huidaodingbu addRecord "),
-    i: common_vendor.o((...args) => $options.scrollToop && $options.scrollToop(...args)),
-    j: common_vendor.n("viewIcon " + ($data.ifTop ? "showTop" : "hideTop"))
+    f: common_vendor.o((...args) => $options.goRecord && $options.goRecord(...args))
   });
 }
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/xiaocx/reacord-day/pages/square/index.vue"]]);
