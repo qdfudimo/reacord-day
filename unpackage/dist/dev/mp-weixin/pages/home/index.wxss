@@ -159,6 +159,9 @@ page.data-v-71e217db {
   padding: 10px;
   border-radius: 50%;
   color: #fff;
+  width: 52px;
+  height: 52px;
+  box-sizing: border-box;
 }
 .container .category_list .typeFunction .cartgrouy .type_name.data-v-71e217db {
   margin-top: 8px;

@@ -499,6 +499,9 @@ page {
                     padding: 10px;
                     border-radius: 50%;
                     color: #fff;
+                    width: 52px;
+                    height: 52px;
+                    box-sizing: border-box;
                 }
 
                 .type_name {

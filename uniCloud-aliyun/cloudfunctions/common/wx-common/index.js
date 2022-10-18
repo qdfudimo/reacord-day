@@ -30,8 +30,7 @@ async function requestNewAccessToken() {
 }
 async function getAccessToken(forceupdate = false) {
 	const dbRes = await db.collection("system").limit(1).get();
-	const systemInfo = dbRes.data[0];
-
+	const systemInfo = dbRes.data[0] || "";
 	const now = new Date().getTime();
 	if (systemInfo && !forceupdate) {
 		if (now > systemInfo.accesstoken.expiredtime) {
@@ -39,7 +38,6 @@ async function getAccessToken(forceupdate = false) {
 
 			return accesstoken;
 		} else {
-			console.log("使用缓存的accesstoken");
 			return systemInfo.accesstoken.value;
 		}
 	} else {
@@ -61,20 +59,30 @@ function getToken(openid, id) {
 function verifyToken(token) {
 	return new Promise((resolve, reject) => {
 		jwt.verify(token, appSecret, (err, decode) => {
-		  if (err) {
-			// 验证不通过（token过期或错误）
-			resolve(false)
-		  } else {
-			// 验证通过，decode包含主题信息、token过期时间
-			resolve(decode)
-		  }
+			if (err) {
+				// 验证不通过（token过期或错误）
+				resolve(false)
+			} else {
+				// 验证通过，decode包含主题信息、token过期时间
+				resolve(decode)
+			}
 		})
-	  })
+	})
 }
 
 async function msgSecCheck(openid, content) {
 	const access_token = await getAccessToken();
 	console.log("正在检测 " + content + " 的内容是否安全");
+	let res = await contentCheck(openid,content,access_token)
+	console.log("检查结果", res);
+	if (res.data.errcode != 0 && res.data.errmsg != "ok") {
+		const accesstoken = await requestNewAccessToken();
+		res = await contentCheck(openid,content,accesstoken)
+		console.log("重新检查", res);
+	}
+	return res.data;
+}
+async function contentCheck(openid,content, access_token) {
 	const res = await uniCloud.httpclient.request("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=" + access_token, {
 		method: "POST",
 		dataType: "json",
@@ -88,10 +96,8 @@ async function msgSecCheck(openid, content) {
 			content: content
 		}
 	});
-	console.log("检查结果", res);
-	return res.data;
+	return res
 }
-
 //https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=
 async function getWXACodeUnlimited(scene, page) {
 	const access_token = await getAccessToken();
@@ -110,11 +116,11 @@ async function getWXACodeUnlimited(scene, page) {
 }
 
 module.exports = {
-	getAccessToken: getAccessToken,
-	msgSecCheck: msgSecCheck,
-	getWXACodeUnlimited: getWXACodeUnlimited,
-	getToken: getToken,
-	verifyToken: verifyToken,
+	getAccessToken,
+	msgSecCheck,
+	getWXACodeUnlimited,
+	getToken,
+	verifyToken,
 	appId: appId,
 	appSecret: appSecret
 }
