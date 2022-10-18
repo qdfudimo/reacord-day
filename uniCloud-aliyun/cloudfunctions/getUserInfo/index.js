@@ -1,6 +1,7 @@
 'use strict';
 const {
-	verifyToken
+	verifyToken,
+	msgSecCheck
 } = require('wx-common')
 exports.main = async (event, context) => {
 	const {
@@ -56,6 +57,13 @@ exports.main = async (event, context) => {
 		let dbRes = await read(payload.id);
 		return dbRes
 	} else if (event.type == "update") {
+		const res = await msgSecCheck(payload.openid, `${event.data.nickName}`);
+		if (res.result.suggest != "pass") {
+			return {
+				err: 1,
+				msg: "内容不安全"
+			};
+		}
 		let dbRes = await update(payload.id, event.data);
 		return dbRes
 	}
