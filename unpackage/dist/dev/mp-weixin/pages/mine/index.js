@@ -7,9 +7,10 @@ var utils_util = require("../../utils/util.js");
 var utils_request = require("../../utils/request.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
-  common_vendor.unref(famous)();
+  (common_vendor.unref(famous) + common_vendor.unref(noData))();
 }
 const famous = () => "../../components/famous/famous.js";
+const noData = () => "../../components/noData/index.js";
 const _sfc_main = {
   __name: "index",
   setup(__props) {
@@ -100,23 +101,29 @@ const _sfc_main = {
       }, 2e3);
     };
     const collectShort = (item, index) => {
-      utils_util.util.collectFamous(item, () => scheduleLsits.value.splice(index, 1));
+      utils_util.util.collectFamous(item, () => {
+        scheduleLsits.value.splice(index, 1);
+        userInfo.collectCount--;
+      });
     };
     const getFamousSaying = async (type) => {
       let data = {
-        type,
+        type: "mySearch",
         pageSize: 10,
         currentPage: currentPage.value
       };
       try {
         let { result = {} } = await utils_request.request("getFamousSaying", data);
         if (result.affectedDocs) {
+          type == "refersh" && (scheduleLsits.value = []);
           scheduleLsits.value.push(...result.data);
           if (!result.data.length || result.data.length < 10) {
             ifMoreData.value = true;
           }
           common_vendor.index.stopPullDownRefresh();
+          return;
         }
+        ifMoreData.value = true;
       } catch (error) {
         common_vendor.index.stopPullDownRefresh();
         utils_util.util.tip("\u8BF7\u6C42\u5931\u8D25", "error");
@@ -168,8 +175,6 @@ const _sfc_main = {
         userInfo.nickName = data.nickName;
       });
       imgList.value = utils_index.randomImg;
-      getUserInfo();
-      getFamousSaying("mySearch");
       requsetImg();
       common_vendor.index.getStorage({
         key: "currentBackground",
@@ -186,23 +191,33 @@ const _sfc_main = {
         }
       });
     });
+    let oldTime = new Date().getTime();
+    let oneShow = true;
+    common_vendor.onShow(() => {
+      let nowTime = new Date().getTime();
+      if (nowTime - oldTime > 6e4 || oneShow) {
+        oneShow = false;
+        oldTime = nowTime;
+        common_vendor.index.startPullDownRefresh();
+      }
+      console.log("\u663E\u793A\u4E86");
+    });
     common_vendor.onUnload(() => {
       common_vendor.index.$off("updateInfo");
     });
     common_vendor.onPullDownRefresh(() => {
       currentPage.value = 1;
-      scheduleLsits.value = [];
       ifMoreData.value = false;
       loadMore.value = false;
       getUserInfo();
-      getFamousSaying("mySearch");
+      getFamousSaying("refersh");
     });
     common_vendor.onReachBottom(async () => {
       if (loadMore.value || ifMoreData.value)
         return;
       loadMore.value = true;
       currentPage.value++;
-      await getFamousSaying("mySearch");
+      await getFamousSaying();
       loadMore.value = false;
     });
     return (_ctx, _cache) => {
@@ -229,31 +244,29 @@ const _sfc_main = {
             d: item._id
           };
         }),
-        m: loadMore.value || ifMoreData.value
-      }, loadMore.value || ifMoreData.value ? common_vendor.e({
-        n: loadMore.value
-      }, loadMore.value ? {} : ifMoreData.value ? {} : {}, {
-        o: ifMoreData.value
-      }) : {}, {
-        p: showBackground.value
+        m: common_vendor.p({
+          loadMore: loadMore.value,
+          ifMoreData: ifMoreData.value
+        }),
+        n: showBackground.value
       }, showBackground.value ? {
-        q: common_vendor.o(showIfBackground),
-        r: currentBackground.value,
-        s: common_vendor.o(selectBackground),
-        t: common_vendor.f(imgList.value, (item, index, i0) => {
+        o: common_vendor.o(showIfBackground),
+        p: currentBackground.value,
+        q: common_vendor.o(selectBackground),
+        r: common_vendor.f(imgList.value, (item, index, i0) => {
           return {
             a: item,
             b: item,
             c: index
           };
         }),
-        v: common_vendor.o(selectImage)
+        s: common_vendor.o(selectImage)
       } : {}, {
-        w: ifCollect.value
+        t: ifCollect.value
       }, ifCollect.value ? {
-        x: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
+        v: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
       } : {}, {
-        y: common_vendor.n("container noColor")
+        w: common_vendor.n("container noColor")
       });
     };
   }

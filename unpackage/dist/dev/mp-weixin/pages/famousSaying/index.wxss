@@ -33,10 +33,6 @@
   box-sizing: border-box;
   animation: gradientAn-29987d2e 15s infinite alternate;
 }
-.more.data-v-29987d2e {
-  padding-top: 10px;
-  text-align: center;
-}
 .emptuData.data-v-29987d2e {
   text-align: center;
   margin-top: 100px;

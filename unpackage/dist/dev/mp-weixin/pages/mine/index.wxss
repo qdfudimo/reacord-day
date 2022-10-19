@@ -18,10 +18,6 @@
     bottom: 0;
     right: 0;
 }
-.more {
-    padding-top: 10px;
-    text-align: center;
-}
 .main {
     box-sizing: border-box;
     color: #fff;

@@ -236,8 +236,9 @@ const _sfc_main = {
         j: common_vendor.s(`color:${homeShort.data.ifCollect ? "#FBBD08" : "#fff"}`),
         k: common_vendor.o(collectShort)
       } : {}, {
-        l: common_vendor.o(changeImg),
-        m: common_vendor.f(common_vendor.unref(utils_index.category), (item, k0, i0) => {
+        l: common_vendor.n(homeShort.data.famousContent ? "visable" : "hidden"),
+        m: common_vendor.o(changeImg),
+        n: common_vendor.f(common_vendor.unref(utils_index.category), (item, k0, i0) => {
           return {
             a: common_vendor.n(`iconfont ${item.icon}`),
             b: common_vendor.s(`background-color:${item.color}`),
@@ -247,12 +248,12 @@ const _sfc_main = {
             f: common_vendor.o(handelCheck, item.icon)
           };
         }),
-        n: common_vendor.o(goRecord),
-        o: backgroundImg.defaultBackground,
-        p: backgroundImg.temporaryImg || "/static/image/error.png",
-        q: common_vendor.n(backgroundImg.currentBackground ? "" : "border"),
-        r: common_vendor.o(selectImg),
-        s: common_vendor.f(common_vendor.unref(utils_index.radioData), (item, k0, i0) => {
+        o: common_vendor.o(goRecord),
+        p: backgroundImg.defaultBackground,
+        q: backgroundImg.temporaryImg || "/static/image/error.png",
+        r: common_vendor.n(backgroundImg.currentBackground ? "" : "border"),
+        s: common_vendor.o(selectImg),
+        t: common_vendor.f(common_vendor.unref(utils_index.radioData), (item, k0, i0) => {
           return {
             a: item.value,
             b: checkImgType.value == item.value,
@@ -260,32 +261,32 @@ const _sfc_main = {
             d: item.value
           };
         }),
-        t: common_vendor.o(radioChange),
-        v: textareaValue.value,
-        w: common_vendor.o(($event) => textareaValue.value = $event.detail.value),
-        x: !textareaValue.value,
-        y: common_vendor.o(clearText),
-        z: !textareaValue.value,
-        A: inputVal.value,
-        B: common_vendor.o(($event) => inputVal.value = $event.detail.value),
-        C: common_vendor.o(confirm),
-        D: common_vendor.o(cancle),
-        E: common_vendor.o(($event) => showDialog.value = $event),
-        F: common_vendor.p({
+        v: common_vendor.o(radioChange),
+        w: textareaValue.value,
+        x: common_vendor.o(($event) => textareaValue.value = $event.detail.value),
+        y: !textareaValue.value,
+        z: common_vendor.o(clearText),
+        A: !textareaValue.value,
+        B: inputVal.value,
+        C: common_vendor.o(($event) => inputVal.value = $event.detail.value),
+        D: common_vendor.o(confirm),
+        E: common_vendor.o(cancle),
+        F: common_vendor.o(($event) => showDialog.value = $event),
+        G: common_vendor.p({
           confirmDisabled: confirmDisabled.value,
           title: "\u8BBE\u7F6E\u80CC\u666F\u683C\u8A00",
           show: showDialog.value
         }),
-        G: common_vendor.t(`${common_vendor.unref(CDate).cYear}/${common_vendor.unref(CDate).cMonth}/${common_vendor.unref(CDate).cDay}`),
-        H: common_vendor.t(common_vendor.unref(CDate).ncWeek),
-        I: common_vendor.t(common_vendor.unref(CDate).astro),
-        J: common_vendor.t(common_vendor.unref(CDate).IMonthCn),
-        K: common_vendor.t(common_vendor.unref(CDate).IDayCn),
-        L: common_vendor.t(`${common_vendor.unref(CDate).gzYear}\u5E74${common_vendor.unref(CDate).gzMonth}\u6708${common_vendor.unref(CDate).gzDay}\u65E5`),
-        M: common_vendor.n(`icon-${common_vendor.unref(CDate).icon}`),
-        N: common_vendor.o(clickDialog),
-        O: common_vendor.o(($event) => showClanderDialog.value = $event),
-        P: common_vendor.p({
+        H: common_vendor.t(`${common_vendor.unref(CDate).cYear}/${common_vendor.unref(CDate).cMonth}/${common_vendor.unref(CDate).cDay}`),
+        I: common_vendor.t(common_vendor.unref(CDate).ncWeek),
+        J: common_vendor.t(common_vendor.unref(CDate).astro),
+        K: common_vendor.t(common_vendor.unref(CDate).IMonthCn),
+        L: common_vendor.t(common_vendor.unref(CDate).IDayCn),
+        M: common_vendor.t(`${common_vendor.unref(CDate).gzYear}\u5E74${common_vendor.unref(CDate).gzMonth}\u6708${common_vendor.unref(CDate).gzDay}\u65E5`),
+        N: common_vendor.n(`icon-${common_vendor.unref(CDate).icon}`),
+        O: common_vendor.o(clickDialog),
+        P: common_vendor.o(($event) => showClanderDialog.value = $event),
+        Q: common_vendor.p({
           showButton: false,
           width: "70%",
           show: showClanderDialog.value

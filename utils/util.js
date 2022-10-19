@@ -146,6 +146,7 @@ const tip = (title, icon, duration) => {
     })
 }
 const collectFamous = (e, callBack) => {
+    if (!e._id) return
     let data = {
         type: e.ifCollect ? "noCollect" : "collect",
         id: e._id

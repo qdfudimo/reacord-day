@@ -50,8 +50,3 @@ page {
 .talkList:last-child {
     margin-bottom: 26px;
 }
-.more {
-    text-align: center;
-    padding-bottom: 6px;
-    color: #8a8a8a;
-}

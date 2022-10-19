@@ -276,7 +276,6 @@ const _sfc_main = {
       let that = this;
       common_vendor.index.chooseLocation({
         success(res) {
-          console.log(res);
           const { address, name, latitude, longitude } = res;
           that.location = {
             address,

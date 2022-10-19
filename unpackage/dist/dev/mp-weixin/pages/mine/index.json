@@ -3,6 +3,7 @@
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark",
   "usingComponents": {
-    "famous": "../../components/famous/famous"
+    "famous": "../../components/famous/famous",
+    "no-data": "../../components/noData/index"
   }
 }

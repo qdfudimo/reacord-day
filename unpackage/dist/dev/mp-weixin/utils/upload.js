@@ -101,7 +101,6 @@ const uplodFile = (filePath = "") => {
       filePath,
       cloudPath: Date.now() + "." + ext,
       success(res) {
-        console.log(res);
         resolve(res);
       },
       fail(error) {

@@ -382,7 +382,6 @@ export default {
             let that = this;
             uni.chooseLocation({
                 success(res) {
-                    console.log(res);
                     //name 位置名称 address 详细地址
                     const { address, name, latitude, longitude } = res;
                     // const regex = /^(.*?[市州]|.*?地区|.*?特别行政区)(.*?[市区县])(.*?)$/g;

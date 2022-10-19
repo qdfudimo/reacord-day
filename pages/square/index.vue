@@ -9,16 +9,8 @@
                     </reacord-list>
                 </view>
             </block>
-            <view class="more iconfont icon-a-weixiaokaixingaoxing-03" v-if="loadMore||ifMoreData">
-                <text v-if="loadMore">
-                    正在加载...
-                </text>
-                <text v-else-if="ifMoreData">
-                    😊没有更多了
-                </text>
-            </view>
+            <noData :loadMore="loadMore" :ifMoreData="ifMoreData" />
         </template>
-
         <view v-else class="empty">
             <image class="image"
                 src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/6a3cc55f-f376-4ea0-a2a2-eec5f36f7054.png" />
@@ -31,11 +23,13 @@
 <script>
 import reacordList from '@/components/reacordList/reacordList';
 import fabTop from '@/components/fabTop';
+import noData from '@/components/noData';
 import { request } from "@/utils/request";
 // pages/home/index.js
 export default {
     components: {
         reacordList,
+        noData,
         fabTop
     },
     data() {

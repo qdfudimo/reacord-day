@@ -3,6 +3,7 @@
   "backgroundTextStyle": "dark",
   "usingComponents": {
     "reacord-list": "../../components/reacordList/reacordList",
-    "fab-top": "../../components/fabTop/index"
+    "fab-top": "../../components/fabTop/index",
+    "no-data": "../../components/noData/index"
   }
 }

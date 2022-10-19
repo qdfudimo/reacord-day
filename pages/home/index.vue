@@ -19,7 +19,7 @@
                     </view>
                 </view>
             </view>
-            <view class="textCon">
+            <view :class="['textCon',homeShort.data.famousContent?'visable':'hidden']">
                 <view class="text">
                     <view class="sayCont">
                         {{homeShort.data.famousContent}}
@@ -320,18 +320,6 @@ onPullDownRefresh(() => {
     requsetImg()
     requsetFamous()
 })
-// let data = {};
-// let str = ""
-// let i = 0
-// setInterval(() => {
-//     i++;
-//     setTimeout(() => {
-//         data[i] = "11";
-//         let keys = Object.keys(data[i]);
-//         let key = Math.max.apply(null, keys);
-//         str = data[key]
-//     }, 2000);
-// }, 1000);
 </script>
 <style lang="scss" scoped>
 page {
@@ -411,7 +399,7 @@ page {
             display: flex;
             flex-direction: column;
             color: #fff;
-
+            transition: all .1s;
             .text {
                 overflow: hidden;
                 display: flex;
@@ -447,6 +435,12 @@ page {
             padding: 4px;
             border-radius: 50%;
         }
+       .visable {
+        opacity: 1;
+       } 
+       .hidden {
+        opacity: 0;
+       } 
     }
 
     .category_list {

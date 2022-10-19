@@ -93,6 +93,7 @@ page.data-v-71e217db {
   display: flex;
   flex-direction: column;
   color: #fff;
+  transition: all 0.1s;
 }
 .container .top_content .textCon .text.data-v-71e217db {
   overflow: hidden;
@@ -123,6 +124,12 @@ page.data-v-71e217db {
   background-color: #ccc;
   padding: 4px;
   border-radius: 50%;
+}
+.container .top_content .visable.data-v-71e217db {
+  opacity: 1;
+}
+.container .top_content .hidden.data-v-71e217db {
+  opacity: 0;
 }
 .container .category_list.data-v-71e217db {
   position: relative;

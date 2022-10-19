@@ -35,12 +35,38 @@ const _sfc_main = {
   },
   onLaunch() {
     this.globalData.checkIsIPhoneX();
-    const logs = common_vendor.index.getStorageSync("logs") || [];
-    common_vendor.index.setStorageSync("logs", logs);
-    common_vendor.index.login({
-      success: (res) => {
-      }
-    });
+    if (common_vendor.index.canIUse("getUpdateManager")) {
+      const updateManager = common_vendor.index.getUpdateManager();
+      updateManager.onCheckForUpdate(function(res) {
+        if (res.hasUpdate) {
+          updateManager.onUpdateReady(function() {
+            common_vendor.index.showModal({
+              title: "\u66F4\u65B0\u63D0\u793A",
+              content: "\u65B0\u7248\u672C\u5DF2\u7ECF\u51C6\u5907\u597D\uFF0C\u8BF7\u91CD\u542F\u5E94\u7528",
+              showCancel: false,
+              success: function(res2) {
+                if (res2.confirm) {
+                  updateManager.applyUpdate();
+                }
+              }
+            });
+          });
+          updateManager.onUpdateFailed(function() {
+            common_vendor.index.showModal({
+              title: "\u5DF2\u7ECF\u6709\u65B0\u7248\u672C\u4E86\u54DF~",
+              content: "\u65B0\u7248\u672C\u5DF2\u7ECF\u4E0A\u7EBF\u5566~\uFF0C\u8BF7\u60A8\u5220\u9664\u5F53\u524D\u5C0F\u7A0B\u5E8F\uFF0C\u91CD\u65B0\u641C\u7D22\u6253\u5F00\u54DF~",
+              showCancel: false
+            });
+          });
+        }
+      });
+    } else {
+      common_vendor.index.showModal({
+        title: "\u63D0\u793A",
+        content: "\u5F53\u524D\u5FAE\u4FE1\u7248\u672C\u8FC7\u4F4E\uFF0C\u65E0\u6CD5\u4F7F\u7528\u8BE5\u529F\u80FD\uFF0C\u8BF7\u5347\u7EA7\u5230\u6700\u65B0\u5FAE\u4FE1\u7248\u672C\u540E\u91CD\u8BD5",
+        showCancel: false
+      });
+    }
   },
   onShow: function() {
     console.log("App Show");

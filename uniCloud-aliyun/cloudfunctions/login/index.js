@@ -64,7 +64,7 @@ exports.main = async (event, context) => {
 	}
 	let token;
 	if (dbRes.affectedDocs || resId.id) {
-		let id = dbRes.data[0]._id || resId.id;
+		let id = dbRes.affectedDocs ? dbRes.data[0]._id : resId.id;
 		db.collection("record-users").doc(id).update({
 			session_key: res.data.session_key
 		})

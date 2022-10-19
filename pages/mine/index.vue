@@ -50,14 +50,7 @@
                         <famous :homeShort="item" @collectShort="collectShort(item,index)"></famous>
                     </view>
                 </block>
-                <view class="more iconfont icon-a-weixiaokaixingaoxing-03" v-if="loadMore||ifMoreData">
-                    <text v-if="loadMore">
-                        正在加载...
-                    </text>
-                    <text v-else-if="ifMoreData">
-                        😊没有更多了
-                    </text>
-                </view>
+                <noData :loadMore="loadMore" :ifMoreData="ifMoreData" />
             </view>
         </view>
         <view class="selectBackground" v-if="showBackground">
@@ -86,12 +79,14 @@
 <script setup>
 // pages/mine/index.js
 import famous from '@/components/famous/famous';
+import noData from '@/components/noData';
 import { chooseFile } from '@/utils/upload';
 import { randomImg } from '@/utils/index';
 import { ref, reactive, watch } from 'vue';
 import { useGetTabBar } from "@/hooks/useGetTabBar";
 import {
     onLoad,
+    onShow,
     onUnload,
     onPullDownRefresh,
     onReachBottom,
@@ -190,23 +185,29 @@ const collectApplet = () => {
 }
 
 const collectShort = (item, index) => {
-    util.collectFamous(item, () => scheduleLsits.value.splice(index, 1));
+    util.collectFamous(item, () => {
+        scheduleLsits.value.splice(index, 1);
+        userInfo.collectCount--
+    });
 }
 const getFamousSaying = async (type) => {
     let data = {
-        type,
+        type: "mySearch",
         pageSize: 10,
         currentPage: currentPage.value
     }
     try {
         let { result = {} } = await request("getFamousSaying", data)
         if (result.affectedDocs) {
+            type == "refersh" && (scheduleLsits.value = [])
             scheduleLsits.value.push(...result.data);
             if (!result.data.length || result.data.length < 10) {
                 ifMoreData.value = true
             }
             uni.stopPullDownRefresh();
+            return
         }
+        ifMoreData.value = true
     } catch (error) {
         uni.stopPullDownRefresh();
         util.tip("请求失败", "error")
@@ -262,8 +263,8 @@ onLoad(() => {
         userInfo.nickName = data.nickName
     })
     imgList.value = randomImg;
-    getUserInfo()
-    getFamousSaying("mySearch")
+    // getUserInfo()
+    // getFamousSaying("mySearch")
     requsetImg()
     uni.getStorage({
         key: 'currentBackground',
@@ -280,6 +281,17 @@ onLoad(() => {
         }
     });
 })
+let oldTime = new Date().getTime()
+let oneShow = true
+onShow(() => {
+    let nowTime = new Date().getTime()
+    if ((nowTime - oldTime > 60000) || oneShow) {
+        oneShow = false
+        oldTime = nowTime
+        uni.startPullDownRefresh();
+    }
+    console.log("显示了");
+})
 onUnload(() => {
     // 清除监听
     uni.$off('updateInfo');
@@ -289,17 +301,16 @@ onUnload(() => {
 */
 onPullDownRefresh(() => {
     currentPage.value = 1
-    scheduleLsits.value = [];
     ifMoreData.value = false
     loadMore.value = false
     getUserInfo();
-    getFamousSaying("mySearch");
+    getFamousSaying("refersh");
 })
 onReachBottom(async () => {
     if (loadMore.value || ifMoreData.value) return
     loadMore.value = true
     currentPage.value++
-    await getFamousSaying("mySearch")
+    await getFamousSaying()
     loadMore.value = false
 })
 

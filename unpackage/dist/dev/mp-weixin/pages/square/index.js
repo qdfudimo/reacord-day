@@ -6,9 +6,11 @@ require("../../utils/index.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 const reacordList = () => "../../components/reacordList/reacordList.js";
 const fabTop = () => "../../components/fabTop/index.js";
+const noData = () => "../../components/noData/index.js";
 const _sfc_main = {
   components: {
     reacordList,
+    noData,
     fabTop
   },
   data() {
@@ -137,13 +139,14 @@ const _sfc_main = {
 };
 if (!Array) {
   const _component_reacord_list = common_vendor.resolveComponent("reacord-list");
+  const _component_noData = common_vendor.resolveComponent("noData");
   const _component_fab_top = common_vendor.resolveComponent("fab-top");
-  (_component_reacord_list + _component_fab_top)();
+  (_component_reacord_list + _component_noData + _component_fab_top)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: $data.scheduleLsits.length
-  }, $data.scheduleLsits.length ? common_vendor.e({
+  }, $data.scheduleLsits.length ? {
     b: common_vendor.f($data.scheduleLsits, (item, index, i0) => {
       return {
         a: common_vendor.o(($event) => $options.remove(item, index)),
@@ -156,13 +159,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: item._id
       };
     }),
-    c: $data.loadMore || $data.ifMoreData
-  }, $data.loadMore || $data.ifMoreData ? common_vendor.e({
-    d: $data.loadMore
-  }, $data.loadMore ? {} : $data.ifMoreData ? {} : {}, {
-    e: $data.ifMoreData
-  }) : {}) : {
-    f: common_vendor.o((...args) => $options.goRecord && $options.goRecord(...args))
+    c: common_vendor.p({
+      loadMore: $data.loadMore,
+      ifMoreData: $data.ifMoreData
+    })
+  } : {
+    d: common_vendor.o((...args) => $options.goRecord && $options.goRecord(...args))
   });
 }
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/xiaocx/reacord-day/pages/square/index.vue"]]);

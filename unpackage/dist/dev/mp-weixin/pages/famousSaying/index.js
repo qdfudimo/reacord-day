@@ -5,10 +5,11 @@ var utils_request = require("../../utils/request.js");
 require("../../utils/index.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
-  (common_vendor.unref(famous) + common_vendor.unref(fabTop))();
+  (common_vendor.unref(famous) + common_vendor.unref(noData) + common_vendor.unref(fabTop))();
 }
 const famous = () => "../../components/famous/famous.js";
 const fabTop = () => "../../components/fabTop/index.js";
+const noData = () => "../../components/noData/index.js";
 const _sfc_main = {
   __name: "index",
   setup(__props) {
@@ -33,11 +34,15 @@ const _sfc_main = {
       data.pageSize = 10;
       data.currentPage = currentPage.value;
       let { result } = await utils_request.request("getFamousSaying", data);
-      if (result.code === 0) {
-        homeShort.data.push(...result.data);
-        if (!result.data.length || result.data.length < 10) {
-          ifMoreData.value = true;
+      if (result.code == 0) {
+        if (result.affectedDocs && result.data.length) {
+          homeShort.data.push(...result.data);
+          if (result.data.length < 10) {
+            ifMoreData.value = true;
+          }
+          return;
         }
+        ifMoreData.value = true;
       } else {
         utils_util.util.tip("\u8BF7\u6C42\u5931\u8D25", "error");
       }
@@ -53,7 +58,7 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: homeShort.data.length
-      }, homeShort.data.length ? common_vendor.e({
+      }, homeShort.data.length ? {
         b: common_vendor.f(homeShort.data, (item, k0, i0) => {
           return {
             a: "29987d2e-0-" + i0,
@@ -64,12 +69,11 @@ const _sfc_main = {
           };
         }),
         c: common_vendor.o(collectShort),
-        d: loadMore.value || ifMoreData.value
-      }, loadMore.value || ifMoreData.value ? common_vendor.e({
-        e: loadMore.value
-      }, loadMore.value ? {} : ifMoreData.value ? {} : {}, {
-        f: ifMoreData.value
-      }) : {}) : {});
+        d: common_vendor.p({
+          loadMore: loadMore.value,
+          ifMoreData: ifMoreData.value
+        })
+      } : {});
     };
   }
 };

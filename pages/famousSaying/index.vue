@@ -4,14 +4,7 @@
       <block v-for="item in homeShort.data" :key="item._id">
         <famous :homeShort="item" @collectShort="collectShort"></famous>
       </block>
-      <view class="more iconfont icon-a-weixiaokaixingaoxing-03" v-if="loadMore||ifMoreData">
-        <text v-if="loadMore">
-          正在加载...
-        </text>
-        <text v-else-if="ifMoreData">
-          😊没有更多了
-        </text>
-      </view>
+      <noData :loadMore="loadMore" :ifMoreData="ifMoreData" />
     </template>
     <!-- <view @tap="requests">请求数据</view>
     <view @tap="requests1">请求用户数据</view> -->
@@ -26,7 +19,8 @@
 import { ref, reactive } from 'vue';
 import famous from '@/components/famous/famous';
 import fabTop from '@/components/fabTop';
-import { onReachBottom, onLoad,onPageScroll } from "@dcloudio/uni-app";
+import noData from '@/components/noData';
+import { onReachBottom, onLoad, onPageScroll } from "@dcloudio/uni-app";
 import util from "@/utils/util";
 import { request } from "@/utils/request";
 const homeShort = reactive({
@@ -51,11 +45,15 @@ const getFamousSaying = async (type) => {
   data.pageSize = 10
   data.currentPage = currentPage.value
   let { result } = await request("getFamousSaying", data)
-  if (result.code === 0) {
-    homeShort.data.push(...result.data);
-    if (!result.data.length || result.data.length < 10) {
-      ifMoreData.value = true
+  if (result.code == 0) {
+    if (result.affectedDocs && result.data.length) {
+      homeShort.data.push(...result.data);
+      if (result.data.length < 10) {
+        ifMoreData.value = true
+      }
+      return
     }
+    ifMoreData.value = true
   } else {
     util.tip("请求失败", "error")
   }
@@ -84,11 +82,6 @@ onReachBottom(async () => {
   // background: linear-gradient(90deg, #ffc700 0%, #e91e1e 100%);
   // animation: gradient 3s infinite;
   animation: gradientAn 15s infinite alternate;
-}
-
-.more {
-  padding-top: 10px;
-  text-align: center;
 }
 
 .emptuData {
