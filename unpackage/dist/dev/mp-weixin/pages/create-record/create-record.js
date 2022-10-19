@@ -65,7 +65,7 @@ const _sfc_main = {
     common_vendor.index.hideShareMenu();
     common_vendor.index.showNavigationBarLoading();
     common_vendor.index.setNavigationBarTitle({
-      title: "\u5199\u8BF4\u8BF4"
+      title: `${utils_util.util.handelTime()} \u5199\u65E5\u8BB0 `
     });
     common_vendor.index.setNavigationBarColor({
       frontColor: "#ffffff",
@@ -235,6 +235,11 @@ const _sfc_main = {
       const { index } = event.currentTarget.dataset;
       this.files = this.files.filter((item, i) => i !== index);
     },
+    goPrivacy() {
+      common_vendor.index.navigateTo({
+        url: "../Privacy/index"
+      });
+    },
     async submit() {
       if (!this.textareaValue.length) {
         utils_util.util.tip("\u8BF7\u8F93\u5165\u5185\u5BB9", "error");
@@ -360,9 +365,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     v: common_vendor.n($data.recordState ? "yuyinBtnBg" : ""),
     w: common_vendor.o((...args) => $options.touchStart && $options.touchStart(...args)),
     x: common_vendor.o((...args) => $options.touchEnd && $options.touchEnd(...args)),
-    y: !$data.files.length && !$data.textareaValue,
-    z: common_vendor.o((...args) => $options.submit && $options.submit(...args)),
-    A: $data.recordState
+    y: common_vendor.o((...args) => $options.goPrivacy && $options.goPrivacy(...args)),
+    z: !$data.files.length && !$data.textareaValue,
+    A: common_vendor.o((...args) => $options.submit && $options.submit(...args)),
+    B: $data.recordState
   }, $data.recordState ? {} : {});
 }
 var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/xiaocx/reacord-day/pages/create-record/create-record.vue"]]);

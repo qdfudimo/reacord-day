@@ -6377,6 +6377,18 @@ const pages = [
     style: {
       navigationBarTitleText: "\u66F4\u6539\u7528\u6237\u4FE1\u606F"
     }
+  },
+  {
+    path: "pages/Privacy/index",
+    style: {
+      navigationBarTitleText: "\u5E38\u89C1\u95EE\u9898\u89E3\u7B54"
+    }
+  },
+  {
+    path: "pages/yuyin/index",
+    style: {
+      navigationBarTitleText: "\u8BED\u97F3\u8BC6\u522B\u6587\u5B57"
+    }
   }
 ];
 const tabBar = {

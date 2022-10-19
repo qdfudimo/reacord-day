@@ -1,8 +1,8 @@
 <template>
     <!-- pages/mine/index.wxml -->
-    <view :class="'container ' + 'noColor'">
-        <image class="background_image" :src="currentBackground" mode="aspectFill">
-        </image>
+    <view class="container noColor" :style="`background-image:url(${currentBackground});`">
+        <!-- <image class="background_image" :src="currentBackground" mode="aspectFill">
+        </image> -->
         <view class="main">
             <view class="con" :style="'height:' + customBar + 'px;padding-top:' + statusBar + 'px;'">
             </view>
@@ -26,19 +26,23 @@
                         <view>收藏名言: {{ userInfo.collectCount }} 篇</view>
                     </view>
                     <view class="setting">
-                        <view class="common">
-                            <text class="iconfont icon-shoucang" style="font-size: 22px" @tap="collectApplet"></text>
-                            <text style="font-size: 12px; margin-top: 6px">收藏小程序</text>
+                        <view class="common" @tap="collectApplet">
+                            <text class="iconfont icon-shoucang"></text>
+                            <text class="text">收藏小程序</text>
                         </view>
-                        <view class="common">
-                            <text class="iconfont icon-fenxiang" style="font-size: 22px" @tap="getUserProfile"></text>
-                            <text style="font-size: 12px; margin-top: 6px">信息更新</text>
+                        <view class="common" @tap="getUserProfile">
+                            <text class="iconfont icon-fenxiang"></text>
+                            <text class="text">信息更新</text>
                             <!-- <button data-id="shareBtn" :plain="true" open-type="share" class="shareBtn"
                                 style="border: 0; padding: 0; width: 100%"></button> -->
                         </view>
+                        <view class="common" @tap="goPrivacy">
+                            <text class="iconfont icon-jieshao"></text>
+                            <text class="text">小程序介绍</text>
+                        </view>
                         <view class="common">
-                            <text class="iconfont icon-shezhi" style="font-size: 22px"></text>
-                            <text style="font-size: 12px; margin-top: 6px">意见反馈</text>
+                            <text class="iconfont icon-shezhi"></text>
+                            <text class="text">意见反馈</text>
                             <button style="border: 0; padding: 0; width: 100%" :plain="true" class="shareBtn"
                                 open-type="feedback"></button>
                         </view>
@@ -182,6 +186,11 @@ const collectApplet = () => {
     setTimeout(() => {
         ifCollect.value = false
     }, 2000);
+}
+const goPrivacy = () => {
+    uni.navigateTo({
+        url: '../Privacy/index'
+    });
 }
 
 const collectShort = (item, index) => {

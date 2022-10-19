@@ -1,9 +1,10 @@
 <template>
     <!-- pages/mine/index.wxml -->
-    <view class='container '>
-        <image class="background_image" :src="backgroundImg.currentBackground ||backgroundImg.defaultBackground"
+    <view class='container'
+        :style="`background-image:url(${backgroundImg.currentBackground ||backgroundImg.defaultBackground});`">
+        <!-- <image class="background_image" :src="backgroundImg.currentBackground ||backgroundImg.defaultBackground"
             mode="aspectFill">
-        </image>
+        </image> -->
         <view class="top_content">
             <view class="time" @tap="showClander">
                 <view class="month_day">
@@ -31,7 +32,7 @@
                 <view v-if="!isOriginal" :style="`color:${homeShort.data.ifCollect?'#FBBD08':'#fff'}`"
                     class="shoucang iconfont icon-shoucang2" @tap="collectShort"></view>
             </view>
-            <view class="iconfont icon-shezhi1 setIcon" @tap="changeImg"></view>
+            <!-- <view class="iconfont icon-shezhi1 setIcon" @tap="changeImg"></view> -->
         </view>
         <view class="category_list">
             <view class="typeFunction">
@@ -288,6 +289,11 @@ const handelCheck = (e) => {
                 url: `../famousSaying/index`
             });
             break;
+        case "语音识别文字":
+            uni.navigateTo({
+                url: `../yuyin/index`
+            });
+            break;
         case "打卡":
             uni.showToast({
                 title: '暂未开发',
@@ -337,6 +343,10 @@ page {
     padding-bottom: calc(48px + constant(safe-area-inset-bottom));
     padding-bottom: calc(48px + env(safe-area-inset-bottom));
     box-sizing: border-box;
+    background-attachment: fixed;
+    background-size: 100vw calc(100vh - 48px - constant(safe-area-inset-bottom));
+    background-size: 100vw calc(100vh - 48px - env(safe-area-inset-bottom));
+    background-repeat: no-repeat;
 
     .top_content {
         position: relative;
@@ -400,6 +410,7 @@ page {
             flex-direction: column;
             color: #fff;
             transition: all .1s;
+
             .text {
                 overflow: hidden;
                 display: flex;
@@ -435,12 +446,14 @@ page {
             padding: 4px;
             border-radius: 50%;
         }
-       .visable {
-        opacity: 1;
-       } 
-       .hidden {
-        opacity: 0;
-       } 
+
+        .visable {
+            opacity: 1;
+        }
+
+        .hidden {
+            opacity: 0;
+        }
     }
 
     .category_list {

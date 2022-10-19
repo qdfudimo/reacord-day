@@ -33,10 +33,6 @@ const _sfc_main = {
         utils_util.util.tip("\u8BF7\u8F93\u5165\u5408\u6CD5\u7684\u6635\u79F0", "error");
         return;
       }
-      if (/[^/a-zA-Z0-9\u4E00-\u9FA5]/g.test(nickName.value)) {
-        utils_util.util.tip("\u8BF7\u8F93\u5165\u4E2D\u82F1\u6587\u548C\u6570\u5B57", "error");
-        return;
-      }
       let data = {
         type: "update",
         data: {
@@ -68,7 +64,7 @@ const _sfc_main = {
         }
       });
     };
-    const input = (e) => {
+    const focus = (e) => {
       disabled.value = false;
       nickName.value = e.detail.value;
     };
@@ -77,9 +73,10 @@ const _sfc_main = {
         a: avatarUrl.value || "/static/image/vx.png",
         b: common_vendor.o(onChooseAvatar),
         c: nickName.value,
-        d: common_vendor.o(input),
-        e: disabled.value,
-        f: common_vendor.o(submitInfo)
+        d: common_vendor.o(focus),
+        e: common_vendor.o(focus),
+        f: disabled.value,
+        g: common_vendor.o(submitInfo)
       };
     };
   }

@@ -23,6 +23,11 @@ const category = [
     color: "#32c312"
   },
   {
+    icon: "icon-yuyinshi",
+    name: "\u8BED\u97F3\u8BC6\u522B\u6587\u5B57",
+    color: "#1296db"
+  },
+  {
     icon: "icon-gerenzhongxin",
     name: "\u4E2A\u4EBA\u4E2D\u5FC3",
     color: "#ed4e41"

@@ -10,6 +10,8 @@ if (!Math) {
   "./pages/create-record/create-record.js";
   "./pages/clander/index.js";
   "./pages/userInfo/index.js";
+  "./pages/Privacy/index.js";
+  "./pages/yuyin/index.js";
 }
 const _sfc_main = {
   data() {

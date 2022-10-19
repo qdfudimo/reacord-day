@@ -2,11 +2,10 @@
 /*每个页面公共css */
 /* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
-  font-family: 'iconfont';
-  /* Project id 3109504 */
-  src: url('//at.alicdn.com/t/c/font_3109504_rnnczjh4vlk.woff2?t=1665391282330') format('woff2'),
-    url('//at.alicdn.com/t/c/font_3109504_rnnczjh4vlk.woff?t=1665391282330') format('woff'),
-    url('//at.alicdn.com/t/c/font_3109504_rnnczjh4vlk.ttf?t=1665391282330') format('truetype');
+  font-family: 'iconfont';  /* Project id 3109504 */
+  src: url('//at.alicdn.com/t/c/font_3109504_qfe8nfscnpp.woff2?t=1666170217301') format('woff2'),
+       url('//at.alicdn.com/t/c/font_3109504_qfe8nfscnpp.woff?t=1666170217301') format('woff'),
+       url('//at.alicdn.com/t/c/font_3109504_qfe8nfscnpp.ttf?t=1666170217301') format('truetype');
 }
 .iconfont {
   font-family: "iconfont" !important;
@@ -20,6 +19,15 @@
 }
 .icon-zanwushuju:before {
   content: "\e61a";
+}
+.icon-yuyinshi:before {
+  content: "\e8a0";
+}
+.icon-jieshao:before {
+  content: "\e667";
+}
+.icon-yinsi:before {
+  content: "\e98b";
 }
 .icon-label:before {
   content: "\e61b";

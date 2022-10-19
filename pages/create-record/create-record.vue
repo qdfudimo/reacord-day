@@ -46,6 +46,7 @@
                 <view class="iconfont icon-saying" style=" margin-right: 4rpx;"></view> {{!recordState?" 按住语音识别":
                 "松开结束"}}
             </button>
+            <view class="iconfont icon-yinsi" @tap="goPrivacy" style="padding:10px 0;color:#1296db;"> 隐私保护</view>
             <button :disabled="!files.length&&!textareaValue" @tap="submit"
                 style="width: 320rpx; height: 64rpx; padding: 0; line-height: 64rpx; background-color: #25bdce"
                 class="report" type="primary">发表</button>
@@ -59,6 +60,7 @@
 </template>
 
 <script>
+//填写日记 更换背景 更改昵称头像
 // pages/mine/index.js
 //   "navigationStyle": "custom"
 import { chooseFile, isImageFile, uplodFile } from '@/utils/upload';
@@ -131,7 +133,7 @@ export default {
         uni.hideShareMenu()
         uni.showNavigationBarLoading();
         uni.setNavigationBarTitle({
-            title: '写说说'
+            title: `${util.handelTime()} 写日记 `
         });
         uni.setNavigationBarColor({
             frontColor: '#ffffff',
@@ -339,6 +341,11 @@ export default {
         deleteItem(event) {
             const { index } = event.currentTarget.dataset;
             this.files = this.files.filter((item, i) => i !== index)
+        },
+        goPrivacy() {
+            uni.navigateTo({
+                url: '../Privacy/index'
+            });
         },
         async submit() {
             if (!this.textareaValue.length) {

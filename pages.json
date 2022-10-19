@@ -49,6 +49,18 @@
 			"style": {
 				"navigationBarTitleText": "更改用户信息"
 			}
+		},
+		{
+			"path": "pages/Privacy/index",
+			"style": {
+				"navigationBarTitleText": "常见问题解答"
+			}
+		},
+		{
+			"path": "pages/yuyin/index",
+			"style": {
+				"navigationBarTitleText": "语音识别文字"
+			}
 		}
 	],
 	"tabBar": {
@@ -56,7 +68,8 @@
 		"color": "#2c2c2c",
 		"selectedColor": "#1296db",
 		"backgroundColor": "#fff",
-		"list": [{
+		"list": [
+			{
 				"pagePath": "pages/home/index",
 				"iconPath": "static/image/home.png",
 				"selectedIconPath": "static/image/active_home.png",

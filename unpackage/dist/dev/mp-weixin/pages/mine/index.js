@@ -100,6 +100,11 @@ const _sfc_main = {
         ifCollect.value = false;
       }, 2e3);
     };
+    const goPrivacy = () => {
+      common_vendor.index.navigateTo({
+        url: "../Privacy/index"
+      });
+    };
     const collectShort = (item, index) => {
       utils_util.util.collectFamous(item, () => {
         scheduleLsits.value.splice(index, 1);
@@ -222,16 +227,16 @@ const _sfc_main = {
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
-        a: currentBackground.value,
-        b: common_vendor.s("height:" + common_vendor.unref(customBar) + "px;padding-top:" + common_vendor.unref(statusBar) + "px;"),
-        c: userInfo.avatarUrl || "/static/image/vx.png",
-        d: common_vendor.t(userInfo.nickName || "\u6682\u65E0\u7528\u6237\u540D"),
-        e: common_vendor.o(getUserProfile),
-        f: common_vendor.o(showIfBackground),
-        g: common_vendor.t(userInfo.diaryCount),
-        h: common_vendor.t(userInfo.collectCount),
-        i: common_vendor.o(collectApplet),
-        j: common_vendor.o(getUserProfile),
+        a: common_vendor.s("height:" + common_vendor.unref(customBar) + "px;padding-top:" + common_vendor.unref(statusBar) + "px;"),
+        b: userInfo.avatarUrl || "/static/image/vx.png",
+        c: common_vendor.t(userInfo.nickName || "\u6682\u65E0\u7528\u6237\u540D"),
+        d: common_vendor.o(getUserProfile),
+        e: common_vendor.o(showIfBackground),
+        f: common_vendor.t(userInfo.diaryCount),
+        g: common_vendor.t(userInfo.collectCount),
+        h: common_vendor.o(collectApplet),
+        i: common_vendor.o(getUserProfile),
+        j: common_vendor.o(goPrivacy),
         k: !scheduleLsits.value.length
       }, !scheduleLsits.value.length ? {} : {}, {
         l: common_vendor.f(scheduleLsits.value, (item, index, i0) => {
@@ -266,7 +271,7 @@ const _sfc_main = {
       }, ifCollect.value ? {
         v: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
       } : {}, {
-        w: common_vendor.n("container noColor")
+        w: common_vendor.s(`background-image:url(${currentBackground.value});`)
       });
     };
   }

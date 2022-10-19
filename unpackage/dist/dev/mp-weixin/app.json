@@ -6,7 +6,9 @@
     "pages/famousSaying/index",
     "pages/create-record/create-record",
     "pages/clander/index",
-    "pages/userInfo/index"
+    "pages/userInfo/index",
+    "pages/Privacy/index",
+    "pages/yuyin/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

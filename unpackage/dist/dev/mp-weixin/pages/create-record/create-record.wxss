@@ -108,7 +108,7 @@
     height: 64rpx;
     line-height: 64rpx;
     padding: 0;
-    color: #606267;
+    color: #2c2c2c;
     text-align: center;
     margin: 0;
     margin-top: 12px;

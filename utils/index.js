@@ -28,6 +28,11 @@ export const category = [{
     //     color: "#72c2f4"
     // },
     {
+        icon: "icon-yuyinshi",
+        name: "语音识别文字",
+        color: "#1296db"
+    },
+    {
         icon: "icon-gerenzhongxin",
         name: "个人中心",
         color: "#ed4e41"

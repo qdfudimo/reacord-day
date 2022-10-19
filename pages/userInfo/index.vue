@@ -5,13 +5,14 @@
     </button>
     <view class="nick_name">
       <text>昵称</text>
-      <input :value="nickName" @input="input" type="nickname" maxlength="10" class="weui-input" placeholder="请输入昵称" />
+      <input :value="nickName" @focus="focus" @input="focus" type="nickname" maxlength="10" class="weui-input" placeholder="请输入昵称" />
     </view>
     <button class="write submit" :disabled="disabled" @tap="submitInfo">
       保存修改
     </button>
   </view>
 </template>
+<!-- 1测试号🐷 -->
 <!-- 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/da5f56fe-c939-4168-9c49-ae76ed29d0d0.png' -->
 <script setup>
 import { onLoad } from "@dcloudio/uni-app";
@@ -46,10 +47,10 @@ const submitInfo = async (e) => {
     util.tip("请输入合法的昵称", "error")
     return
   }
-  if ((/[^/a-zA-Z0-9\u4E00-\u9FA5]/g).test(nickName.value)) {
-    util.tip("请输入中英文和数字", "error")
-    return
-  }
+  // if ((/[^/a-zA-Z0-9\u4E00-\u9FA5]/g).test(nickName.value)) {
+  //   util.tip("请输入中英文和数字", "error")
+  //   return
+  // }
   let data = {
     type: "update",
     data: {
@@ -81,7 +82,7 @@ const getUserInfo = (data) => {
     }
   })
 }
-const input = (e) => {
+const focus = (e) => {
   disabled.value = false
   nickName.value = e.detail.value;
 }

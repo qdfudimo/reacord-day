@@ -43,6 +43,13 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/Privacy/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
