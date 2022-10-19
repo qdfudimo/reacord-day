@@ -1,8 +1,9 @@
 <template>
   <view class="section">
     <textarea class="textarea" v-model="textareaValue" :maxlength="400" placeholder="语音识别文字内容复制" name="textarea" />
+    
     <button :class="['yuyin',recordState?'yuyinBtnBg':'']" @touchstart="touchStart" @touchend="touchEnd">
-      <view class="iconfont icon-saying" style=" margin-right: 4rpx;"></view> {{!recordState?" 按住语音识别":
+      <view class="iconfont icon-saying" style=" margin-right: 4rpx;"></view> {{!recordState?" 按住语音识别文字":
       "松开结束"}}
     </button>
     <!-- 开始语音 弹出语音图标表示正在录音 -->
@@ -201,22 +202,21 @@ export default {
   height: 400rpx;
   padding: 20rpx;
   box-sizing: border-box;
+  border: 1px solid #ccc;
 }
 .yuyin {
     width: 160px;
-    height: 64rpx;
-    line-height: 64rpx;
+    height: 40px;
+    line-height: 40px;
     padding: 0;
     color: #2c2c2c;
     text-align: center;
-    margin: 0;
-    margin-top: 12px;
     font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 40px auto 0;
-    border: 1px solid #ccc;
+    background-color: #e6e6e6;
 }
 
 .yuyinBtnBg {

@@ -85,11 +85,6 @@ const _sfc_main = {
         common_vendor.index.stopPullDownRefresh();
       });
     };
-    const goRecord = () => {
-      common_vendor.index.navigateTo({
-        url: `../create-record/create-record`
-      });
-    };
     const radioChange = (e) => {
       changeBackIMG(e.detail.value);
     };
@@ -171,9 +166,9 @@ const _sfc_main = {
     };
     const handelCheck = (e) => {
       switch (e.currentTarget.dataset.name) {
-        case "\u65E5\u8BB0\u672C":
+        case "\u6253\u5361\u8BB0\u5F55":
           common_vendor.index.navigateTo({
-            url: `../square/index`
+            url: `../playColck/index`
           });
           break;
         case "\u65E5\u5386":
@@ -192,10 +187,8 @@ const _sfc_main = {
           });
           break;
         case "\u6253\u5361":
-          common_vendor.index.showToast({
-            title: "\u6682\u672A\u5F00\u53D1",
-            icon: "error",
-            duration: 2e3
+          common_vendor.index.navigateTo({
+            url: `../daka/index`
           });
           break;
         case "\u4E2A\u4EBA\u4E2D\u5FC3":
@@ -240,12 +233,11 @@ const _sfc_main = {
             f: common_vendor.o(handelCheck, item.icon)
           };
         }),
-        m: common_vendor.o(goRecord),
-        n: backgroundImg.defaultBackground,
-        o: backgroundImg.temporaryImg || "/static/image/error.png",
-        p: common_vendor.n(backgroundImg.currentBackground ? "" : "border"),
-        q: common_vendor.o(selectImg),
-        r: common_vendor.f(common_vendor.unref(utils_index.radioData), (item, k0, i0) => {
+        m: backgroundImg.defaultBackground,
+        n: backgroundImg.temporaryImg || "/static/image/error.png",
+        o: common_vendor.n(backgroundImg.currentBackground ? "" : "border"),
+        p: common_vendor.o(selectImg),
+        q: common_vendor.f(common_vendor.unref(utils_index.radioData), (item, k0, i0) => {
           return {
             a: item.value,
             b: checkImgType.value == item.value,
@@ -253,37 +245,37 @@ const _sfc_main = {
             d: item.value
           };
         }),
-        s: common_vendor.o(radioChange),
-        t: textareaValue.value,
-        v: common_vendor.o(($event) => textareaValue.value = $event.detail.value),
-        w: !textareaValue.value,
-        x: common_vendor.o(clearText),
-        y: !textareaValue.value,
-        z: inputVal.value,
-        A: common_vendor.o(($event) => inputVal.value = $event.detail.value),
-        B: common_vendor.o(confirm),
-        C: common_vendor.o(cancle),
-        D: common_vendor.o(($event) => showDialog.value = $event),
-        E: common_vendor.p({
+        r: common_vendor.o(radioChange),
+        s: textareaValue.value,
+        t: common_vendor.o(($event) => textareaValue.value = $event.detail.value),
+        v: !textareaValue.value,
+        w: common_vendor.o(clearText),
+        x: !textareaValue.value,
+        y: inputVal.value,
+        z: common_vendor.o(($event) => inputVal.value = $event.detail.value),
+        A: common_vendor.o(confirm),
+        B: common_vendor.o(cancle),
+        C: common_vendor.o(($event) => showDialog.value = $event),
+        D: common_vendor.p({
           confirmDisabled: confirmDisabled.value,
           title: "\u8BBE\u7F6E\u80CC\u666F\u683C\u8A00",
           show: showDialog.value
         }),
-        F: common_vendor.t(`${common_vendor.unref(CDate).cYear}/${common_vendor.unref(CDate).cMonth}/${common_vendor.unref(CDate).cDay}`),
-        G: common_vendor.t(common_vendor.unref(CDate).ncWeek),
-        H: common_vendor.t(common_vendor.unref(CDate).astro),
-        I: common_vendor.t(common_vendor.unref(CDate).IMonthCn),
-        J: common_vendor.t(common_vendor.unref(CDate).IDayCn),
-        K: common_vendor.t(`${common_vendor.unref(CDate).gzYear}\u5E74${common_vendor.unref(CDate).gzMonth}\u6708${common_vendor.unref(CDate).gzDay}\u65E5`),
-        L: common_vendor.n(`icon-${common_vendor.unref(CDate).icon}`),
-        M: common_vendor.o(clickDialog),
-        N: common_vendor.o(($event) => showClanderDialog.value = $event),
-        O: common_vendor.p({
+        E: common_vendor.t(`${common_vendor.unref(CDate).cYear}/${common_vendor.unref(CDate).cMonth}/${common_vendor.unref(CDate).cDay}`),
+        F: common_vendor.t(common_vendor.unref(CDate).ncWeek),
+        G: common_vendor.t(common_vendor.unref(CDate).astro),
+        H: common_vendor.t(common_vendor.unref(CDate).IMonthCn),
+        I: common_vendor.t(common_vendor.unref(CDate).IDayCn),
+        J: common_vendor.t(`${common_vendor.unref(CDate).gzYear}\u5E74${common_vendor.unref(CDate).gzMonth}\u6708${common_vendor.unref(CDate).gzDay}\u65E5`),
+        K: common_vendor.n(`icon-${common_vendor.unref(CDate).icon}`),
+        L: common_vendor.o(clickDialog),
+        M: common_vendor.o(($event) => showClanderDialog.value = $event),
+        N: common_vendor.p({
           showButton: false,
           width: "70%",
           show: showClanderDialog.value
         }),
-        P: common_vendor.s(`background-image:url(${backgroundImg.currentBackground || backgroundImg.defaultBackground});`)
+        O: common_vendor.s(`background-image:url(${backgroundImg.currentBackground || backgroundImg.defaultBackground});`)
       });
     };
   }

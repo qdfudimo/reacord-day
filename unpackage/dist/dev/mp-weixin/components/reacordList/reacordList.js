@@ -15,6 +15,10 @@ const _sfc_main = {
   },
   props: {
     reacordList: Object,
+    ifNote: {
+      type: Boolean,
+      default: true
+    },
     userInfo: Object,
     onlyIndex: Number
   },
@@ -72,20 +76,32 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: $props.userInfo.avatarUrl || "/static/image/avtar.png",
-    b: common_vendor.t($props.userInfo.nickName),
-    c: $props.reacordList.create_time
-  }, $props.reacordList.create_time ? {
-    d: common_vendor.t($options.formatTime($props.reacordList.create_time))
-  } : {}, {
-    e: $props.reacordList.mood
+    a: $props.ifNote
+  }, $props.ifNote ? {
+    b: $props.userInfo.avatarUrl || "/static/image/avtar.png"
+  } : {
+    c: common_vendor.s(`background-color: ${$props.reacordList.color};`),
+    d: $props.reacordList.clockUrl
+  }, {
+    e: $props.ifNote
+  }, $props.ifNote ? {
+    f: common_vendor.t($props.userInfo.nickName)
+  } : common_vendor.e({
+    g: common_vendor.t($props.reacordList.weather),
+    h: $props.reacordList.weatherUrl
+  }, $props.reacordList.weatherUrl ? {} : {}), {
+    i: common_vendor.t($options.formatTime($props.reacordList.create_time)),
+    j: common_vendor.n($props.ifNote ? "" : "clockCs"),
+    k: $props.reacordList.mood
   }, $props.reacordList.mood ? {
-    f: common_vendor.t($props.reacordList.mood)
+    l: common_vendor.t($props.reacordList.mood)
   } : {}, {
-    g: common_vendor.t($props.reacordList.content),
-    h: $props.reacordList.imgUrl && $props.reacordList.imgUrl.length
+    m: $props.ifNote
+  }, $props.ifNote ? common_vendor.e({
+    n: common_vendor.t($props.reacordList.content),
+    o: $props.reacordList.imgUrl && $props.reacordList.imgUrl.length
   }, $props.reacordList.imgUrl && $props.reacordList.imgUrl.length ? {
-    i: common_vendor.f($props.reacordList.imgUrl, (i, index, i0) => {
+    p: common_vendor.f($props.reacordList.imgUrl, (i, index, i0) => {
       return {
         a: i,
         b: index,
@@ -93,14 +109,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: index
       };
     }),
-    j: $props.reacordList.imgUrl
-  } : {}, {
-    k: $props.reacordList.name
+    q: $props.reacordList.imgUrl
+  } : {}) : {}, {
+    r: $props.reacordList.name
   }, $props.reacordList.name ? {
-    l: common_vendor.t($props.reacordList.name),
-    m: common_vendor.o((...args) => $options.choosiePosi && $options.choosiePosi(...args))
+    s: common_vendor.t($props.reacordList.name),
+    t: common_vendor.o((...args) => $options.choosiePosi && $options.choosiePosi(...args))
   } : {}, {
-    n: common_vendor.o((...args) => $options.remove && $options.remove(...args))
+    v: common_vendor.o((...args) => $options.remove && $options.remove(...args))
   });
 }
 var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/xiaocx/reacord-day/components/reacordList/reacordList.vue"]]);

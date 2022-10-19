@@ -9,7 +9,7 @@ const radioData = [{
 const category = [
   {
     icon: "icon-tiaochariji",
-    name: "\u65E5\u8BB0\u672C",
+    name: "\u6253\u5361\u8BB0\u5F55",
     color: "#1CBBB4"
   },
   {
@@ -21,6 +21,11 @@ const category = [
     icon: "icon-icon_xinyong_xianxing_jijin-107",
     name: "\u540D\u53E5\u9274\u8D4F",
     color: "#32c312"
+  },
+  {
+    icon: "icon-qiandaodaka",
+    name: "\u6253\u5361",
+    color: "#72c2f4"
   },
   {
     icon: "icon-yuyinshi",

@@ -1,12 +1,12 @@
 <template>
   <view class="Privacy">
-    <view class="wrapBox">
+    <!-- <view class="wrapBox">
       <view class="title">日记是否安全？</view>
       <view class="text">日记内容存储在云服务器中，任何人都无法查看你的日记内容。</view>
-    </view>
+    </view> -->
     <view class="wrapBox">
       <view class="title">内容是否会丢失？</view>
-      <view class="text">时光记录间账号关联微信号，更换设备重新登录微信账号后，程序会自动同步所有日记内容。</view>
+      <view class="text">时光记录间账号关联微信号，更换设备重新登录微信账号后，程序会自动同步所有内容。</view>
     </view>
     <view class="wrapBox">
       <view class="title">电脑端是否支持使用？</view>
@@ -16,14 +16,14 @@
       <view class="title">软件是否免费试用？</view>
       <view class="text">永久免费。</view>
     </view> -->
-    <view class="wrapBox">
+    <!-- <view class="wrapBox">
       <view class="title">注意事项？</view>
       <view class="text">《时光记录间》小程序是一个工具软件，软件永久免费，
         仅提供用户“写日记”，查看名言名句相关的功能，严禁利用此软件发布任何违规、违法内容，
         日记内容上传前会上传到微信内容安全检测，如有违规信息，会限制内容上传。
         本软件不发布任何信息，请认真鉴别其它内容，由此带来的损失，本软件不负任何责任。
       </view>
-    </view>
+    </view> -->
     <view class="wrapBox">
       <view class="title">更改问题</view>
       <button style="border: 0; padding: 0; width: 100%;color: #3591e2;" :plain="true" class="shareBtn"

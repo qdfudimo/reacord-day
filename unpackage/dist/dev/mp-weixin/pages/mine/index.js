@@ -1,9 +1,8 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
-var utils_upload = require("../../utils/upload.js");
+var utils_util = require("../../utils/util.js");
 var utils_index = require("../../utils/index.js");
 var hooks_useGetTabBar = require("../../hooks/useGetTabBar.js");
-var utils_util = require("../../utils/util.js");
 var utils_request = require("../../utils/request.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
@@ -26,6 +25,7 @@ const _sfc_main = {
       nickName: "",
       id: "",
       diaryCount: 0,
+      clockCount: 0,
       collectCount: 0
     });
     const showBackground = common_vendor.ref(false);
@@ -60,27 +60,6 @@ const _sfc_main = {
             data: url
           });
         }
-      });
-    };
-    const selectBackground = () => {
-      utils_upload.chooseFile({
-        accept: "img",
-        maxCount: 1,
-        multiple: false
-      }).then((res) => {
-        let ext = res[0].url.split(".").pop();
-        common_vendor.pn.uploadFile({
-          filePath: res[0].url,
-          cloudPath: Date.now() + "." + ext,
-          success(res2) {
-            changeFile(res2.fileID);
-          },
-          fail(error) {
-            console.log(error);
-            utils_util.util.tip("\u4E0A\u4F20\u5931\u8D25", "error");
-          }
-        });
-      }).catch((error) => {
       });
     };
     const getUserProfile = () => {
@@ -160,6 +139,7 @@ const _sfc_main = {
           userInfo.nickName = result.data[0].nickName;
           userInfo.id = result.data[0]._id;
           userInfo.diaryCount = result.data[0].diaryCount;
+          userInfo.clockCount = result.data[0].clockCount || 0;
           userInfo.collectCount = result.data[0].collectCount;
           common_vendor.index.stopPullDownRefresh();
         }
@@ -232,7 +212,7 @@ const _sfc_main = {
         c: common_vendor.t(userInfo.nickName || "\u6682\u65E0\u7528\u6237\u540D"),
         d: common_vendor.o(getUserProfile),
         e: common_vendor.o(showIfBackground),
-        f: common_vendor.t(userInfo.diaryCount),
+        f: common_vendor.t(userInfo.clockCount),
         g: common_vendor.t(userInfo.collectCount),
         h: common_vendor.o(collectApplet),
         i: common_vendor.o(getUserProfile),
@@ -257,21 +237,20 @@ const _sfc_main = {
       }, showBackground.value ? {
         o: common_vendor.o(showIfBackground),
         p: currentBackground.value,
-        q: common_vendor.o(selectBackground),
-        r: common_vendor.f(imgList.value, (item, index, i0) => {
+        q: common_vendor.f(imgList.value, (item, index, i0) => {
           return {
             a: item,
             b: item,
             c: index
           };
         }),
-        s: common_vendor.o(selectImage)
+        r: common_vendor.o(selectImage)
       } : {}, {
-        t: ifCollect.value
+        s: ifCollect.value
       }, ifCollect.value ? {
-        v: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
+        t: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
       } : {}, {
-        w: common_vendor.s(`background-image:url(${currentBackground.value});`)
+        v: common_vendor.s(`background-image:url(${currentBackground.value});`)
       });
     };
   }

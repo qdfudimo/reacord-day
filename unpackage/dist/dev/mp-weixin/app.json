@@ -8,7 +8,9 @@
     "pages/clander/index",
     "pages/userInfo/index",
     "pages/Privacy/index",
-    "pages/yuyin/index"
+    "pages/yuyin/index",
+    "pages/daka/index",
+    "pages/playColck/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

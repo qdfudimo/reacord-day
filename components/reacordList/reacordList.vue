@@ -1,23 +1,32 @@
 <template>
     <view class="schedule_view">
         <view class="schedule_top">
-            <image class="schedule_avatr" mode="aspectFill" :src="userInfo.avatarUrl || '/static/image/avtar.png'" />
-            <view class="issue_time">
-                <view class="schedule_userName">{{ userInfo.nickName }}</view>
-                <text v-if="reacordList.create_time">{{ formatTime(reacordList.create_time) }}</text>
+            <image v-if="ifNote" class="schedule_avatr" mode="aspectFill"
+                :src="userInfo.avatarUrl || '/static/image/avtar.png'" />
+            <image v-else class="clock_img" :style="`background-color: ${reacordList.color};`"
+                :src="reacordList.clockUrl" mode="aspectFill" />
+            <view :class="['issue_time',ifNote?'':'clockCs']">
+                <view v-if="ifNote" class="schedule_userName">{{ userInfo.nickName }}</view>
+                <view v-else class="schedule_userName">天气：{{reacordList.weather}}
+                    <image v-if="reacordList.weatherUrl" class="weather_img" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/2062e2d4-2a30-47f2-b788-c30890149d67.png" mode="aspectFill" />
+                </view>
+                <text>{{ formatTime(reacordList.create_time) }}</text>
+                <!-- <text v-if="reacordList.create_time">{{ formatTime(reacordList.create_time) }}</text> -->
             </view>
             <text class="mood" v-if="reacordList.mood">
                 {{ reacordList.mood }}
             </text>
         </view>
-        <view class="schedule_content">{{ reacordList.content }}</view>
-        <view class="pictures" v-if="reacordList.imgUrl && reacordList.imgUrl.length">
-            <!-- 大于等于两张图片 -->
-            <view :data-index="index" :data-urls="reacordList.imgUrl" @tap.stop.prevent="preview" class="picture"
-                style="height: 228rpx" v-for="(i, index) in reacordList.imgUrl" :key="index">
-                <image mode="scaleToFill" :src="i"></image>
+        <template v-if="ifNote">
+            <view class="schedule_content">{{ reacordList.content }}</view>
+            <view class="pictures" v-if="reacordList.imgUrl && reacordList.imgUrl.length">
+                <!-- 大于等于两张图片 -->
+                <view :data-index="index" :data-urls="reacordList.imgUrl" @tap.stop.prevent="preview" class="picture"
+                    style="height: 228rpx" v-for="(i, index) in reacordList.imgUrl" :key="index">
+                    <image mode="scaleToFill" :src="i"></image>
+                </view>
             </view>
-        </view>
+        </template>
         <view class="schedule_bottom">
             <view class="share" @tap="choosiePosi" style="color: #77aef3;" v-if="reacordList.name">
                 <text class="iconfont icon-weizhi" style="font-size: 14px; margin-right: 6px"></text>
@@ -58,6 +67,10 @@ export default {
     },
     props: {
         reacordList: Object,
+        ifNote: {
+            type: Boolean,
+            default: true
+        },
         userInfo: Object,
         onlyIndex: Number // myProperty: { // 属性名
         //   type: String,

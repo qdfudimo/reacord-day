@@ -12,6 +12,8 @@ if (!Math) {
   "./pages/userInfo/index.js";
   "./pages/Privacy/index.js";
   "./pages/yuyin/index.js";
+  "./pages/daka/index.js";
+  "./pages/playColck/index.js";
 }
 const _sfc_main = {
   data() {

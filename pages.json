@@ -61,6 +61,20 @@
 			"style": {
 				"navigationBarTitleText": "语音识别文字"
 			}
+		},
+		{
+			"path": "pages/daka/index",
+			"style": {
+				"navigationBarTitleText": "daka"
+			}
+		},
+		{
+			"path": "pages/playColck/index",
+			"style": {
+				"navigationBarTitleText": "记录",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark"
+			}
 		}
 	],
 	"tabBar": {

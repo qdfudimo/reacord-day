@@ -22,7 +22,7 @@
                 </view>
                 <view class="details">
                     <view class="diary">
-                        <view>日记: {{ userInfo.diaryCount }} 篇</view>
+                        <view>打卡: {{ userInfo.clockCount }} 次</view>
                         <view>收藏名言: {{ userInfo.collectCount }} 篇</view>
                     </view>
                     <view class="setting">
@@ -63,12 +63,12 @@
                 <view class="selectImg">
                     <image class="img_background" style="width: 100%; height: 100%" :src="currentBackground" />
                 </view>
-                <view class="selectImg addImg" @tap="selectBackground">
+                <!-- <view class="selectImg addImg" @tap="selectBackground">
                     <view class="iconfont icon-xiangji" style="font-size: 36px; margin-top: 8px"></view>
                     <view>添加图片</view>
                     <view>建议尺寸</view>
                     <view>750*800</view>
-                </view>
+                </view> -->
                 <view class="selectImg" v-for="(item, index) in imgList" :key="index">
                     <image @tap="selectImage" class="img_background" :data-url="item" style="width: 100%; height: 100%"
                         :src="item" />
@@ -109,6 +109,7 @@ const userInfo = reactive({
     nickName: '',
     id: '',
     diaryCount: 0,
+    clockCount: 0,
     collectCount: 0,
 })
 const showBackground = ref(false)
@@ -248,6 +249,7 @@ const getUserInfo = () => {
             userInfo.nickName = result.data[0].nickName;
             userInfo.id = result.data[0]._id;
             userInfo.diaryCount = result.data[0].diaryCount;
+            userInfo.clockCount = result.data[0].clockCount||0;
             userInfo.collectCount = result.data[0].collectCount;
             uni.stopPullDownRefresh();
         }

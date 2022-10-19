@@ -43,7 +43,7 @@
                 </view>
             </view>
             <!-- <button class="write iconfont icon-xie" @tap="requests"> 写日记</button> -->
-            <button class="write iconfont icon-xie" @tap="goRecord"> 写日记</button>
+            <!-- <button class="write iconfont icon-xie" @tap="goRecord"> 写日记</button> -->
         </view>
         <dia-log v-model:show="showDialog" :confirmDisabled="confirmDisabled" title="设置背景格言" @confirm="confirm"
             @cancle="cancle">
@@ -274,10 +274,13 @@ const collectShort = (e) => {
 }
 const handelCheck = (e) => {
     switch (e.currentTarget.dataset.name) {
-        case "日记本":
+        case "打卡记录":
             uni.navigateTo({
-                url: `../square/index`
+                url: `../playColck/index`
             });
+            // uni.navigateTo({
+            //     url: `../square/index`
+            // });
             break;
         case "日历":
             uni.navigateTo({
@@ -295,10 +298,8 @@ const handelCheck = (e) => {
             });
             break;
         case "打卡":
-            uni.showToast({
-                title: '暂未开发',
-                icon: 'error',
-                duration: 2000
+        uni.navigateTo({
+                url: `../daka/index`
             });
             break;
         case "个人中心":

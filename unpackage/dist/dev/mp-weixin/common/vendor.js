@@ -6389,6 +6389,20 @@ const pages = [
     style: {
       navigationBarTitleText: "\u8BED\u97F3\u8BC6\u522B\u6587\u5B57"
     }
+  },
+  {
+    path: "pages/daka/index",
+    style: {
+      navigationBarTitleText: "daka"
+    }
+  },
+  {
+    path: "pages/playColck/index",
+    style: {
+      navigationBarTitleText: "\u8BB0\u5F55",
+      enablePullDownRefresh: true,
+      backgroundTextStyle: "dark"
+    }
   }
 ];
 const tabBar = {

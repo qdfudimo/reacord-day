@@ -55,15 +55,6 @@
     flex-direction: column;
     justify-content: space-between;
 }
-.schedule_left {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-.user_time {
-    margin-top: 8px;
-    color: #666;
-}
 .schedule_content {
     flex: 1;
     font-size: 14px;
@@ -137,4 +128,28 @@
     width: 100%;
     height: 100%;
     /* border: 1px solid #efefef; */
+}
+.clock_img {
+    height: 56px;
+    width: 56px;
+    border-radius: 20px;
+    padding: 2px;
+}
+.clockCs {
+    padding-left: 20px;
+}
+.clockCs .schedule_userName {
+    padding-bottom:10px ;
+}
+.clockCs text {
+    font-size: 16px;
+}
+.clockCs .schedule_userName {
+    font-size: 16px;
+}
+.weather_img {
+    height: 32px;
+    width: 32px;
+    border-radius: 10px;
+    padding: 2px;
 }

@@ -50,6 +50,20 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/daka/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/playColck/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

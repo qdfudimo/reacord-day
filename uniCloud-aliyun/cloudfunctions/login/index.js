@@ -50,6 +50,7 @@ exports.main = async (event, context) => {
 			nickName: "微信用户",
 			avatarUrl: "",
 			diaryCount: 0,
+			clockCount: 0,
 			collectCount: 0,
 			create_time: now,
 			update_time: now,

@@ -7,11 +7,17 @@ export const radioData = [{
 }]
 /**防止图片失败兜底照片 */
 export const defaultImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/bd229f4c-86eb-4399-a39b-460d764d456b.jpg';
-export const category = [{
+export const category = [
+    {
         icon: "icon-tiaochariji",
-        name: "日记本",
+        name: "打卡记录",
         color: "#1CBBB4"
     },
+    // {
+    //     icon: "icon-tiaochariji",
+    //     name: "日记本",
+    //     color: "#1CBBB4"
+    // },
     {
         icon: "icon-tubiaolunkuo-",
         name: "日历",
@@ -22,11 +28,11 @@ export const category = [{
         name: "名句鉴赏",
         color: "#32c312"
     },
-    // {
-    //     icon: "icon-qiandaodaka",
-    //     name: "打卡",
-    //     color: "#72c2f4"
-    // },
+    {
+        icon: "icon-qiandaodaka",
+        name: "打卡",
+        color: "#72c2f4"
+    },
     {
         icon: "icon-yuyinshi",
         name: "语音识别文字",
