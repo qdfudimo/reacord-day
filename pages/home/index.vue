@@ -319,7 +319,7 @@ onShareAppMessage(() => {
     // const randomImgs = shareImg[Math.floor(Math.random() * shareImg.length)];
     return {
         title: '写下你的生活',
-        path: '/page/home/index',
+        path: '/pages/home/index',
         // imageUrl: randomImgs
     };
 })
