@@ -89,19 +89,21 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   } : common_vendor.e({
     g: common_vendor.t($props.reacordList.weather),
     h: $props.reacordList.weatherUrl
-  }, $props.reacordList.weatherUrl ? {} : {}), {
-    i: common_vendor.t($options.formatTime($props.reacordList.create_time)),
-    j: common_vendor.n($props.ifNote ? "" : "clockCs"),
-    k: $props.reacordList.mood
+  }, $props.reacordList.weatherUrl ? {
+    i: $props.reacordList.weatherUrl || "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/2062e2d4-2a30-47f2-b788-c30890149d67.png"
+  } : {}), {
+    j: common_vendor.t($options.formatTime($props.reacordList.create_time)),
+    k: common_vendor.n($props.ifNote ? "" : "clockCs"),
+    l: $props.reacordList.mood
   }, $props.reacordList.mood ? {
-    l: common_vendor.t($props.reacordList.mood)
+    m: common_vendor.t($props.reacordList.mood)
   } : {}, {
-    m: $props.ifNote
+    n: $props.ifNote
   }, $props.ifNote ? common_vendor.e({
-    n: common_vendor.t($props.reacordList.content),
-    o: $props.reacordList.imgUrl && $props.reacordList.imgUrl.length
+    o: common_vendor.t($props.reacordList.content),
+    p: $props.reacordList.imgUrl && $props.reacordList.imgUrl.length
   }, $props.reacordList.imgUrl && $props.reacordList.imgUrl.length ? {
-    p: common_vendor.f($props.reacordList.imgUrl, (i, index, i0) => {
+    q: common_vendor.f($props.reacordList.imgUrl, (i, index, i0) => {
       return {
         a: i,
         b: index,
@@ -109,14 +111,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: index
       };
     }),
-    q: $props.reacordList.imgUrl
+    r: $props.reacordList.imgUrl
   } : {}) : {}, {
-    r: $props.reacordList.name
+    s: $props.reacordList.name
   }, $props.reacordList.name ? {
-    s: common_vendor.t($props.reacordList.name),
-    t: common_vendor.o((...args) => $options.choosiePosi && $options.choosiePosi(...args))
+    t: common_vendor.t($props.reacordList.name),
+    v: common_vendor.o((...args) => $options.choosiePosi && $options.choosiePosi(...args))
   } : {}, {
-    v: common_vendor.o((...args) => $options.remove && $options.remove(...args))
+    w: common_vendor.o((...args) => $options.remove && $options.remove(...args))
   });
 }
 var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/xiaocx/reacord-day/components/reacordList/reacordList.vue"]]);

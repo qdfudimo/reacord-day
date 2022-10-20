@@ -6342,13 +6342,6 @@ const pages = [
     }
   },
   {
-    path: "pages/square/index",
-    style: {
-      enablePullDownRefresh: true,
-      backgroundTextStyle: "dark"
-    }
-  },
-  {
     path: "pages/mine/index",
     style: {
       navigationStyle: "custom",
@@ -6361,10 +6354,6 @@ const pages = [
     style: {
       navigationBarTitleText: "\u540D\u53E5\u9274\u8D4F"
     }
-  },
-  {
-    path: "pages/create-record/create-record",
-    style: {}
   },
   {
     path: "pages/clander/index",
@@ -6393,7 +6382,7 @@ const pages = [
   {
     path: "pages/daka/index",
     style: {
-      navigationBarTitleText: "daka"
+      navigationBarTitleText: "\u6253\u5361"
     }
   },
   {
@@ -6670,7 +6659,7 @@ switch (f) {
   default:
     g = f;
 }
-const p = h('{\n    "address": [\n        "127.0.0.1",\n        "192.168.0.190"\n    ],\n    "debugPort": 9000,\n    "initialLaunchType": "local",\n    "servePort": 7000,\n    "skipFiles": [\n        "<node_internals>/**/*.js",\n        "D:/dowload/HBuilderX.3.2.16.20211122/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), m = h('[{"provider":"aliyun","spaceName":"record-day-cloud","spaceId":"8a42471b-0c50-4781-a564-186c52631541","clientSecret":"F6BMbmr9A/OwrikiVhgwKg==","endpoint":"https://api.bspapp.com"}]') || [];
+const p = h('{\n    "address": [\n        "127.0.0.1",\n        "192.168.0.190"\n    ],\n    "debugPort": 9000,\n    "initialLaunchType": "remote",\n    "servePort": 7000,\n    "skipFiles": [\n        "<node_internals>/**/*.js",\n        "D:/dowload/HBuilderX.3.2.16.20211122/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), m = h('[{"provider":"aliyun","spaceName":"record-day-cloud","spaceId":"8a42471b-0c50-4781-a564-186c52631541","clientSecret":"F6BMbmr9A/OwrikiVhgwKg==","endpoint":"https://api.bspapp.com"}]') || [];
 let _ = "";
 try {
   _ = "__UNI__CBC301A";

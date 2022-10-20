@@ -1,4 +1,5 @@
 <script>
+import { request } from "@/utils/request";
 export default {
 	data() {
 		return {};
@@ -23,11 +24,23 @@ export default {
 
 		statusBar: '',
 		custom: '',
-		customBar: ''
+		customBar: '',
+		arrImg: [],
+		colorArr: [],
+		randomImg: []
 	},
 	onLaunch() {
 		// 判断设备是否为 iPhone X
 		this.globalData.checkIsIPhoneX(); // 展示本地存储能力
+		request("requestImgUrl",).then(({ result = {} }) => {
+			if (result.code === 0) {
+				this.globalData.arrImg = result.data
+				this.globalData.colorArr = result.colorArr
+				this.globalData.randomImg = result.randomImg
+			}
+		}).catch(error => {
+			console.log(error);
+		})
 		// 更新版本提示
 		if (uni.canIUse('getUpdateManager')) {
 			const updateManager = uni.getUpdateManager()

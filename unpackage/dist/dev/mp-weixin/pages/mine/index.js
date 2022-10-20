@@ -1,9 +1,10 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
-var utils_util = require("../../utils/util.js");
-var utils_index = require("../../utils/index.js");
+var utils_upload = require("../../utils/upload.js");
 var hooks_useGetTabBar = require("../../hooks/useGetTabBar.js");
+var utils_util = require("../../utils/util.js");
 var utils_request = require("../../utils/request.js");
+require("../../utils/index.js");
 require("../../uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
   (common_vendor.unref(famous) + common_vendor.unref(noData))();
@@ -51,15 +52,32 @@ const _sfc_main = {
         id: currentBackgroundId.value,
         oldImgUrl: currentBackground.value
       };
-      data.isDel = !utils_index.randomImg.includes(currentBackground.value);
+      data.isDel = !imgList.value.includes(currentBackground.value);
       utils_request.request("backgroundUrl", data).then(({ result = {} }) => {
         if (result.updated) {
           currentBackground.value = url;
-          common_vendor.index.setStorage({
-            key: "currentBackground",
-            data: url
-          });
         }
+      });
+    };
+    const selectBackground = () => {
+      utils_upload.chooseFile({
+        accept: "img",
+        maxCount: 1,
+        multiple: false
+      }).then((res) => {
+        let ext = res[0].url.split(".").pop();
+        common_vendor.pn.uploadFile({
+          filePath: res[0].url,
+          cloudPath: Date.now() + "." + ext,
+          success(res2) {
+            changeFile(res2.fileID);
+          },
+          fail(error) {
+            console.log(error);
+            utils_util.util.tip("\u4E0A\u4F20\u5931\u8D25", "error");
+          }
+        });
+      }).catch((error) => {
       });
     };
     const getUserProfile = () => {
@@ -122,11 +140,11 @@ const _sfc_main = {
         if (result.affectedDocs) {
           currentBackground.value = result.data[0].imgUrl || "";
           currentBackgroundId.value = result.data[0]._id || "";
-          common_vendor.index.setStorage({
-            key: "currentBackground",
-            data: currentBackground.value
-          });
+          return;
         }
+      }).catch((error) => {
+        const randomImgurl = imgList.value[Math.floor(Math.random() * imgList.value.length)];
+        currentBackground.value = randomImgurl;
       });
     };
     const getUserInfo = () => {
@@ -159,22 +177,8 @@ const _sfc_main = {
         userInfo.avatarUrl = data.avatarUrl;
         userInfo.nickName = data.nickName;
       });
-      imgList.value = utils_index.randomImg;
+      imgList.value = app.globalData.randomImg;
       requsetImg();
-      common_vendor.index.getStorage({
-        key: "currentBackground",
-        success: (res) => {
-          currentBackground.value = res.data;
-        },
-        fail: (error) => {
-          const randomImgurl = imgList.value[Math.floor(Math.random() * imgList.value.length)];
-          currentBackground.value = randomImgurl;
-          common_vendor.index.setStorage({
-            key: "currentBackground",
-            data: randomImgurl
-          });
-        }
-      });
     });
     let oldTime = new Date().getTime();
     let oneShow = true;
@@ -237,20 +241,21 @@ const _sfc_main = {
       }, showBackground.value ? {
         o: common_vendor.o(showIfBackground),
         p: currentBackground.value,
-        q: common_vendor.f(imgList.value, (item, index, i0) => {
+        q: common_vendor.o(selectBackground),
+        r: common_vendor.f(imgList.value, (item, index, i0) => {
           return {
             a: item,
             b: item,
             c: index
           };
         }),
-        r: common_vendor.o(selectImage)
+        s: common_vendor.o(selectImage)
       } : {}, {
-        s: ifCollect.value
+        t: ifCollect.value
       }, ifCollect.value ? {
-        t: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
+        v: common_vendor.s("top:" + (common_vendor.unref(customBar) + 20) + "px;left:" + (common_vendor.unref(custom).left - common_vendor.unref(custom).width / 2) + "px;")
       } : {}, {
-        v: common_vendor.s(`background-image:url(${currentBackground.value});`)
+        w: common_vendor.s(`background-image:url(${currentBackground.value});`)
       });
     };
   }

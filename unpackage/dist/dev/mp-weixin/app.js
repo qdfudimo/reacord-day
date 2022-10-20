@@ -2,12 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports[Symbol.toStringTag] = "Module";
 var common_vendor = require("./common/vendor.js");
+var utils_request = require("./utils/request.js");
+require("./utils/util.js");
+require("./utils/index.js");
+require("./uni_modules/uni-calendar/components/uni-calendar/calendar.js");
 if (!Math) {
   "./pages/home/index.js";
-  "./pages/square/index.js";
   "./pages/mine/index.js";
   "./pages/famousSaying/index.js";
-  "./pages/create-record/create-record.js";
   "./pages/clander/index.js";
   "./pages/userInfo/index.js";
   "./pages/Privacy/index.js";
@@ -35,10 +37,22 @@ const _sfc_main = {
     },
     statusBar: "",
     custom: "",
-    customBar: ""
+    customBar: "",
+    arrImg: [],
+    colorArr: [],
+    randomImg: []
   },
   onLaunch() {
     this.globalData.checkIsIPhoneX();
+    utils_request.request("requestImgUrl").then(({ result = {} }) => {
+      if (result.code === 0) {
+        this.globalData.arrImg = result.data;
+        this.globalData.colorArr = result.colorArr;
+        this.globalData.randomImg = result.randomImg;
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
     if (common_vendor.index.canIUse("getUpdateManager")) {
       const updateManager = common_vendor.index.getUpdateManager();
       updateManager.onCheckForUpdate(function(res) {

@@ -115,6 +115,8 @@ const weatherArray = [
     weather: "雨夹雪"
   },
 ]
+const app = getApp();
+console.log(app.globalData);
 const canSee = ref(0)
 const weather = ref(0)
 const arrImg = ref([])
@@ -127,15 +129,19 @@ onShow(() => {
   }, 1000);
 })
 const requestPic = () => {
-  request("requestImgUrl",).then(({ result = {} }) => {
-    console.log(result);
-    if (result.code === 0) {
-      arrImg.value = result.data;
-      currentImg.value = result.data[0]
-      currentColor.value = result.colorArr[0]
-      colorArr.value = result.colorArr;
-    }
-  })
+  arrImg.value = app.globalData.arrImg;
+  colorArr.value = app.globalData.colorArr;
+  currentImg.value = app.globalData.arrImg[0];
+  currentColor.value = app.globalData.colorArr[0];
+  // request("requestImgUrl",).then(({ result = {} }) => {
+  //   console.log(result);
+  //   if (result.code === 0) {
+  //     arrImg.value = result.data;
+  //     currentImg.value = result.data[0]
+  //     currentColor.value = result.colorArr[0]
+  //     colorArr.value = result.colorArr;
+  //   }
+  // })
 }
 const submitq = () => {
   uniCloud.chooseAndUploadFile({

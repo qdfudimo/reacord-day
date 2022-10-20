@@ -1,0 +1,80 @@
+{
+	"bsonType": "object",
+	"required": ["user_id"],
+	"permission": {
+		"read": "doc.user_id == auth.uid",
+		"create": "auth.uid != null",
+		"update": "doc.user_id == auth.uid",
+		"delete": "doc.user_id == auth.uid"
+	},
+	"properties": {
+		"_id": {
+			"description": "存储文档 ID（用户 ID），系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"description": "文章作者ID， 参考`uni-id-users` 表",
+			"foreignKey": "reacord-users._id"
+		},
+		"color": {
+			"bsonType": "string",
+			"title": "打卡背景颜色",
+			"description": "打卡背景颜色",
+			"trim": "right"
+		},
+		"weather": {
+			"bsonType": "string",
+			"title": "天气",
+			"description": "天气",
+			"trim": "right"
+		},
+		"weatherUrl": {
+			"bsonType": "string",
+			"title": "天气图片",
+			"description": "天气图片",
+			"trim": "right"
+		},
+		"mood": {
+			"bsonType": "string",
+			"title": "心情",
+			"description": "心情"
+		},
+		"clockUrl": {
+			"bsonType": "string",
+			"title": "打卡图片",
+			"description": "打卡图片"
+		},
+		"name": {
+			"bsonType": "string",
+			"title": "位置名称",
+			"description": "位置名称"
+		},
+		"address": {
+			"bsonType": "string",
+			"title": "详细地址",
+			"description": "详细地址"
+		},
+		"point": {
+			"bsonType": "GeoPoint",
+			"title": "当前发布位置",
+			"description": "当前发布位置"
+		},
+		"update_time": {
+			"bsonType": "timestamp",
+			"title": "最后修改时间",
+			"description": "最后修改时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"title": "创建时间",
+			"description": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		}
+	},
+	"version": "0.0.1"
+}

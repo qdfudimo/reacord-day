@@ -7,13 +7,13 @@
 				"backgroundTextStyle": "dark"
 			}
 		},
-		{
-			"path": "pages/square/index",
-			"style": {
-				"enablePullDownRefresh": true,
-				"backgroundTextStyle": "dark"
-			}
-		},
+		// {
+		// 	"path": "pages/square/index",
+		// 	"style": {
+		// 		"enablePullDownRefresh": true,
+		// 		"backgroundTextStyle": "dark"
+		// 	}
+		// },
 		{
 			"path": "pages/mine/index",
 			"style": {
@@ -28,10 +28,10 @@
 				"navigationBarTitleText": "名句鉴赏"
 			}
 		},
-		{
-			"path": "pages/create-record/create-record",
-			"style": {}
-		},
+		// {
+		// 	"path": "pages/create-record/create-record",
+		// 	"style": {}
+		// },
 		// {
 		// 	"path": "pages/logs/logs",
 		// 	"style": {
@@ -65,7 +65,7 @@
 		{
 			"path": "pages/daka/index",
 			"style": {
-				"navigationBarTitleText": "daka"
+				"navigationBarTitleText": "打卡"
 			}
 		},
 		{

@@ -8,7 +8,9 @@
             <view :class="['issue_time',ifNote?'':'clockCs']">
                 <view v-if="ifNote" class="schedule_userName">{{ userInfo.nickName }}</view>
                 <view v-else class="schedule_userName">天气：{{reacordList.weather}}
-                    <image v-if="reacordList.weatherUrl" class="weather_img" src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/2062e2d4-2a30-47f2-b788-c30890149d67.png" mode="aspectFill" />
+                    <image v-if="reacordList.weatherUrl" class="weather_img"
+                        :src="reacordList.weatherUrl||'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/2062e2d4-2a30-47f2-b788-c30890149d67.png'"
+                        mode="aspectFill" />
                 </view>
                 <text>{{ formatTime(reacordList.create_time) }}</text>
                 <!-- <text v-if="reacordList.create_time">{{ formatTime(reacordList.create_time) }}</text> -->

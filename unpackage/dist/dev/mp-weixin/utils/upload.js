@@ -20,22 +20,6 @@ var __spreadValues = (a, b) => {
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var common_vendor = require("../common/vendor.js");
 var utils_util = require("./util.js");
-const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
-function isImageUrl(url) {
-  return IMAGE_REGEXP.test(url);
-}
-function isImageFile(item) {
-  if (item.isImage != null) {
-    return item.isImage;
-  }
-  if (item.type) {
-    return item.type === "image";
-  }
-  if (item.url) {
-    return isImageUrl(item.url);
-  }
-  return false;
-}
 function isPlainObject(val) {
   return val !== null && typeof val === "object" && !Array.isArray(val);
 }
@@ -112,5 +96,4 @@ const uplodFile = (filePath = "") => {
   });
 };
 exports.chooseFile = chooseFile;
-exports.isImageFile = isImageFile;
 exports.uplodFile = uplodFile;

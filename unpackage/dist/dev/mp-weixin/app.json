@@ -1,10 +1,8 @@
 {
   "pages": [
     "pages/home/index",
-    "pages/square/index",
     "pages/mine/index",
     "pages/famousSaying/index",
-    "pages/create-record/create-record",
     "pages/clander/index",
     "pages/userInfo/index",
     "pages/Privacy/index",

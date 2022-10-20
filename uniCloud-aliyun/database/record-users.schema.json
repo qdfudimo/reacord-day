@@ -23,6 +23,12 @@
 			"description": "日记篇数",
 			"defaultValue": 0
 		},
+		"clockCount": {
+			"bsonType": "number",
+			"title": "daka数",
+			"description": "daka数",
+			"defaultValue": 0
+		},
 		"collectCount": {
 			"bsonType": "number",
 			"title": "名言收藏个数",

@@ -63,12 +63,12 @@
                 <view class="selectImg">
                     <image class="img_background" style="width: 100%; height: 100%" :src="currentBackground" />
                 </view>
-                <!-- <view class="selectImg addImg" @tap="selectBackground">
+                <view class="selectImg addImg" @tap="selectBackground">
                     <view class="iconfont icon-xiangji" style="font-size: 36px; margin-top: 8px"></view>
-                    <view>添加图片</view>
+                    <view>添加背景</view>
                     <view>建议尺寸</view>
                     <view>750*800</view>
-                </view> -->
+                </view>
                 <view class="selectImg" v-for="(item, index) in imgList" :key="index">
                     <image @tap="selectImage" class="img_background" :data-url="item" style="width: 100%; height: 100%"
                         :src="item" />
@@ -85,7 +85,7 @@
 import famous from '@/components/famous/famous';
 import noData from '@/components/noData';
 import { chooseFile } from '@/utils/upload';
-import { randomImg } from '@/utils/index';
+// import { randomImg } from '@/utils/index';
 import { ref, reactive, watch } from 'vue';
 import { useGetTabBar } from "@/hooks/useGetTabBar";
 import {
@@ -135,14 +135,10 @@ const changeFile = (url) => {
         id: currentBackgroundId.value,
         oldImgUrl: currentBackground.value
     }
-    data.isDel = !randomImg.includes(currentBackground.value)
+    data.isDel = !imgList.value.includes(currentBackground.value)
     request("backgroundUrl", data).then(({ result = {} }) => {
         if (result.updated) {
             currentBackground.value = url
-            uni.setStorage({
-                key: 'currentBackground',
-                data: url
-            });
         }
     })
 }
@@ -232,11 +228,11 @@ const requsetImg = () => {
         if (result.affectedDocs) {
             currentBackground.value = result.data[0].imgUrl || ""
             currentBackgroundId.value = result.data[0]._id || ""
-            uni.setStorage({
-                key: 'currentBackground',
-                data: currentBackground.value
-            });
+            return
         }
+    }).catch(error => {
+        const randomImgurl = imgList.value[Math.floor(Math.random() * imgList.value.length)];
+        currentBackground.value = randomImgurl;
     })
 }
 const getUserInfo = () => {
@@ -249,7 +245,7 @@ const getUserInfo = () => {
             userInfo.nickName = result.data[0].nickName;
             userInfo.id = result.data[0]._id;
             userInfo.diaryCount = result.data[0].diaryCount;
-            userInfo.clockCount = result.data[0].clockCount||0;
+            userInfo.clockCount = result.data[0].clockCount || 0;
             userInfo.collectCount = result.data[0].collectCount;
             uni.stopPullDownRefresh();
         }
@@ -273,24 +269,10 @@ onLoad(() => {
         userInfo.avatarUrl = data.avatarUrl
         userInfo.nickName = data.nickName
     })
-    imgList.value = randomImg;
+    imgList.value = app.globalData.randomImg;
     // getUserInfo()
     // getFamousSaying("mySearch")
     requsetImg()
-    uni.getStorage({
-        key: 'currentBackground',
-        success: (res) => {
-            currentBackground.value = res.data
-        },
-        fail: (error) => {
-            const randomImgurl = imgList.value[Math.floor(Math.random() * imgList.value.length)];
-            currentBackground.value = randomImgurl;
-            uni.setStorage({
-                key: 'currentBackground',
-                data: randomImgurl
-            });
-        }
-    });
 })
 let oldTime = new Date().getTime()
 let oneShow = true

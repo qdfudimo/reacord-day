@@ -61,6 +61,8 @@ exports.main = async (event, context) => {
 				});
 			}
 			resolve(res)
+		}).catch(error => {
+			reject(error)
 		})
 	}
 
@@ -78,7 +80,7 @@ exports.main = async (event, context) => {
 	if (type == "read") {
 		let homeBackground = await read()
 		// console.log(homeBackground, 22);
-		if (event.imgType == 1 && !homeBackground.affectedDocs) {
+		if (event.imgType == 1 && homeBackground.affectedDocs === 0) {
 			let url = "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8a42471b-0c50-4781-a564-186c52631541/897baf77-401a-42c5-a6e5-fe0ee0be1738.jpg";
 			let res = await add(url);
 			homeBackground = await read()
@@ -99,6 +101,7 @@ exports.main = async (event, context) => {
 			let res = await deleteId()
 			return res
 		}
+		return {}
 	} else if (type == "update") {
 		let res = await updateUrl()
 		if (event.isDel) {
